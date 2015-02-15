@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+<title>WFTO Mapeditor</title>
+<link rel="stylesheet" href="./css/style.css" />
+<script type="text/javascript" src="./js/tiles.js"></script>
+<script type="text/javascript" src="./js/editor.js"></script>
+<script type="text/javascript" src="./js/options.js"></script>
+</head>
+<body>
+<div id="toolbox">
+	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" /><
+</div>
+<div id="options">
+	<fieldset>
+		<legend>New Map</legend>
+		<form onsubmit="newMap();return false;">
+			<input type="text" id="width" placeholder="Width" />*
+			<input type="text" id="height" placeholder="Height" />*
+			<input type="submit" value="Generate" />
+		</form>
+	</fieldset>
+	<fieldset>
+		<legend>Import Map</legend>
+		<input type="file" id="mapFile" accept="*.wfto"/>
+		<input type="button" id="import" value="Import" onclick="importMap()" />
+	</fieldset>
+	<fieldset>
+		<legend>Export Map</legend>
+		<!-- For now keep it short and simple -->
+		<!-- input type="text" id="author" placeholder="Your Name" / -->
+		<a href="#" id="export" onclick="exportMap()"><button>Export</button></a>
+	</fieldset>
+	<input style="float: right" type="button" value="Close" onclick="toggleOptions(false)" />
+</div>
+</body>
+</html>
