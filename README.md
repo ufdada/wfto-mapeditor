@@ -22,9 +22,9 @@ This map editor should make it fairly easy to create and share maps for "War for
 	- Sand
 
 #### Upcoming Features:
-- Resizing of current Map
-- GUI for custom tile size (default is now 64)
-- Mirror map vertical/horizontal
-- Low-Res version for slower connections
-- Preload tiles
-- Save Configuration with localStorage/Cookies
+- [ ] Resizing of current Map
+- [ ] GUI for custom tile size (default is now 64)
+- [ ] Mirror map vertical/horizontal
+- [ ] Low-Res version for slower connections
+- [ ] Save Configuration with localStorage/Cookies
+- [x] Preload tiles
