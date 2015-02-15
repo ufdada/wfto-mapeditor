@@ -6,7 +6,6 @@ window.onload = function(){
 	});
 }
 
-
 function Map(sizex, sizey) {
 	var map = this;
 	this.defaultTile = 'earth';
@@ -20,9 +19,9 @@ function Map(sizex, sizey) {
 	this.dragEnabled = false;
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
-	
+
 	var mapParent = document.getElementsByTagName('body')[0];
-	
+
 	this.generateTileCss = function() {
 		var style = document.createElement('style');
 		style.type = 'text/css';
@@ -34,7 +33,7 @@ function Map(sizex, sizey) {
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
 	}
-	
+
 	this.preloadTiles = function(callback) {
 		var image = [], loadedImages=0;
 		var images = Object.keys(tiles);
@@ -46,7 +45,6 @@ function Map(sizex, sizey) {
 		}
 		var preloadDiv = document.getElementById("preload");
 		var preloadMessage = preloadDiv.getAttribute("data-message");
-		
 		
 		function imageLoaded(){
 			loadedImages++;
@@ -61,6 +59,7 @@ function Map(sizex, sizey) {
 				callback.call(this);
 			}
 		}
+		
 		for (var i=0; i< images.length; i++){
 			image[i] = new Image();
 			image[i].src = map.assetDir + images[i] + '.png';
@@ -72,7 +71,7 @@ function Map(sizex, sizey) {
 			}
 		}
 	}
-	
+
 	this.createButtons = function() {
 		var toolbox = document.getElementById("toolbox");
 		var buttons = document.createElement("div");
@@ -96,7 +95,7 @@ function Map(sizex, sizey) {
 		toolbox.appendChild(buttons);
 		toolbox.style.display = "block";
 	}
-	
+
 	this.init = function(mapObject) {
 		// only one map is allowed at the same time
 		map.destroy();
@@ -157,7 +156,7 @@ function Map(sizex, sizey) {
 		}
 		mapParent.appendChild(table);
 	}
-	
+
 	this.destroy = function() {
 		map.tiles = {};
 		// remove buttons
@@ -172,7 +171,7 @@ function Map(sizex, sizey) {
 			return false;
 		}
 	}
-	
+
 	this.import = function(base64) {
 		var mapObject = JSON.parse(atob(base64));
 		if (!mapObject || !mapObject.map) {
@@ -189,30 +188,30 @@ function Map(sizex, sizey) {
 			throw new Error("Not a valid Map!");
 		}
 	}
-	
+
 	this.export = function(author) {
 		var json = map.mapToJson(author);
 		var str = JSON.stringify(json);
 		base64 = btoa(str);
 		return base64;
 	}
-	
+
 	this.enableDrag = function() {
 		map.dragEnabled = true;
 		return false;
 	}
-	
+
 	this.disableDrag = function() {
 		map.dragEnabled = false;
 	}
-	
+
 	this.setRoomOnDrag = function() {
 		var roomTile = tiles[map.currentTile];
 		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
 			map.insertTile(this, false, false);
 		}
 	}
-	
+
 	this.resetRoom = function() {
 		map.insertTile(this, false, true);
 	}
@@ -220,7 +219,7 @@ function Map(sizex, sizey) {
 	this.displayRoom = function() {
 		map.insertTile(this, true, false);
 	}
-	
+
 	this.setRoom = function() {
 		map.insertTile(this, false, false);
 	}
@@ -240,7 +239,7 @@ function Map(sizex, sizey) {
 		}
 		
 	}
-	
+
 	this.insertTile = function(tile, temp, reset) {
 		var roomTile = tiles[map.currentTile];
 		var tiley = parseInt(tile.id.split("_")[1]) + 1;
@@ -280,14 +279,14 @@ function Map(sizex, sizey) {
 			}
 		}
 	}
-	
+
 	this.resetTile = function(tile) {
 		tile.hasAttribute('data-temp') && map.setTile(tile, tile.getAttribute('data-temp'));
 		tile.hasAttribute('data-temp-pos') && map.setTilePosition(tile, tile.getAttribute('data-temp-pos'));
 		tile.removeAttribute('data-temp');
 		tile.removeAttribute('data-temp-pos');
 	}
-	
+
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
 		var mapData = {
@@ -344,11 +343,11 @@ function Map(sizex, sizey) {
 	this.setTilePosition = function(tile, pos) {
 		tile.style.backgroundPosition = pos;
 	}
-	
+
 	this.getTilePosition = function(tile) {
 		return tile.style.backgroundPosition;
 	}
-	
+
 	this.setTile = function(tile, currentTile, row, col) {
 		var roomTile = tiles[currentTile];
 		tile.setAttribute("class", currentTile);
