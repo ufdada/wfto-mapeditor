@@ -93,6 +93,7 @@ function Map(sizex, sizey) {
 			buttons.appendChild(button);
 		}
 		toolbox.appendChild(buttons);
+		toolbox.style.display = "block";
 	}
 	
 	this.init = function(mapObject) {

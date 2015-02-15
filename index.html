@@ -7,11 +7,11 @@
 <script type="text/javascript" src="./js/options.js"></script>
 </head>
 <body>
-<div id="preload" data-message="Preloading Image $1 of $2"><p></p></div>
-<div id="toolbox">
+<div id="preload" data-message="Preloading Image $1 of $2" style="display: none;"><p></p></div>
+<div id="toolbox" style="display: none;">
 	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" />
 </div>
-<div id="options">
+<div id="options" style="display: none;">
 	<fieldset>
 		<legend>New Map</legend>
 		<form onsubmit="newMap();return false;">
