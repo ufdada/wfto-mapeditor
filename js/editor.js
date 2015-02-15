@@ -1,7 +1,9 @@
 window.onload = function(){
 	terrain = new Map();
-	terrain.generateTileCss();
-	terrain.init();
+	terrain.preloadTiles(function(){
+		terrain.generateTileCss();
+		terrain.init();
+	});
 }
 
 function Map(sizex, sizey) {
@@ -15,9 +17,11 @@ function Map(sizex, sizey) {
 	this.tiles = {};
 	this.tileSize = 64;
 	this.dragEnabled = false;
-	
+	this.assetDir = './tiles/';
+	this.preloadImages = true;
+
 	var mapParent = document.getElementsByTagName('body')[0];
-	
+
 	this.generateTileCss = function() {
 		var style = document.createElement('style');
 		style.type = 'text/css';
@@ -25,11 +29,49 @@ function Map(sizex, sizey) {
 			var posx = tiles[item].sizex;
 			var posy = tiles[item].sizey;
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
-			style.innerHTML += '.' + item + ' { background-image: url("./tiles/' + item + '.png"); }\n';
+			style.innerHTML += '.' + item + ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
 	}
-	
+
+	this.preloadTiles = function(callback) {
+		var image = [], loadedImages=0;
+		var images = Object.keys(tiles);
+		var start = new Date();
+		if (!images || !map.preloadImages) {
+			// browser doesn't support this, so we just skip it
+			callback.call(this);
+			return;
+		}
+		var preloadDiv = document.getElementById("preload");
+		var preloadMessage = preloadDiv.getAttribute("data-message");
+		
+		function imageLoaded(){
+			loadedImages++;
+			var loaded = new Date();
+			// if the loading of one image takes longer than 100ms we show the preloading message
+			if (loadedImages == 1 && loaded - start > 100) {
+				preloadDiv.style.display = "block";
+			}
+			preloadDiv.firstChild.innerText = preloadMessage.replace(/\$1/g, loadedImages).replace(/\$2/g, images.length);
+			if (loadedImages == images.length){
+				preloadDiv.style.display = "none";
+				callback.call(this);
+			}
+		}
+		
+		for (var i=0; i< images.length; i++){
+			image[i] = new Image();
+			image[i].src = map.assetDir + images[i] + '.png';
+			image[i].onload=function(){
+				imageLoaded();
+			}
+			image[i].onerror=function(){
+				imageLoaded();
+			}
+		}
+	}
+
 	this.createButtons = function() {
 		var toolbox = document.getElementById("toolbox");
 		var buttons = document.createElement("div");
@@ -51,8 +93,9 @@ function Map(sizex, sizey) {
 			buttons.appendChild(button);
 		}
 		toolbox.appendChild(buttons);
+		toolbox.style.display = "block";
 	}
-	
+
 	this.init = function(mapObject) {
 		// only one map is allowed at the same time
 		map.destroy();
@@ -113,7 +156,7 @@ function Map(sizex, sizey) {
 		}
 		mapParent.appendChild(table);
 	}
-	
+
 	this.destroy = function() {
 		map.tiles = {};
 		// remove buttons
@@ -128,7 +171,7 @@ function Map(sizex, sizey) {
 			return false;
 		}
 	}
-	
+
 	this.import = function(base64) {
 		var mapObject = JSON.parse(atob(base64));
 		if (!mapObject || !mapObject.map) {
@@ -145,30 +188,30 @@ function Map(sizex, sizey) {
 			throw new Error("Not a valid Map!");
 		}
 	}
-	
+
 	this.export = function(author) {
 		var json = map.mapToJson(author);
 		var str = JSON.stringify(json);
 		base64 = btoa(str);
 		return base64;
 	}
-	
+
 	this.enableDrag = function() {
 		map.dragEnabled = true;
 		return false;
 	}
-	
+
 	this.disableDrag = function() {
 		map.dragEnabled = false;
 	}
-	
+
 	this.setRoomOnDrag = function() {
 		var roomTile = tiles[map.currentTile];
 		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
 			map.insertTile(this, false, false);
 		}
 	}
-	
+
 	this.resetRoom = function() {
 		map.insertTile(this, false, true);
 	}
@@ -176,7 +219,7 @@ function Map(sizex, sizey) {
 	this.displayRoom = function() {
 		map.insertTile(this, true, false);
 	}
-	
+
 	this.setRoom = function() {
 		map.insertTile(this, false, false);
 	}
@@ -196,7 +239,7 @@ function Map(sizex, sizey) {
 		}
 		
 	}
-	
+
 	this.insertTile = function(tile, temp, reset) {
 		var roomTile = tiles[map.currentTile];
 		var tiley = parseInt(tile.id.split("_")[1]) + 1;
@@ -236,14 +279,14 @@ function Map(sizex, sizey) {
 			}
 		}
 	}
-	
+
 	this.resetTile = function(tile) {
 		tile.hasAttribute('data-temp') && map.setTile(tile, tile.getAttribute('data-temp'));
 		tile.hasAttribute('data-temp-pos') && map.setTilePosition(tile, tile.getAttribute('data-temp-pos'));
 		tile.removeAttribute('data-temp');
 		tile.removeAttribute('data-temp-pos');
 	}
-	
+
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
 		var mapData = {
@@ -300,11 +343,11 @@ function Map(sizex, sizey) {
 	this.setTilePosition = function(tile, pos) {
 		tile.style.backgroundPosition = pos;
 	}
-	
+
 	this.getTilePosition = function(tile) {
 		return tile.style.backgroundPosition;
 	}
-	
+
 	this.setTile = function(tile, currentTile, row, col) {
 		var roomTile = tiles[currentTile];
 		tile.setAttribute("class", currentTile);
