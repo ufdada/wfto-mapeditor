@@ -1,8 +1,11 @@
 window.onload = function(){
 	terrain = new Map();
-	terrain.generateTileCss();
-	terrain.init();
+	terrain.preloadTiles(function(){
+		terrain.generateTileCss();
+		terrain.init();
+	});
 }
+
 
 function Map(sizex, sizey) {
 	var map = this;
@@ -15,6 +18,7 @@ function Map(sizex, sizey) {
 	this.tiles = {};
 	this.tileSize = 64;
 	this.dragEnabled = false;
+	this.assetDir = './tiles/';
 	
 	var mapParent = document.getElementsByTagName('body')[0];
 	
@@ -25,9 +29,47 @@ function Map(sizex, sizey) {
 			var posx = tiles[item].sizex;
 			var posy = tiles[item].sizey;
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
-			style.innerHTML += '.' + item + ' { background-image: url("./tiles/' + item + '.png"); }\n';
+			style.innerHTML += '.' + item + ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
+	}
+	
+	this.preloadTiles = function(callback) {
+		var image = [], loadedImages=0;
+		var images = Object.keys(tiles);
+		var start = new Date();
+		if (!images) {
+			// browser doesn´t support this, so we just skip it
+			callback.call(this);
+			return;
+		}
+		var preloadDiv = document.getElementById("preload");
+		var preloadMessage = preloadDiv.getAttribute("data-message");
+		
+		
+		function imageLoaded(){
+			loadedImages++;
+			var loaded = new Date();
+			// if the loading of one image takes longer than 100ms we show the preloading message
+			if (loadedImages == 1 && loaded - start > 100) {
+				preloadDiv.style.display = "block";
+			}
+			preloadDiv.firstChild.innerText = preloadMessage.replace(/\$1/g, loadedImages).replace(/\$2/g, images.length);
+			if (loadedImages == images.length){
+				preloadDiv.style.display = "none";
+				callback.call(this);
+			}
+		}
+		for (var i=0; i< images.length; i++){
+			image[i] = new Image();
+			image[i].src = map.assetDir + images[i] + '.png';
+			image[i].onload=function(){
+				imageLoaded();
+			}
+			image[i].onerror=function(){
+				imageLoaded();
+			}
+		}
 	}
 	
 	this.createButtons = function() {
