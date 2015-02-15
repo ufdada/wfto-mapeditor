@@ -19,6 +19,7 @@ function Map(sizex, sizey) {
 	this.tileSize = 64;
 	this.dragEnabled = false;
 	this.assetDir = './tiles/';
+	this.preloadImages = true;
 	
 	var mapParent = document.getElementsByTagName('body')[0];
 	
@@ -38,8 +39,8 @@ function Map(sizex, sizey) {
 		var image = [], loadedImages=0;
 		var images = Object.keys(tiles);
 		var start = new Date();
-		if (!images) {
-			// browser doesn´t support this, so we just skip it
+		if (!images || !map.preloadImages) {
+			// browser doesn't support this, so we just skip it
 			callback.call(this);
 			return;
 		}
