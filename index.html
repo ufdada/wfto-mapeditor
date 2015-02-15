@@ -8,7 +8,13 @@
 </head>
 <body>
 <div id="preload" data-message="Preloading Image $1 of $2" style="display: none;"><p></p></div>
-<div id="toolbox" style="display: none;">
+<div id="infoBox" style="display: none;">
+	<p>Size: <span id="mapsize"></span></p>
+	<p>x: <span id="posx"></span></p>
+	<p>y: <span id="posy"></span></p>
+	<p>tile: <span id="tile"></span></p>
+</div>
+<div id="toolBox" style="display: none;">
 	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" />
 </div>
 <div id="options" style="display: none;">

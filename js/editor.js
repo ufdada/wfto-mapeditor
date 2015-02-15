@@ -19,6 +19,7 @@ function Map(sizex, sizey) {
 	this.dragEnabled = false;
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
+	this.buttonColumns = 2;
 
 	var mapParent = document.getElementsByTagName('body')[0];
 
@@ -73,10 +74,10 @@ function Map(sizex, sizey) {
 	}
 
 	this.createButtons = function() {
-		var toolbox = document.getElementById("toolbox");
+		var toolBox = document.getElementById("toolBox");
 		var buttons = document.createElement("div");
 		buttons.id = "buttons";
-		buttons.style.width = parseInt(map.tileSize * 2) + "px";
+		buttons.style.width = parseInt(map.tileSize * 3/4 * map.buttonColumns) + "px";
 		
 		for (var item in tiles) {
 
@@ -92,8 +93,8 @@ function Map(sizex, sizey) {
 			button.setAttribute("style", "background-size: " + parseInt(map.tileSize * 3/4) + "px; width: " + parseInt(map.tileSize * 3/4) + "px; height: " + parseInt(map.tileSize * 3/4) + "px");
 			buttons.appendChild(button);
 		}
-		toolbox.appendChild(buttons);
-		toolbox.style.display = "block";
+		toolBox.appendChild(buttons);
+		toolBox.style.display = "block";
 	}
 
 	this.init = function(mapObject) {
@@ -103,9 +104,12 @@ function Map(sizex, sizey) {
 		
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
-		table.setAttribute('style', "width: " + (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px");
+		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
+		table.style.marginLeft = parseInt(map.tileSize * 3/4 * map.buttonColumns) + 30 + "px";
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
+		
+		map.setHtml("mapsize", map.mapsizey + "x" + map.mapsizex);
 		
 		for (var i = 0; i < map.mapsizey + (map.borderSize * 2); i++) {		
 			var tr = document.createElement("tr");
@@ -115,20 +119,26 @@ function Map(sizex, sizey) {
 			for (var k = 0; k < map.mapsizex + (map.borderSize * 2); k++) {
 				var tile = document.createElement("td");
 				tile.setAttribute('id', 'col_' + i + '_' + k);
-				tile.onmouseover = map.displayRoom;
-				tile.onmouseout = map.resetRoom;
-				tile.onmousedown = map.enableDrag;
-				tile.onmouseup = map.disableDrag;
-				tile.onmousemove = map.setRoomOnDrag;
-				tile.onclick = map.setRoom;
+				var roomTile = map.defaultTile;
+				var isBorder = map.borderSize > 0 && i <= map.borderSize - 1 || k <= map.borderSize - 1 || i >= map.mapsizey + map.borderSize || k >= map.mapsizex + map.borderSize;
 				var id = null;
 				var row = null;
 				var col = null;
-				var roomTile = map.defaultTile;
+
+				if (!isBorder) {
+					// we don't want to listen to this events on the border
+					tile.onmouseover = map.displayRoom;
+					tile.onmouseout = map.resetRoom;
+					tile.onmousedown = map.enableDrag;
+					tile.onmouseup = map.disableDrag;
+					tile.onmousemove = map.setRoomOnDrag;
+					tile.onclick = map.setRoom;
+				}
 				
-				if (map.borderSize > 0 && i <= map.borderSize - 1 || k <= map.borderSize - 1 || i >= map.mapsizey + map.borderSize || k >= map.mapsizex + map.borderSize) {
+				if (isBorder) {
 					// generate border
 					var roomTile = map.borderTile;
+					tile.onmousemove = map.hideInfoBox;
 				} else if (mapObject && mapObject.map && mapObject.tileIds && mapObject.tiles) {
 					// import map
 					var cell = mapObject.map[i - map.borderSize][k - map.borderSize];
@@ -205,11 +215,27 @@ function Map(sizex, sizey) {
 		map.dragEnabled = false;
 	}
 
-	this.setRoomOnDrag = function() {
+	this.setRoomOnDrag = function(evt) {
+		map.setHtml("posx", this.cellIndex + 1 - map.borderSize);
+		var posy = this.parentNode.rowIndex != -1 ? this.parentNode.rowIndex : this.parentNode.sectionRowIndex;
+		map.setHtml("posy", posy + 1 - map.borderSize);
+		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
+		
+		var infoBox = document.getElementById("infoBox");
+		var x = evt.pageX;
+		var y = evt.pageY;
+		infoBox.style.top = y + 20 + "px";
+		infoBox.style.left = x + 20 + "px";
+		infoBox.style.display = "block";
+		
 		var roomTile = tiles[map.currentTile];
 		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
 			map.insertTile(this, false, false);
 		}
+	}
+	
+	this.hideInfoBox = function() {
+		map.hideElement("infoBox");
 	}
 
 	this.resetRoom = function() {
@@ -376,5 +402,13 @@ function Map(sizex, sizey) {
 
 	this.setCurrentTile = function(roomTile) {
 		map.currentTile = roomTile;
+	}
+	
+	this.setHtml = function(id, html) {
+		document.getElementById(id).innerHTML = html;		
+	}
+	
+	this.hideElement = function(id) {
+		document.getElementById(id).style.display = "none";	
 	}
 }
