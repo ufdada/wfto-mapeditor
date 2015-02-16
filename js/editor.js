@@ -75,6 +75,7 @@ function Map(sizex, sizey) {
 
 	this.createButtons = function() {
 		var toolBox = document.getElementById("toolBox");
+		var info = document.getElementById("info");
 		var buttons = document.createElement("div");
 		buttons.id = "buttons";
 		buttons.style.width = parseInt(map.tileSize * 3/4 * map.buttonColumns) + "px";
@@ -93,7 +94,7 @@ function Map(sizex, sizey) {
 			button.setAttribute("style", "background-size: " + parseInt(map.tileSize * 3/4) + "px; width: " + parseInt(map.tileSize * 3/4) + "px; height: " + parseInt(map.tileSize * 3/4) + "px");
 			buttons.appendChild(button);
 		}
-		toolBox.appendChild(buttons);
+		toolBox.insertBefore(buttons, info);
 		toolBox.style.display = "block";
 	}
 
@@ -216,22 +217,14 @@ function Map(sizex, sizey) {
 	}
 
 	this.setRoomOnDrag = function(evt) {
-		map.setHtml("posx", this.cellIndex + 1 - map.borderSize);
-		var posy = this.parentNode.rowIndex != -1 ? this.parentNode.rowIndex : this.parentNode.sectionRowIndex;
-		map.setHtml("posy", posy + 1 - map.borderSize);
-		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
-		
 		var infoBox = document.getElementById("infoBox");
-		var x = evt.pageX;
-		var y = evt.pageY;
-		infoBox.style.top = y + 20 + "px";
-		infoBox.style.left = x + 20 + "px";
+		var x = evt.pageX + 20;
+		var y = evt.pageY + 20;
+		infoBox.style.top = y + "px";
+		infoBox.style.left = x + "px";
 		infoBox.style.display = "block";
 		
-		var roomTile = tiles[map.currentTile];
-		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
-			map.insertTile(this, false, false);
-		}
+		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
 	}
 	
 	this.hideInfoBox = function() {
@@ -242,8 +235,19 @@ function Map(sizex, sizey) {
 		map.insertTile(this, false, true);
 	}
 
-	this.displayRoom = function() {
+	this.displayRoom = function(evt) {
 		map.insertTile(this, true, false);
+		
+		// Info box
+		map.setHtml("posx", this.cellIndex + 1 - map.borderSize);
+		var posy = this.parentNode.rowIndex != -1 ? this.parentNode.rowIndex : this.parentNode.sectionRowIndex;
+		map.setHtml("posy", posy + 1 - map.borderSize);
+		
+		// Drag and Drop
+		var roomTile = tiles[map.currentTile];
+		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
+			map.insertTile(this, false, false);
+		}
 	}
 
 	this.setRoom = function() {
