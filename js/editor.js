@@ -20,13 +20,25 @@ function Map(sizex, sizey) {
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
 	this.buttonColumns = 2;
-	this.tileMode = "highres";
+	this.tileMode = 'highres';
+	this.tileModes = [ 'color', 'highres' ];
 
 	var mapParent = document.getElementsByTagName('body')[0];
 
+	this.setTileMode = function(tileMode) {
+		if (map.tileModes.indexOf(tileMode) == -1) {
+			throw new Error("The tilemode " + tileMode + " is not allowed!");
+			return;
+		}
+		map.tileMode = tileMode;
+		map.generateTileCss();
+	}
+	
 	this.generateTileCss = function() {
-		var style = document.createElement('style');
+		var style = document.getElementById('tileCss') || document.createElement('style');
+		style.id = 'tileCss';
 		style.type = 'text/css';
+		style.innerHTML = '';
 		for (var item in tiles) {
 			var posx = tiles[item].sizex;
 			var posy = tiles[item].sizey;
