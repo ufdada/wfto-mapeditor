@@ -218,10 +218,28 @@ function Map(sizex, sizey) {
 
 	this.setRoomOnDrag = function(evt) {
 		var infoBox = document.getElementById("infoBox");
-		var x = evt.pageX + 20;
-		var y = evt.pageY + 20;
-		infoBox.style.top = y + "px";
-		infoBox.style.left = x + "px";
+		var left = evt.pageX + 20;
+		var top = evt.pageY + 20;
+		infoBox.style.top = top + "px";
+		infoBox.style.left = left + "px";
+		
+		var height = infoBox.clientHeight;
+		var width = infoBox.clientWidth;
+		var windowHeight = window.innerHeight;
+		var windowWidth = window.innerWidth;
+		var pageOffsetX = window.pageXOffset;
+		var pageOffsetY = window.pageYOffset;
+		
+		if (top + height > windowHeight + pageOffsetY) {
+			// at the bottom
+			infoBox.style.top = top - height - 30 + "px";
+		}
+		
+		if (left + width > windowWidth + pageOffsetX) {
+			// at the right
+			infoBox.style.left = left - width - 30 + "px";
+		}
+		
 		infoBox.style.display = "block";
 		
 		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
