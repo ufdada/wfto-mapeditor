@@ -209,6 +209,7 @@ function Map(sizex, sizey) {
 
 	this.enableDrag = function() {
 		map.dragEnabled = true;
+		map.insertTile(this, false, false);
 		return false;
 	}
 
