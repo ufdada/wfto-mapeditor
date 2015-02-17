@@ -231,12 +231,12 @@ function Map(sizex, sizey) {
 		var pageOffsetX = window.pageXOffset;
 		var pageOffsetY = window.pageYOffset;
 		
-		if (top + height > windowHeight + pageOffsetY) {
+		if (top + height > windowHeight + pageOffsetY - 10) {
 			// at the bottom
 			infoBox.style.top = top - height - 30 + "px";
 		}
 		
-		if (left + width > windowWidth + pageOffsetX) {
+		if (left + width > windowWidth + pageOffsetX - 10) {
 			// at the right
 			infoBox.style.left = left - width - 30 + "px";
 		}
