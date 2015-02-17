@@ -28,3 +28,4 @@ This map editor should make it fairly easy to create and share maps for "War for
 - [ ] Low-Res version for slower connections
 - [ ] Save Configuration with localStorage/Cookies
 - [x] Preload tiles
+- [x] Information of current tile
