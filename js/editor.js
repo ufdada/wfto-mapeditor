@@ -20,6 +20,7 @@ function Map(sizex, sizey) {
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
 	this.buttonColumns = 2;
+	this.tileMode = "highres";
 
 	var mapParent = document.getElementsByTagName('body')[0];
 
@@ -29,21 +30,23 @@ function Map(sizex, sizey) {
 		for (var item in tiles) {
 			var posx = tiles[item].sizex;
 			var posy = tiles[item].sizey;
+			var css = map.tileMode == "color" ? ' { background-color: ' + tiles[item].color + '; }\n' : ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
-			style.innerHTML += '.' + item + ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
+			style.innerHTML += '.' + item + css;
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
 	}
 
 	this.preloadTiles = function(callback) {
-		var image = [], loadedImages=0;
 		var images = Object.keys(tiles);
-		var start = new Date();
-		if (!images || !map.preloadImages) {
+		
+		if (!images || !map.preloadImages || map.tileMode == "color") {
 			// browser doesn't support this, so we just skip it
 			callback.call(this);
 			return;
 		}
+		var image = [], loadedImages=0;
+		var start = new Date();
 		var preloadDiv = document.getElementById("preload");
 		var preloadMessage = preloadDiv.getAttribute("data-message");
 		
