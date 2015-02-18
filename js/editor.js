@@ -178,7 +178,8 @@ function Map(sizex, sizey) {
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
-		table.style.marginLeft = parseInt(map.tileSize * 3/4 * map.buttonColumns) + 30 + "px";
+		table.style.marginLeft = parseInt(map.tileSize * map.buttonColumns) + 30 + "px";
+		table.style.marginTop = "10px";
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
 		
