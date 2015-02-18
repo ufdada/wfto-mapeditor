@@ -100,7 +100,6 @@ function resetOptions() {
 	var map = terrain.export();
 	terrain.resetToDefault();
 	terrain.import(map);
-	location.search = "";
 	toggleOptions(false);
 }
 
