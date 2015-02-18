@@ -1,5 +1,6 @@
 window.onload = function(){
 	terrain = new Map();
+	terrain.getQueryOptions();
 	terrain.preloadTiles(function(){
 		terrain.generateTileCss();
 		terrain.init();
@@ -15,35 +16,105 @@ function Map(sizex, sizey) {
 	this.mapsizex = sizex || 20;
 	this.mapsizey = sizey || 20;
 	this.tiles = {};
-	this.tileSize = 64;
+	this.tileSizeDefault = 64;
+	this.tileSize = localStorage.getItem("tileSize") || this.tileSizeDefault;
+	this.tileSizes = [24, 32, 48, 64];
 	this.dragEnabled = false;
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
 	this.buttonColumns = 2;
+	this.tileModeDefault = 'normal';
+	this.tileMode = localStorage.getItem("tileMode") || this.tileModeDefault;
+	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
+	this.options = {
+		"tileModes": {
+			type: "select",
+			option: "tileMode",
+			postSave: "setTileMode"
+		},
+		"tileSizes": {
+			type: "select",
+			option: "tileSize",
+			postSave: "setTileSize"
+		}
+	}
 
 	var mapParent = document.getElementsByTagName('body')[0];
 
+	this.getQueryOptions = function() {
+		for (var item in map.options) {
+			var option = map.options[item].option;
+			var postSave = map.options[item].postSave;
+			var match = location.search.match('(^\\?|&)'+option+'=([^\\?&=]+)');
+			if (match) {
+				map[postSave](match[2]);
+			}
+		}
+	}
+	
+	// TODO: Implement to save dom operations
+	this.setTileMode = function(tileMode) {
+		if (map.tileModes.indexOf(tileMode) == -1) {
+			console.error("The tilemode " + tileMode + " is not allowed!");
+			return;
+		}
+		localStorage.setItem("tileMode", tileMode);
+		map.tileMode = tileMode;
+		//map.generateTileCss();
+	}
+	
+	// TODO: Implement to save dom operations
+	this.setTileSize = function(tileSize) {
+		if (map.tileSizes.indexOf(parseInt(tileSize)) == -1) {
+			console.error("The tileSize " + parseInt(tileSize) + " is not allowed!");
+			return;
+		}
+		localStorage.setItem("tileSize", tileSize);
+		map.tileSize = tileSize;
+		// TODO: implement instant change of tilesize
+	}
+	
+	this.resetToDefault = function() {
+		for (var item in map.options) {
+			var option = map.options[item].option;
+			map[option] = map[option + "Default"];
+		}
+		terrain.generateTileCss();
+	}
+	
 	this.generateTileCss = function() {
-		var style = document.createElement('style');
+		var style = document.getElementById('tileCss') || document.createElement('style');
+		style.id = 'tileCss';
 		style.type = 'text/css';
+		style.innerHTML = '';
 		for (var item in tiles) {
 			var posx = tiles[item].sizex;
 			var posy = tiles[item].sizey;
+			var css = '';
+			switch (map.tileMode) {
+				case "color":
+					var css = ' { background-color: ' + tiles[item].color + '; }\n';
+					break;
+				default:
+					var css = ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
+					break;
+			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
-			style.innerHTML += '.' + item + ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
+			style.innerHTML += '.' + item + css;
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
 	}
 
 	this.preloadTiles = function(callback) {
-		var image = [], loadedImages=0;
 		var images = Object.keys(tiles);
-		var start = new Date();
-		if (!images || !map.preloadImages) {
+		
+		if (!images || !map.preloadImages || map.tileMode == "color") {
 			// browser doesn't support this, so we just skip it
 			callback.call(this);
 			return;
 		}
+		var image = [], loadedImages=0;
+		var start = new Date();
 		var preloadDiv = document.getElementById("preload");
 		var preloadMessage = preloadDiv.getAttribute("data-message");
 		
@@ -75,13 +146,14 @@ function Map(sizex, sizey) {
 
 	this.createButtons = function() {
 		var toolBox = document.getElementById("toolBox");
+		toolBox.setAttribute("class", "toolBox" + map.tileSize);
+		toolBox.onmousemove = map.hideInfoBox;
 		var info = document.getElementById("info");
 		var buttons = document.createElement("div");
 		buttons.id = "buttons";
 		buttons.style.width = parseInt(map.tileSize * 3/4 * map.buttonColumns) + "px";
 		
 		for (var item in tiles) {
-
 			var button = document.createElement("input");
 			button.id = item;
 			button.onclick = function () {

@@ -23,9 +23,9 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 #### Upcoming Features:
 - [ ] Resizing of current Map
-- [ ] GUI for custom tile size (default is now 64)
+- [x] GUI for custom tile size (default is now 64)
 - [ ] Mirror map vertical/horizontal
-- [ ] Low-Res version for slower connections
-- [ ] Save Configuration with localStorage/Cookies
+- [x] ~~Low-Res~~ Color version for slower connections
+- [x] Save Configuration with localStorage/Cookies
 - [x] Preload tiles
 - [x] Information of current tile

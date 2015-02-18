@@ -41,6 +41,11 @@
 		<!-- input type="text" id="author" placeholder="Your Name" / -->
 		<a href="#" id="export" onclick="exportMap()"><button>Export</button></a>
 	</fieldset>
+	<fieldset id="general">
+		<legend>General Options</legend>
+		<input type="button" id="saveOptions" onclick="saveOptions()" value="Save options" />
+		<input type="button" id="resetOptions" onclick="resetOptions()" value="Reset options" />
+	</fieldset>
 	<input style="float: right" type="button" value="Close" onclick="toggleOptions(false)" />
 </div>
 </body>
