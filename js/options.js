@@ -124,6 +124,13 @@ function refreshOptions() {
 					var option = document.createElement("option");
 					option.innerHTML = terrain[item][i];
 					option.value = terrain[item][i];
+					
+					// Set default to the label to mark the default value
+					if(terrain[item][i] == terrain[optionvalue + "Default"]) {
+						option.innerHTML = option.innerHTML + " (default)";
+					}
+					
+					// Select the current value
 					if (terrain[item][i] == terrain[optionvalue]) {
 						option.selected = "selected";
 					}
