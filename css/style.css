@@ -86,3 +86,7 @@ td:hover {
 .toolBox32, .toolBox32 input, .toolBox32 button {
 	font-size: 10px !important;
 }
+
+#general * {
+	margin: 2px;
+}

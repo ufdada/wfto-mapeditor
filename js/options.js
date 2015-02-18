@@ -113,7 +113,7 @@ function refreshOptions() {
 	for (var item in terrain.options) {
 		var label = document.createElement("label");
 		label["for"] = item;
-		label.innerHTML = item + ": ";
+		label.innerHTML = terrain.options[item].option + ": ";
 		generalOptions.appendChild(label);
 		var type = terrain.options[item].type;
 		var optionvalue = terrain.options[item].option;
