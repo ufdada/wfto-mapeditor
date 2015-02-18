@@ -2,11 +2,11 @@ function newMap(sizex, sizey) {
 	sizex = parseInt(document.getElementById("width").value);
 	sizey = parseInt(document.getElementById("height").value);
 	if (!isNaN(sizex) && !isNaN(sizey)) {
-		if (sizex >= 5 && sizey >= 5) {
+		if (sizex >= 5 && sizey >= 5 && sizex <= 130 && sizey <= 130) {
 			terrain = new Map(sizex, sizey);
 			terrain.init();
 		} else {
-			alert("A valid map has to at least 5 by 5!");
+			alert("A valid map has to at least 5 by 5 and 130 by 130 max");
 			return;
 		}
 	} else {
