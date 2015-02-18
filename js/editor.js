@@ -1,5 +1,6 @@
 window.onload = function(){
 	terrain = new Map();
+	terrain.getQueryOptions();
 	terrain.preloadTiles(function(){
 		terrain.generateTileCss();
 		terrain.init();
@@ -40,22 +41,35 @@ function Map(sizex, sizey) {
 
 	var mapParent = document.getElementsByTagName('body')[0];
 
+	this.getQueryOptions = function() {
+		for (var item in map.options) {
+			var option = map.options[item].option;
+			var postSave = map.options[item].postSave;
+			var match = location.search.match('(^\\?|&)'+option+'=([^\\?&=]+)');
+			if (match) {
+				map[postSave](match[2]);
+			}
+		}
+	}
+	
 	// TODO: Implement to save dom operations
 	this.setTileMode = function(tileMode) {
 		if (map.tileModes.indexOf(tileMode) == -1) {
-			throw new Error("The tilemode " + tileMode + " is not allowed!");
+			console.error("The tilemode " + tileMode + " is not allowed!");
 			return;
 		}
+		localStorage.setItem("tileMode", tileMode);
 		map.tileMode = tileMode;
-		map.generateTileCss();
+		//map.generateTileCss();
 	}
 	
 	// TODO: Implement to save dom operations
 	this.setTileSize = function(tileSize) {
 		if (map.tileSizes.indexOf(parseInt(tileSize)) == -1) {
-			throw new Error("The tileSize " + parseInt(tileSize) + " is not allowed!");
+			console.error("The tileSize " + parseInt(tileSize) + " is not allowed!");
 			return;
 		}
+		localStorage.setItem("tileSize", tileSize);
 		map.tileSize = tileSize;
 		// TODO: implement instant change of tilesize
 	}
