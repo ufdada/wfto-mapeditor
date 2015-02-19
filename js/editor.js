@@ -507,4 +507,48 @@ function Map(sizex, sizey) {
 	this.hideElement = function(id) {
 		document.getElementById(id).style.display = "none";	
 	}
+
+	/**
+	 * Mirrors a part of the map to get a better
+	 * @param mirrorType determines how the map should be mirrored
+	 *					 It's the sum of the cellvalues in the option menu
+	 * 		---------
+	 * 		| 1 | 2 | 
+	 * 		---------
+	 * 		| 3 | 4 |
+	 *		---------
+	 */
+	this.mirrorMap = function(mirrorType) {
+		var mapObject = map.mapToJson();
+		switch(mirrorType) {
+			case 1:
+				// mirror 1 to 2
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length / 2), "vertical");
+				// mirror 1 & 2 to 3 & 4
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal");
+				break;
+			case 3: // 1 + 2
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal");
+				break;
+			case 4: // 1 + 3
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical");
+				break;
+		}
+
+		var str = JSON.stringify(mapObject);
+		var base64 = btoa(str);
+		map.import(base64);
+	}
+
+	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type) {
+		for (var i = y1; i < y2; i++){
+			for (var j = x1; j < x2; j++){
+				if (type == "horizontal") {
+					mapObject.map[mapObject.map.length - 1 - i][j] = mapObject.map[i][j];
+				} else {
+					mapObject.map[i][mapObject.map[0].length - 1 - j] = mapObject.map[i][j];
+				}
+			}
+		}
+	}
 }
