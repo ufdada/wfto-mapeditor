@@ -55,16 +55,12 @@ function mirrorPreview(type) {
 		case 'second':
 			first.setAttribute("class", "active");
 			second.setAttribute("class", "active");
+			third.innerHTML = '1';
+			fourth.innerHTML = '2';
 			if (reverse.checked) {
-				third.innerHTML = '2';
-				third.setAttribute("class", "mirrorBoth");
-				fourth.innerHTML = '1';
-				fourth.setAttribute("class", "mirrorBoth");
+				third.parentNode.setAttribute("class", "mirrorBoth");
 			} else {
-				third.innerHTML = '1';
-				third.setAttribute("class", "mirrorVertical");
-				fourth.innerHTML = '2';
-				fourth.setAttribute("class", "mirrorVertical");
+				third.parentNode.setAttribute("class", "mirrorVertical");
 			}
 			break;
 		case 'third':
@@ -103,6 +99,8 @@ function resetMirror() {
 	third.removeAttribute("class");
 	fourth.innerHTML = '4';
 	fourth.removeAttribute("class");
+	
+	third.parentNode.removeAttribute("class");
 }
 
 function newMap(sizex, sizey) {

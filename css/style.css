@@ -100,6 +100,10 @@ td:hover {
 	transition: all 0.3s;
 }
 
+#mirrorMap tr {
+	transition: all 0.3s;
+}
+
 #mirrorMap td.active {
 	background-color: #ccc;
 	cursor: pointer;
