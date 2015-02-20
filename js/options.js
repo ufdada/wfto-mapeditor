@@ -10,14 +10,17 @@ function initOptions() {
 	first.onmouseover = mirrorTable;
 	second.onmouseover = mirrorTable;
 	third.onmouseover = mirrorTable;
+	fourth.onmouseover = mirrorTable;
 
 	first.onmouseout = resetPreview;
 	second.onmouseout = resetPreview;
 	third.onmouseout = resetPreview;
+	fourth.onmouseout = resetPreview;
 
 	first.onclick = setActive;
 	second.onclick = setActive;
 	third.onclick = setActive;
+	fourth.onclick = setActive;
 
 	active = "";
 }
@@ -31,7 +34,7 @@ function mirrorMap() {
 }
 
 function setActive() {
-	active = this.id;
+	active = this.id == "fourth" ? "third" : this.id;
 }
 
 function mirrorTable() {
@@ -63,6 +66,7 @@ function mirrorPreview(type) {
 				third.parentNode.setAttribute("class", "mirrorVertical");
 			}
 			break;
+		default:
 		case 'third':
 			first.setAttribute("class", "active");
 			third.setAttribute("class", "active");
