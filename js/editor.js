@@ -1,6 +1,7 @@
 window.onload = function(){
 	terrain = new Map();
 	terrain.getQueryOptions();
+	initOptions();
 	terrain.preloadTiles(function(){
 		terrain.generateTileCss();
 		terrain.init();
@@ -518,20 +519,20 @@ function Map(sizex, sizey) {
 	 * 		| 3 | 4 |
 	 *		---------
 	 */
-	this.mirrorMap = function(mirrorType) {
+	this.mirrorMap = function(mirrorType, reverse) {
 		var mapObject = map.mapToJson();
 		switch(mirrorType) {
-			case 1:
+			case 'first':
 				// mirror 1 to 2
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length / 2), "vertical");
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length / 2), "vertical", reverse);
 				// mirror 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal");
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal", reverse);
 				break;
-			case 3: // 1 + 2
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal");
+			case 'second': // 1 + 2
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal", reverse);
 				break;
-			case 4: // 1 + 3
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical");
+			case 'third': // 1 + 3
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical", reverse);
 				break;
 		}
 
@@ -540,13 +541,13 @@ function Map(sizex, sizey) {
 		map.import(base64);
 	}
 
-	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type) {
+	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
 		for (var i = y1; i < y2; i++){
 			for (var j = x1; j < x2; j++){
 				if (type == "horizontal") {
-					mapObject.map[mapObject.map.length - 1 - i][j] = mapObject.map[i][j];
+					mapObject.map[mapObject.map.length - 1 - i][reverse ? (x2 - 1 - j) : j] = mapObject.map[i][j];
 				} else {
-					mapObject.map[i][mapObject.map[0].length - 1 - j] = mapObject.map[i][j];
+					mapObject.map[reverse ? (y2 - 1 - i) : i][mapObject.map[0].length - 1 - j] = mapObject.map[i][j];
 				}
 			}
 		}

@@ -1,3 +1,107 @@
+function initOptions() {
+	var first = document.getElementById('first');
+	var second = document.getElementById('second');
+	var third = document.getElementById('third');
+	var fourth = document.getElementById('fourth');
+	var reverse = document.getElementById('reverse');
+
+	reverse.onchange = resetPreview;
+
+	first.onmouseover = mirrorTable;
+	second.onmouseover = mirrorTable;
+	third.onmouseover = mirrorTable;
+
+	first.onmouseout = resetPreview;
+	second.onmouseout = resetPreview;
+	third.onmouseout = resetPreview;
+
+	first.onclick = setActive;
+	second.onclick = setActive;
+	third.onclick = setActive;
+
+	active = "";
+}
+
+function mirrorMap() {
+	terrain.mirrorMap(active, !reverse.disabled ? reverse.checked : false);
+	toggleOptions(false);
+}
+
+function setActive() {
+	active = this.id;
+}
+
+function mirrorTable() {
+	var type = this.id;
+	resetMirror();
+	mirrorPreview(type);
+}
+
+function mirrorPreview(type) {
+	switch(type) {
+		case 'first':
+			first.setAttribute("class", "active");
+			second.innerHTML = '1';
+			second.setAttribute("class", "mirrorHorizontal");
+			third.innerHTML = '1';
+			third.setAttribute("class", "mirrorVertical");
+			fourth.innerHTML = '1';
+			fourth.setAttribute("class", "mirrorBoth");
+			reverse.disabled = "disabled";
+			break;
+		case 'second':
+			first.setAttribute("class", "active");
+			second.setAttribute("class", "active");
+			if (reverse.checked) {
+				third.innerHTML = '2';
+				third.setAttribute("class", "mirrorBoth");
+				fourth.innerHTML = '1';
+				fourth.setAttribute("class", "mirrorBoth");
+			} else {
+				third.innerHTML = '1';
+				third.setAttribute("class", "mirrorVertical");
+				fourth.innerHTML = '2';
+				fourth.setAttribute("class", "mirrorVertical");
+			}
+			break;
+		case 'third':
+			first.setAttribute("class", "active");
+			third.setAttribute("class", "active");
+			if (reverse.checked) {
+				second.innerHTML = '3';
+				second.setAttribute("class", "mirrorBoth");
+				fourth.innerHTML = '1';
+				fourth.setAttribute("class", "mirrorBoth");
+			} else {
+				second.innerHTML = '1';
+				second.setAttribute("class", "mirrorHorizontal");
+				fourth.innerHTML = '3';
+				fourth.setAttribute("class", "mirrorHorizontal");
+			}
+			break;
+	}
+}
+
+function resetPreview(){
+	resetMirror();
+	
+	if (active) {
+		mirrorPreview(active);
+	}
+}
+
+function resetMirror() {
+	reverse.disabled = "";
+
+	first.removeAttribute("class");
+	second.innerHTML = '2';
+	second.removeAttribute("class");
+	third.innerHTML = '3';
+	third.removeAttribute("class");
+	fourth.innerHTML = '4';
+	fourth.removeAttribute("class");
+}
+
 function newMap(sizex, sizey) {
 	sizex = parseInt(document.getElementById("width").value);
 	sizey = parseInt(document.getElementById("height").value);

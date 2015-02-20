@@ -46,6 +46,21 @@
 		<input type="button" id="saveOptions" onclick="saveOptions()" value="Save options" />
 		<input type="button" id="resetOptions" onclick="resetOptions()" value="Reset options" />
 	</fieldset>
+	<fieldset>
+		<legend>Mirror Map</legend>
+		<table id="mirrorMap" border="1" cellspacing="0" cellpadding="0">
+			<tr>
+				<td id="first">1</td><td id="second">2</td>
+			</tr>
+			<tr>
+				<td id="third">3</td><td id="fourth">4</td>
+			</tr>
+		</table>
+		<input id="reverse" type="checkbox" value="reverse" />
+		<label for="reverse">Reverse</label>
+		<a href="#" id="mirrorButton" onclick="mirrorMap()"><button>Mirror map</button></a>
+	</fieldset>
+
 	<input style="float: right" type="button" value="Close" onclick="toggleOptions(false)" />
 </div>
 </body>
