@@ -23,8 +23,11 @@ function initOptions() {
 }
 
 function mirrorMap() {
-	terrain.mirrorMap(active, !reverse.disabled ? reverse.checked : false);
-	toggleOptions(false);
+	var ok = confirm("This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?");
+	if (ok) {
+		terrain.mirrorMap(active, !reverse.disabled ? reverse.checked : false);
+		toggleOptions(false);
+	}
 }
 
 function setActive() {
