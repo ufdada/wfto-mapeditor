@@ -536,6 +536,8 @@ function Map(sizex, sizey) {
 				break;
 		}
 
+		console.log(mapObject);
+		
 		var str = JSON.stringify(mapObject);
 		var base64 = btoa(str);
 		map.import(base64);
@@ -545,9 +547,25 @@ function Map(sizex, sizey) {
 		for (var i = y1; i < y2; i++){
 			for (var j = x1; j < x2; j++){
 				if (type == "horizontal") {
-					mapObject.map[mapObject.map.length - 1 - i][reverse ? (x2 - 1 - j) : j] = mapObject.map[i][j];
+					// clone the mapobject cell
+					var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[i][j]));
+					// fix tileposition
+					var posy = mirrorPart['data-pos-y'];
+					if (posy) {
+						posy = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posy - 1;
+						mirrorPart['data-pos-y'] = posy;
+					}
+					mapObject.map[mapObject.map.length - 1 - i][reverse ? (x2 - 1 - j) : j] = mirrorPart;
 				} else {
-					mapObject.map[reverse ? (y2 - 1 - i) : i][mapObject.map[0].length - 1 - j] = mapObject.map[i][j];
+					// clone the mapobject cell
+					var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[i][j]));
+					// fix tileposition
+					var posx = mirrorPart['data-pos-x'];
+					if (posx) {
+						posx = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1;
+						mirrorPart['data-pos-x'] = posx;
+					}
+					mapObject.map[reverse ? (y2 - 1 - i) : i][mapObject.map[0].length - 1 - j] = mirrorPart;
 				}
 			}
 		}
