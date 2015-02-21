@@ -542,7 +542,7 @@ function Map(sizex, sizey) {
 	}
 
 	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
-		var obsoleteRooms = {};
+		var uncompleteRooms = {};
 		
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
@@ -551,12 +551,12 @@ function Map(sizex, sizey) {
 			if (!tileId) {
 				return;
 			}
-			var room = obsoleteRooms[tileId];
+			var room = uncompleteRooms[tileId];
 			if (!room) {
 				// it's not in the list
 				var sizex = tiles[mapObject.tiles[cell['tile']]].sizex;
 				var sizey = tiles[mapObject.tiles[cell['tile']]].sizey;	
-				obsoleteRooms[tileId] = {
+				uncompleteRooms[tileId] = {
 					"size": sizex * sizey,
 					"count": 1
 				};
@@ -564,7 +564,7 @@ function Map(sizex, sizey) {
 				room.count++;
 				if (room.count == room.size) {
 					// the room is complete
-					delete obsoleteRooms[tileId];
+					delete uncompleteRooms[tileId];
 				}
 			}
 		});
@@ -584,13 +584,13 @@ function Map(sizex, sizey) {
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
 			var newId = false;
 			
-			if (type == "horizontal" && tileIdHor && tileIdHor in obsoleteRooms) {
+			if (type == "horizontal" && tileIdHor && tileIdHor in uncompleteRooms) {
 				// an uncomplete room should not get mirrored, we keep the tiles
 				return;
-			} else if (type == "vertical" && tileIdVert && tileIdVert in obsoleteRooms){
+			} else if (type == "vertical" && tileIdVert && tileIdVert in uncompleteRooms){
 				// the same as above in vertical mirror
 				return;
-			} else if (tileIdMir && tileIdMir in obsoleteRooms) {
+			} else if (tileIdMir && tileIdMir in uncompleteRooms) {
 				// see above
 				return;
 			} else {
