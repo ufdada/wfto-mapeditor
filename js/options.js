@@ -33,7 +33,7 @@ function mirrorMap() {
 	}
 	var ok = confirm("This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?");
 	// we extend the map
-	if (!extend.disabled) {
+	if (!extend.disabled && extend.checked) {
 		switch(active) {
 			case 'first':
 				terrain.mapsizex *= 2;
