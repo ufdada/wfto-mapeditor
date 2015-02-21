@@ -553,6 +553,7 @@ function Map(sizex, sizey) {
 
 	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
 		var uncompleteRooms = {};
+		var copiedRooms = {};
 		
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
@@ -606,14 +607,24 @@ function Map(sizex, sizey) {
 				// see above
 				return;
 			} else {
-				// the room is overwritten
-				// delete mapObject.tileIds[type == "horizontal" ? tileIdHor : tileIdVert];
-				// newId = true;
+				if (tileIdMir) {
+					// room is mirrored, create a new id
+					var newId = copiedRooms[tileIdMir];
+					if (!newId) {
+						// as most of it happens nearly instantly, add a custom number to it
+						// otherwise the room ids aren´t unique anymore
+						newId = copiedRooms[tileIdMir] = new Date().getTime() + row * col;
+						mapObject.tileIds.push(newId);
+					}
+					var dataId = mapObject.tileIds.indexOf(newId);
+					mirrorPart["data-id"] = dataId;
+				}
 			}
 			
 			if (posx && posy) {
-				newPosx = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1;
-				newPosy = tiles[mapObject.tiles[mirrorPart['tile']]].sizey - posy - 1;
+				// parse it to string, otherwise the import fails
+				newPosx = (tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1).toString();
+				newPosy = (tiles[mapObject.tiles[mirrorPart['tile']]].sizey - posy - 1).toString();
 			}
 			
 			if (type == "horizontal") {
