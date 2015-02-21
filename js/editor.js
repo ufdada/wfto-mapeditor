@@ -535,8 +535,6 @@ function Map(sizex, sizey) {
 				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical", reverse);
 				break;
 		}
-
-		console.log(mapObject);
 		
 		var str = JSON.stringify(mapObject);
 		var base64 = btoa(str);
@@ -544,29 +542,85 @@ function Map(sizex, sizey) {
 	}
 
 	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
-		for (var i = y1; i < y2; i++){
-			for (var j = x1; j < x2; j++){
-				if (type == "horizontal") {
-					// clone the mapobject cell
-					var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[i][j]));
-					// fix tileposition
-					var posy = mirrorPart['data-pos-y'];
-					if (posy) {
-						posy = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posy - 1;
-						mirrorPart['data-pos-y'] = posy;
-					}
-					mapObject.map[mapObject.map.length - 1 - i][reverse ? (x2 - 1 - j) : j] = mirrorPart;
-				} else {
-					// clone the mapobject cell
-					var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[i][j]));
-					// fix tileposition
-					var posx = mirrorPart['data-pos-x'];
-					if (posx) {
-						posx = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1;
-						mirrorPart['data-pos-x'] = posx;
-					}
-					mapObject.map[reverse ? (y2 - 1 - i) : i][mapObject.map[0].length - 1 - j] = mirrorPart;
+		var obsoleteRooms = {};
+		
+		// find uncomplete rooms (going through the mirror part)
+		map.forEachCell(x1, x2, y1, y2, function(col, row) {
+			var cell = mapObject.map[row][col];
+			var tileId = mapObject.tileIds[cell["data-id"]];
+			if (!tileId) {
+				return;
+			}
+			var room = obsoleteRooms[tileId];
+			if (!room) {
+				// it's not in the list
+				var sizex = tiles[mapObject.tiles[cell['tile']]].sizex;
+				var sizey = tiles[mapObject.tiles[cell['tile']]].sizey;	
+				obsoleteRooms[tileId] = {
+					"size": sizex * sizey,
+					"count": 1
+				};
+			} else {
+				room.count++;
+				if (room.count == room.size) {
+					// the room is complete
+					delete obsoleteRooms[tileId];
 				}
+			}
+		});
+		
+		// mirror the part
+		map.forEachCell(x1, x2, y1, y2, function(col, row) {
+			// clone the mapobject cell
+			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
+			var posy = mirrorPart['data-pos-y'];
+			var posx = mirrorPart['data-pos-x'];
+			var newCol = mapObject.map[0].length - 1 - col;
+			var newHCol = reverse ? (x2 - 1 - col) : col;
+			var newRow = mapObject.map.length - 1 - row;
+			var newVRow = reverse ? (y2 - 1 - row) : row;
+			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
+			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
+			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
+			var newId = false;
+			
+			if (type == "horizontal" && tileIdHor && tileIdHor in obsoleteRooms) {
+				// an uncomplete room should not get mirrored, we keep the tiles
+				return;
+			} else if (type == "vertical" && tileIdVert && tileIdVert in obsoleteRooms){
+				// the same as above in vertical mirror
+				return;
+			} else if (tileIdMir && tileIdMir in obsoleteRooms) {
+				// see above
+				return;
+			} else {
+				// the room is overwritten
+				// delete mapObject.tileIds[type == "horizontal" ? tileIdHor : tileIdVert];
+				// newId = true;
+			}
+			
+			if (type == "horizontal") {
+				// fix tileposition
+				if (posy) {
+					posy = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posy - 1;
+					mirrorPart['data-pos-y'] = posy;
+				}
+				mapObject.map[newRow][newHCol] = mirrorPart;
+			} else {
+				// fix tileposition
+				if (posx) {
+					posx = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1;
+					mirrorPart['data-pos-x'] = posx;
+				}
+				mapObject.map[newVRow][newCol] = mirrorPart;
+			}
+		});
+	}
+	
+	this.forEachCell = function(x1, x2, y1, y2, callback) {
+		for (var row = y1; row < y2; row++){
+			for (var col = x1; col < x2; col++){
+				callback.call(this, col, row);
 			}
 		}
 	}
