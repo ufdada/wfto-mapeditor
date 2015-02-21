@@ -561,7 +561,7 @@ function Map(sizex, sizey) {
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			var cell = mapObject.map[row][col];
-			var tile = mapObject.tiles[cell["tile"]];
+			var tile = mapObject.tiles[cell["tile"]] || "";
 			var ptile = tile.search(playerSearch);
 			
 			if (ptile != -1) {
@@ -608,7 +608,7 @@ function Map(sizex, sizey) {
 			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
 			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
-			var tileName = mapObject.tiles[mirrorPart['tile']];
+			var tileName = mapObject.tiles[mirrorPart['tile']] || "";
 			
 			if (type == "horizontal" && tileIdHor && tileIdHor in uncompleteRooms) {
 				// an uncomplete room should not get mirrored, we keep the tiles

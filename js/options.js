@@ -6,6 +6,9 @@
 	var reverse = document.getElementById('reverse');
 	var extend = document.getElementById('extend');
 
+	reverse.checked = "";
+	extend.checked = "";
+	
 	reverse.onchange = resetPreview;
 
 	first.onmouseover = mirrorTable;
