@@ -554,10 +554,23 @@ function Map(sizex, sizey) {
 	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
 		var uncompleteRooms = {};
 		var copiedRooms = {};
+		var players = [1, 2, 3, 4];
+		var playerSearch = /_p[1-8]/g;
+		var mirrorPlayer = {};
 		
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			var cell = mapObject.map[row][col];
+			var tile = mapObject.tiles[cell["tile"]];
+			var ptile = tile.search(playerSearch);
+			
+			if (ptile != -1) {
+				// We got player tiles, remove these from the potential list
+				var pnum = tile.substr(ptile + 2);
+				var pindex = players.indexOf(parseInt(pnum));
+				pindex != -1 && players.splice(pindex, 1);
+			}
+			
 			var tileId = mapObject.tileIds[cell["data-id"]];
 			if (!tileId) {
 				return;
@@ -565,8 +578,8 @@ function Map(sizex, sizey) {
 			var room = uncompleteRooms[tileId];
 			if (!room) {
 				// it's not in the list
-				var sizex = tiles[mapObject.tiles[cell['tile']]].sizex;
-				var sizey = tiles[mapObject.tiles[cell['tile']]].sizey;	
+				var sizex = tiles[tile].sizex;
+				var sizey = tiles[tile].sizey;	
 				uncompleteRooms[tileId] = {
 					"size": sizex * sizey,
 					"count": 1
@@ -595,7 +608,7 @@ function Map(sizex, sizey) {
 			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
 			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
-			var newId = false;
+			var tileName = mapObject.tiles[mirrorPart['tile']];
 			
 			if (type == "horizontal" && tileIdHor && tileIdHor in uncompleteRooms) {
 				// an uncomplete room should not get mirrored, we keep the tiles
@@ -613,18 +626,40 @@ function Map(sizex, sizey) {
 					if (!newId) {
 						// as most of it happens nearly instantly, add a custom number to it
 						// otherwise the room ids aren´t unique anymore
-						newId = copiedRooms[tileIdMir] = new Date().getTime() + row * col;
-						mapObject.tileIds.push(newId);
+						newId = copiedRooms[tileIdMir] = new Date().getTime() - parseInt(Math.random() * 3000000);
+						mapObject.tileIds.push(newId.toString());
 					}
-					var dataId = mapObject.tileIds.indexOf(newId);
+					var dataId = mapObject.tileIds.indexOf(newId.toString());
 					mirrorPart["data-id"] = dataId;
+				}
+				
+				// is it a player tile?
+				if (tileName.search(playerSearch) != -1) {
+					// lets replace all player tiles
+					var playerNumber = tileName.substr(tileName.search(playerSearch) + 2);
+					var player = mirrorPlayer[playerNumber];
+					if (!player) {
+						player = mirrorPlayer[playerNumber] = players[0];
+						// remove first entry
+						players.splice(0, 1);
+					}
+					if (player) {
+						var tileName = tileName.replace(playerSearch, "_p" + player);
+						var tileId = mapObject.tiles.indexOf(tileName);
+						if (tileId == -1) {
+							mapObject.tiles.push(tileName);
+							tileId = mapObject.tiles.length - 1;
+						}
+						mirrorPart['tile'] = tileId;
+					}
+					// if the player maximum is reached, just copy them. The user has to fix it by himself
 				}
 			}
 			
 			if (posx && posy) {
 				// parse it to string, otherwise the import fails
-				newPosx = (tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1).toString();
-				newPosy = (tiles[mapObject.tiles[mirrorPart['tile']]].sizey - posy - 1).toString();
+				newPosx = (tiles[tileName].sizex - posx - 1).toString();
+				newPosy = (tiles[tileName].sizey - posy - 1).toString();
 			}
 			
 			if (type == "horizontal") {
