@@ -56,11 +56,15 @@
 				<td id="third">3</td><td id="fourth">4</td>
 			</tr>
 		</table>
-		<input id="reverse" type="checkbox" value="reverse" />
-		<label for="reverse">Reverse</label>
-		<input id="extend" type="checkbox" value="extend" />
-		<label for="extend">Extend Map</label>
-		<a href="#" id="mirrorButton" onclick="mirrorMap()"><button>Mirror map</button></a>
+		<div style="display: inline-block">
+			<input id="reverse" type="checkbox" value="reverse" />
+			<label for="reverse">Reverse</label><br />
+			<input id="extend" type="checkbox" value="extend" />
+			<label for="extend">Extend Map</label>
+		</div>
+		<div style="display: inline-block">
+			<a href="#" id="mirrorButton" onclick="mirrorMap()"><button>Mirror map</button></a>
+		</div>
 	</fieldset>
 
 	<input style="float: right" type="button" value="Close" onclick="toggleOptions(false)" />
