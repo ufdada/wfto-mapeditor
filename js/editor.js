@@ -186,7 +186,7 @@ function Map(sizex, sizey) {
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
 		
-		map.setHtml("mapsize", map.mapsizey + "x" + map.mapsizex);
+		map.setHtml("mapsize", map.mapsizex + "x" + map.mapsizey);
 		
 		for (var i = 0; i < map.mapsizey + (map.borderSize * 2); i++) {		
 			var tr = document.createElement("tr");
