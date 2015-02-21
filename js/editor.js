@@ -575,7 +575,9 @@ function Map(sizex, sizey) {
 			// clone the mapobject cell
 			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
 			var posy = mirrorPart['data-pos-y'];
+			var newPosy = 0;
 			var posx = mirrorPart['data-pos-x'];
+			var newPosx = 0;
 			var newCol = mapObject.map[0].length - 1 - col;
 			var newHCol = reverse ? (x2 - 1 - col) : col;
 			var newRow = mapObject.map.length - 1 - row;
@@ -600,18 +602,27 @@ function Map(sizex, sizey) {
 				// newId = true;
 			}
 			
+			if (posx && posy) {
+				newPosx = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1;
+				newPosy = tiles[mapObject.tiles[mirrorPart['tile']]].sizey - posy - 1;
+			}
+			
 			if (type == "horizontal") {
 				// fix tileposition
+				if (reverse && posx){
+					mirrorPart['data-pos-x'] = newPosx;
+				}
 				if (posy) {
-					posy = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posy - 1;
-					mirrorPart['data-pos-y'] = posy;
+					mirrorPart['data-pos-y'] = newPosy;
 				}
 				mapObject.map[newRow][newHCol] = mirrorPart;
 			} else {
 				// fix tileposition
+				if (reverse && posy){
+					mirrorPart['data-pos-y'] = newPosy;
+				}
 				if (posx) {
-					posx = tiles[mapObject.tiles[mirrorPart['tile']]].sizex - posx - 1;
-					mirrorPart['data-pos-x'] = posx;
+					mirrorPart['data-pos-x'] = newPosx;
 				}
 				mapObject.map[newVRow][newCol] = mirrorPart;
 			}
