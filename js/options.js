@@ -34,7 +34,7 @@ function mirrorMap() {
 }
 
 function setActive() {
-	active = this.id == "fourth" ? "third" : this.id;
+	active = this.id;
 }
 
 function mirrorTable() {
@@ -66,8 +66,8 @@ function mirrorPreview(type) {
 				third.parentNode.setAttribute("class", "mirrorVertical");
 			}
 			break;
-		default:
 		case 'third':
+		default:
 			first.setAttribute("class", "active");
 			third.setAttribute("class", "active");
 			if (reverse.checked) {

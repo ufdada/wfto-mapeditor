@@ -523,15 +523,16 @@ function Map(sizex, sizey) {
 		var mapObject = map.mapToJson();
 		switch(mirrorType) {
 			case 'first':
-				// mirror 1 to 2
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length / 2), "vertical", reverse);
+				// mirror 1 & 3 to 2 & 4
+				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical", reverse);
 				// mirror 1 & 2 to 3 & 4
 				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal", reverse);
 				break;
-			case 'second': // 1 + 2
+			case 'second': // 1 & 2 to 3 & 4
 				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal", reverse);
 				break;
-			case 'third': // 1 + 3
+			case 'third': // 1 & 3 to 2 & 4
+			default:
 				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical", reverse);
 				break;
 		}
