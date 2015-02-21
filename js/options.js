@@ -1,9 +1,10 @@
-function initOptions() {
+ï»¿function initOptions() {
 	var first = document.getElementById('first');
 	var second = document.getElementById('second');
 	var third = document.getElementById('third');
 	var fourth = document.getElementById('fourth');
 	var reverse = document.getElementById('reverse');
+	var extend = document.getElementById('extend');
 
 	reverse.onchange = resetPreview;
 
@@ -26,7 +27,27 @@ function initOptions() {
 }
 
 function mirrorMap() {
+	if (!active) {
+		alert("Please choose a mirror type!");
+		return;
+	}
 	var ok = confirm("This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?");
+	// we extend the map
+	if (!extend.disabled) {
+		switch(active) {
+			case 'first':
+				terrain.mapsizex *= 2;
+				terrain.mapsizey *= 2;
+				break;
+			case 'second':
+				terrain.mapsizey *= 2;
+				break;
+			case 'third':
+			default:
+				terrain.mapsizex *= 2;
+				break;
+		}
+	}
 	if (ok) {
 		terrain.mirrorMap(active, !reverse.disabled ? reverse.checked : false);
 		toggleOptions(false);
@@ -54,6 +75,9 @@ function mirrorPreview(type) {
 			fourth.innerHTML = '1';
 			fourth.setAttribute("class", "mirrorBoth");
 			reverse.disabled = "disabled";
+			if (terrain.mapsizex * 2 > terrain.maxsize || terrain.mapsizey * 2 > terrain.maxsize) {
+				extend.disabled = "disabled";
+			}
 			break;
 		case 'second':
 			first.setAttribute("class", "active");
@@ -64,6 +88,9 @@ function mirrorPreview(type) {
 				third.parentNode.setAttribute("class", "mirrorBoth");
 			} else {
 				third.parentNode.setAttribute("class", "mirrorVertical");
+			}
+			if (terrain.mapsizey * 2 > terrain.maxsize) {
+				extend.disabled = "disabled";
 			}
 			break;
 		case 'third':
@@ -81,6 +108,9 @@ function mirrorPreview(type) {
 				fourth.innerHTML = '3';
 				fourth.setAttribute("class", "mirrorHorizontal");
 			}
+			if (terrain.mapsizex * 2 > terrain.maxsize) {
+				extend.disabled = "disabled";
+			}
 			break;
 	}
 }
@@ -95,6 +125,7 @@ function resetPreview(){
 
 function resetMirror() {
 	reverse.disabled = "";
+	extend.disabled = "";
 
 	first.removeAttribute("class");
 	second.innerHTML = '2';
@@ -111,11 +142,11 @@ function newMap(sizex, sizey) {
 	sizex = parseInt(document.getElementById("width").value);
 	sizey = parseInt(document.getElementById("height").value);
 	if (!isNaN(sizex) && !isNaN(sizey)) {
-		if (sizex >= 5 && sizey >= 5 && sizex <= 130 && sizey <= 130) {
+		if (sizex >= terrain.minsize && sizey >= terrain.minsize && sizex <= terrain.maxsize && sizey <= terrain.maxsize) {
 			terrain = new Map(sizex, sizey);
 			terrain.init();
 		} else {
-			alert("A valid map has to at least 5 by 5 and 130 by 130 max");
+			alert("A valid map has to at least " + terrain.minsize + " by " + terrain.minsize + " and " + terrain.maxsize + " by " + terrain.maxsize + " max");
 			return;
 		}
 	} else {
@@ -168,7 +199,7 @@ function importMap() {
 			return;
 		}
 	} else {
-		alert('Your browser isn´t supported!');
+		alert('Your browser isn`t supported!');
 		return;
 	}
 	toggleOptions(false);

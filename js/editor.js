@@ -1,4 +1,4 @@
-window.onload = function(){
+ï»¿window.onload = function(){
 	terrain = new Map();
 	terrain.getQueryOptions();
 	initOptions();
@@ -14,6 +14,8 @@ function Map(sizex, sizey) {
 	this.borderTile = 'impenetrable';
 	this.borderSize = 1;
 	this.currentTile = 'dirt';
+	this.minsize = 5;
+	this.maxsize = 130;
 	this.mapsizex = sizex || 20;
 	this.mapsizey = sizey || 20;
 	this.tiles = {};
@@ -421,39 +423,43 @@ function Map(sizex, sizey) {
 			map: []
 		}
 		
-		for (var i = map.borderSize; i < table.rows.length - map.borderSize; i++) {
+		for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
 
 			var tableRow = table.rows[i];
 			var colData = [];
 
-			for (var j = map.borderSize; j < tableRow.cells.length - map.borderSize; j++) {
+			for (var j = map.borderSize; j < map.mapsizex + map.borderSize; j++) {
 				var col = {};
-				var tile = tableRow.cells[j];
-				// make sure that non temporäry tile is currently set
-				map.resetTile(tile);
-				
-				var id = tile.getAttribute("data-id");
-				var className = tile.getAttribute("class");
-				var tileTypeId = mapData.tiles.indexOf(className);
-				if (tileTypeId == -1) {
-					// save tilename only once and make a reference
-					mapData.tiles.push(className);
-					tileTypeId = mapData.tiles.length - 1;
-				}
-				
-				if (id) {
-					// save unique room identifier and make a reference
-					var tileId = mapData.tileIds.indexOf(id);
-					if (tileId == -1) {
-						mapData.tileIds.push(id);
-						tileId = mapData.tileIds.length - 1;
+				var tile = tableRow && tableRow.cells[j] || null;
+				// if the counter exeeds the count, we just add empty cells
+				// handy for the extend feature
+				if (tile) {
+					// make sure that non temporary tile is currently set
+					map.resetTile(tile);
+					
+					var id = tile.getAttribute("data-id");
+					var className = tile.getAttribute("class");
+					var tileTypeId = mapData.tiles.indexOf(className);
+					if (tileTypeId == -1) {
+						// save tilename only once and make a reference
+						mapData.tiles.push(className);
+						tileTypeId = mapData.tiles.length - 1;
 					}
-					col["data-id"] = tileId;
-					col["data-pos-x"] = tile.getAttribute("data-pos-x");
-					col["data-pos-y"] = tile.getAttribute("data-pos-y");
-				}
+					
+					if (id) {
+						// save unique room identifier and make a reference
+						var tileId = mapData.tileIds.indexOf(id);
+						if (tileId == -1) {
+							mapData.tileIds.push(id);
+							tileId = mapData.tileIds.length - 1;
+						}
+						col["data-id"] = tileId;
+						col["data-pos-x"] = tile.getAttribute("data-pos-x");
+						col["data-pos-y"] = tile.getAttribute("data-pos-y");
+					}
 				
-				col["tile"] = tileTypeId;
+					col["tile"] = tileTypeId;
+				}
 				
 				colData.push(col);
 			}
@@ -521,19 +527,22 @@ function Map(sizex, sizey) {
 	 */
 	this.mirrorMap = function(mirrorType, reverse) {
 		var mapObject = map.mapToJson();
+		var cols = mapObject.map[0].length;
+		var rows = mapObject.map.length;
+		
 		switch(mirrorType) {
 			case 'first':
 				// mirror 1 & 3 to 2 & 4
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical", reverse);
+				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
 				// mirror 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal", reverse);
+				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
 				break;
 			case 'second': // 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length), 0, parseInt(mapObject.map.length / 2), "horizontal", reverse);
+				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
 				break;
 			case 'third': // 1 & 3 to 2 & 4
 			default:
-				map.mirrorPart(mapObject, 0, parseInt(mapObject.map[0].length / 2), 0, parseInt(mapObject.map.length), "vertical", reverse);
+				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
 				break;
 		}
 		
@@ -578,9 +587,9 @@ function Map(sizex, sizey) {
 			var newPosy = 0;
 			var posx = mirrorPart['data-pos-x'];
 			var newPosx = 0;
-			var newCol = mapObject.map[0].length - 1 - col;
+			var newCol = map.mapsizex - 1 - col;
 			var newHCol = reverse ? (x2 - 1 - col) : col;
-			var newRow = mapObject.map.length - 1 - row;
+			var newRow = map.mapsizey - 1 - row;
 			var newVRow = reverse ? (y2 - 1 - row) : row;
 			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
 			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
