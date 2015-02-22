@@ -267,8 +267,8 @@ function Map(sizex, sizey) {
 		}
 	}
 
-	this.import = function(base64) {
-		var mapObject = JSON.parse(atob(base64));
+	this.import = function(mapString) {
+		var mapObject = JSON.parse(mapString);
 		if (!mapObject || !mapObject.map) {
 			throw new Error("Not a valid Map!");
 		}
@@ -287,8 +287,7 @@ function Map(sizex, sizey) {
 	this.export = function(author) {
 		var json = map.mapToJson(author);
 		var str = JSON.stringify(json);
-		base64 = btoa(str);
-		return base64;
+		return str;
 	}
 
 	this.enableDrag = function(evt) {
@@ -563,8 +562,7 @@ function Map(sizex, sizey) {
 		}
 		
 		var str = JSON.stringify(mapObject);
-		var base64 = btoa(str);
-		map.import(base64);
+		map.import(str);
 	}
 
 	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {

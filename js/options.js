@@ -162,7 +162,8 @@ function newMap(sizex, sizey) {
 function exportMap() {
 	// Maybe later
 	var author = ''; //document.getElementById("author").value;
-	var data = terrain.export(author);
+	// export as base64
+	var data = btoa(terrain.export(author));
 	var mapName = "Map.wfto";
 
 	// Use the native blob constructor
@@ -195,7 +196,7 @@ function importMap() {
 			
 			reader.onload = function(e) {
 				// map geladen
-				terrain.import(this.result);
+				terrain.import(atob(this.result));
 			}
 		} else {
 			alert("Please select a valid map file");
