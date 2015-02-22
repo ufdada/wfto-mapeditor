@@ -492,10 +492,14 @@ function Map(sizex, sizey) {
 
 	this.setTile = function(tile, currentTile, row, col) {
 		var roomTile = tiles[currentTile];
-		tile.setAttribute("class", currentTile);
-		tile.style.backgroundSize = parseInt(map.tileSize * roomTile.sizex) + "px " + parseInt(map.tileSize * roomTile.sizey)+ "px ";
-		if (!isNaN(parseInt(row)) && !isNaN(parseInt(col))) {
-			map.setTilePosition(tile, parseInt(-col * map.tileSize) + "px " + parseInt(-row * map.tileSize) + "px");
+		if (roomTile) {
+			tile.setAttribute("class", currentTile);
+			tile.style.backgroundSize = parseInt(map.tileSize * roomTile.sizex) + "px " + parseInt(map.tileSize * roomTile.sizey)+ "px ";
+			if (!isNaN(parseInt(row)) && !isNaN(parseInt(col))) {
+				map.setTilePosition(tile, parseInt(-col * map.tileSize) + "px " + parseInt(-row * map.tileSize) + "px");
+			}
+		} else {
+			console.error("No tile found for "+ currentTile);
 		}
 	}
 
