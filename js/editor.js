@@ -32,6 +32,11 @@ function Map(sizex, sizey) {
 	this.tileModeDefault = 'normal';
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
+	this.mouseButton = {
+		left: 0,
+		middle: 1,
+		right: 2
+	};
 	this.options = {
 		"tileModes": {
 			type: "select",
@@ -286,9 +291,11 @@ function Map(sizex, sizey) {
 		return base64;
 	}
 
-	this.enableDrag = function() {
-		map.dragEnabled = true;
-		map.insertTile(this, false, false);
+	this.enableDrag = function(evt) {
+		if (evt.button == map.mouseButton.left) {
+			map.dragEnabled = true;
+			map.insertTile(this, false, false);
+		}
 		return false;
 	}
 
@@ -348,10 +355,12 @@ function Map(sizex, sizey) {
 		}
 	}
 
-	this.setRoom = function() {
+	this.setRoom = function(evt) {
 		// helper for selenium
 		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + this.id + "</td>\n\t<td></td>\n</tr>");
-		map.insertTile(this, false, false);
+		if (evt.button == map.mouseButton.left) {
+			map.insertTile(this, false, false);
+		}
 	}
 
 	this.destroyRoom = function(id) {
