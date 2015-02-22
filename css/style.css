@@ -27,6 +27,7 @@ td:hover {
 	float: left;
 	position: fixed;
 	margin: 10px;
+	z-index: 20;
 }
 
 #toolBox p {
