@@ -59,6 +59,11 @@ var tiles = {
 		sizey: 1,
 		color: "aqua"
 	},
+	'sand': {
+		sizex: 1,
+		sizey: 1,
+		color: "yellow"
+	},
 	'lava': {
 		sizex: 1,
 		sizey: 1,
@@ -83,6 +88,21 @@ var tiles = {
 		sizex: 1,
 		sizey: 1,
 		color: "firebrick"
+	},
+	'chasm': {
+		sizex: 1,
+		sizey: 1,
+		color: "black"
+	},
+	'wood_bridge': {
+		sizex: 1,
+		sizey: 1,
+		color: "#ccc"
+	},
+	'stone_bridge': {
+		sizex: 1,
+		sizey: 1,
+		color: "#333"
 	},
 	'gateway': {
 		sizex: 3,
