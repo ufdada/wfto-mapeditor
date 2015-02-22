@@ -346,6 +346,8 @@ function Map(sizex, sizey) {
 	}
 
 	this.setRoom = function() {
+		// helper for selenium
+		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + this.id + "</td>\n\t<td></td>\n</tr>");
 		map.insertTile(this, false, false);
 	}
 
@@ -504,6 +506,8 @@ function Map(sizex, sizey) {
 	}
 
 	this.setCurrentTile = function(roomTile) {
+		// helper for selenium
+		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + roomTile + "</td>\n\t<td></td>\n</tr>");
 		map.currentTile = roomTile;
 	}
 	
