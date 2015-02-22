@@ -107,7 +107,7 @@ function Map(sizex, sizey) {
 					var css = ' { background-color: ' + tiles[item].color + '; }\n';
 					break;
 				default:
-					var css = ' { background-image: url("' + map.assetDir + item + '.png"); }\n';
+					var css = ' { background-image: url("img/' + map.assetDir  + "/" + map.tileMode + "/" + item + '.png"); }\n';
 					break;
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
@@ -145,7 +145,7 @@ function Map(sizex, sizey) {
 		
 		for (var i=0; i< images.length; i++){
 			image[i] = new Image();
-			image[i].src = map.assetDir + images[i] + '.png';
+			image[i].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
 			image[i].onload=function(){
 				imageLoaded();
 			}
