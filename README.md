@@ -21,6 +21,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 ### Upcoming Features:
 - [ ] Resizing of current Map
 - [ ] Rotate Mirror 1 Feature
+- [ ] Undo/Redo
 
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)
