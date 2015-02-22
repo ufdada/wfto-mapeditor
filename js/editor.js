@@ -1,6 +1,7 @@
-window.onload = function(){
+﻿window.onload = function(){
 	terrain = new Map();
 	terrain.getQueryOptions();
+	initOptions();
 	terrain.preloadTiles(function(){
 		terrain.generateTileCss();
 		terrain.init();
@@ -13,6 +14,8 @@ function Map(sizex, sizey) {
 	this.borderTile = 'impenetrable';
 	this.borderSize = 1;
 	this.currentTile = 'dirt';
+	this.minsize = 5;
+	this.maxsize = 130;
 	this.mapsizex = sizex || 20;
 	this.mapsizey = sizey || 20;
 	this.tiles = {};
@@ -343,6 +346,8 @@ function Map(sizex, sizey) {
 	}
 
 	this.setRoom = function() {
+		// helper for selenium
+		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + this.id + "</td>\n\t<td></td>\n</tr>");
 		map.insertTile(this, false, false);
 	}
 
@@ -412,7 +417,7 @@ function Map(sizex, sizey) {
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
 		var mapData = {
-			version: "1.0",
+			version: "1.1",
 			author: author || "",
 			border: map.borderSize,
 			tiles: [],
@@ -420,39 +425,43 @@ function Map(sizex, sizey) {
 			map: []
 		}
 		
-		for (var i = map.borderSize; i < table.rows.length - map.borderSize; i++) {
+		for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
 
 			var tableRow = table.rows[i];
 			var colData = [];
 
-			for (var j = map.borderSize; j < tableRow.cells.length - map.borderSize; j++) {
+			for (var j = map.borderSize; j < map.mapsizex + map.borderSize; j++) {
 				var col = {};
-				var tile = tableRow.cells[j];
-				// make sure that non tempor�ry tile is currently set
-				map.resetTile(tile);
-				
-				var id = tile.getAttribute("data-id");
-				var className = tile.getAttribute("class");
-				var tileTypeId = mapData.tiles.indexOf(className);
-				if (tileTypeId == -1) {
-					// save tilename only once and make a reference
-					mapData.tiles.push(className);
-					tileTypeId = mapData.tiles.length - 1;
-				}
-				
-				if (id) {
-					// save unique room identifier and make a reference
-					var tileId = mapData.tileIds.indexOf(id);
-					if (tileId == -1) {
-						mapData.tileIds.push(id);
-						tileId = mapData.tileIds.length - 1;
+				var tile = tableRow && tableRow.cells[j] || null;
+				// if the counter exeeds the count, we just add empty cells
+				// handy for the extend feature
+				if (tile) {
+					// make sure that non temporary tile is currently set
+					map.resetTile(tile);
+					
+					var id = tile.getAttribute("data-id");
+					var className = tile.getAttribute("class");
+					var tileTypeId = mapData.tiles.indexOf(className);
+					if (tileTypeId == -1) {
+						// save tilename only once and make a reference
+						mapData.tiles.push(className);
+						tileTypeId = mapData.tiles.length - 1;
 					}
-					col["data-id"] = tileId;
-					col["data-pos-x"] = tile.getAttribute("data-pos-x");
-					col["data-pos-y"] = tile.getAttribute("data-pos-y");
-				}
+					
+					if (id) {
+						// save unique room identifier and make a reference
+						var tileId = mapData.tileIds.indexOf(id);
+						if (tileId == -1) {
+							mapData.tileIds.push(id);
+							tileId = mapData.tileIds.length - 1;
+						}
+						col["data-id"] = tileId;
+						col["data-pos-x"] = tile.getAttribute("data-pos-x");
+						col["data-pos-y"] = tile.getAttribute("data-pos-y");
+					}
 				
-				col["tile"] = tileTypeId;
+					col["tile"] = tileTypeId;
+				}
 				
 				colData.push(col);
 			}
@@ -497,6 +506,8 @@ function Map(sizex, sizey) {
 	}
 
 	this.setCurrentTile = function(roomTile) {
+		// helper for selenium
+		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + roomTile + "</td>\n\t<td></td>\n</tr>");
 		map.currentTile = roomTile;
 	}
 	
@@ -506,5 +517,182 @@ function Map(sizex, sizey) {
 	
 	this.hideElement = function(id) {
 		document.getElementById(id).style.display = "none";	
+	}
+
+	/**
+	 * Mirrors a part of the map to get a better
+	 * @param mirrorType determines how the map should be mirrored
+	 *					 It's the sum of the cellvalues in the option menu
+	 * 		---------
+	 * 		| 1 | 2 | 
+	 * 		---------
+	 * 		| 3 | 4 |
+	 *		---------
+	 */
+	this.mirrorMap = function(mirrorType, reverse) {
+		var mapObject = map.mapToJson();
+		var cols = mapObject.map[0].length;
+		var rows = mapObject.map.length;
+		
+		switch(mirrorType) {
+			case 'first':
+				// mirror 1 & 3 to 2 & 4
+				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
+				// mirror 1 & 2 to 3 & 4
+				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
+				break;
+			case 'second': // 1 & 2 to 3 & 4
+				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
+				break;
+			case 'third': // 1 & 3 to 2 & 4
+			default:
+				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
+				break;
+		}
+		
+		var str = JSON.stringify(mapObject);
+		var base64 = btoa(str);
+		map.import(base64);
+	}
+
+	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
+		var uncompleteRooms = {};
+		var copiedRooms = {};
+		var players = [1, 2, 3, 4];
+		var playerSearch = /_p[1-8]/g;
+		var mirrorPlayer = {};
+		
+		// find uncomplete rooms (going through the mirror part)
+		map.forEachCell(x1, x2, y1, y2, function(col, row) {
+			var cell = mapObject.map[row][col];
+			var tile = mapObject.tiles[cell["tile"]] || "";
+			var ptile = tile.search(playerSearch);
+			
+			if (ptile != -1) {
+				// We got player tiles, remove these from the potential list
+				var pnum = tile.substr(ptile + 2);
+				var pindex = players.indexOf(parseInt(pnum));
+				pindex != -1 && players.splice(pindex, 1);
+			}
+			
+			var tileId = mapObject.tileIds[cell["data-id"]];
+			if (!tileId) {
+				return;
+			}
+			var room = uncompleteRooms[tileId];
+			if (!room) {
+				// it's not in the list
+				var sizex = tiles[tile].sizex;
+				var sizey = tiles[tile].sizey;	
+				uncompleteRooms[tileId] = {
+					"size": sizex * sizey,
+					"count": 1
+				};
+			} else {
+				room.count++;
+				if (room.count == room.size) {
+					// the room is complete
+					delete uncompleteRooms[tileId];
+				}
+			}
+		});
+		
+		// mirror the part
+		map.forEachCell(x1, x2, y1, y2, function(col, row) {
+			// clone the mapobject cell
+			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
+			var posy = mirrorPart['data-pos-y'];
+			var newPosy = 0;
+			var posx = mirrorPart['data-pos-x'];
+			var newPosx = 0;
+			var newCol = map.mapsizex - 1 - col;
+			var newHCol = reverse ? (x2 - 1 - col) : col;
+			var newRow = map.mapsizey - 1 - row;
+			var newVRow = reverse ? (y2 - 1 - row) : row;
+			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
+			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
+			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
+			var tileName = mapObject.tiles[mirrorPart['tile']] || "";
+			
+			if (type == "horizontal" && tileIdHor && tileIdHor in uncompleteRooms) {
+				// an uncomplete room should not get mirrored, we keep the tiles
+				return;
+			} else if (type == "vertical" && tileIdVert && tileIdVert in uncompleteRooms){
+				// the same as above in vertical mirror
+				return;
+			} else if (tileIdMir && tileIdMir in uncompleteRooms) {
+				// see above
+				return;
+			} else {
+				if (tileIdMir) {
+					// room is mirrored, create a new id
+					var newId = copiedRooms[tileIdMir];
+					if (!newId) {
+						// as most of it happens nearly instantly, add a custom number to it
+						// otherwise the room ids aren´t unique anymore
+						newId = copiedRooms[tileIdMir] = new Date().getTime() - parseInt(Math.random() * 3000000);
+						mapObject.tileIds.push(newId.toString());
+					}
+					var dataId = mapObject.tileIds.indexOf(newId.toString());
+					mirrorPart["data-id"] = dataId;
+				}
+				
+				// is it a player tile?
+				if (tileName.search(playerSearch) != -1) {
+					// lets replace all player tiles
+					var playerNumber = tileName.substr(tileName.search(playerSearch) + 2);
+					var player = mirrorPlayer[playerNumber];
+					if (!player) {
+						player = mirrorPlayer[playerNumber] = players[0];
+						// remove first entry
+						players.splice(0, 1);
+					}
+					if (player) {
+						var tileName = tileName.replace(playerSearch, "_p" + player);
+						var tileId = mapObject.tiles.indexOf(tileName);
+						if (tileId == -1) {
+							mapObject.tiles.push(tileName);
+							tileId = mapObject.tiles.length - 1;
+						}
+						mirrorPart['tile'] = tileId;
+					}
+					// if the player maximum is reached, just copy them. The user has to fix it by himself
+				}
+			}
+			
+			if (posx && posy) {
+				// parse it to string, otherwise the import fails
+				newPosx = (tiles[tileName].sizex - posx - 1).toString();
+				newPosy = (tiles[tileName].sizey - posy - 1).toString();
+			}
+			
+			if (type == "horizontal") {
+				// fix tileposition
+				if (reverse && posx){
+					mirrorPart['data-pos-x'] = newPosx;
+				}
+				if (posy) {
+					mirrorPart['data-pos-y'] = newPosy;
+				}
+				mapObject.map[newRow][newHCol] = mirrorPart;
+			} else {
+				// fix tileposition
+				if (reverse && posy){
+					mirrorPart['data-pos-y'] = newPosy;
+				}
+				if (posx) {
+					mirrorPart['data-pos-x'] = newPosx;
+				}
+				mapObject.map[newVRow][newCol] = mirrorPart;
+			}
+		});
+	}
+	
+	this.forEachCell = function(x1, x2, y1, y2, callback) {
+		for (var row = y1; row < y2; row++){
+			for (var col = x1; col < x2; col++){
+				callback.call(this, col, row);
+			}
+		}
 	}
 }

@@ -90,3 +90,33 @@ td:hover {
 #general * {
 	margin: 2px;
 }
+
+#mirrorMap {
+	display: inline-block;
+}
+
+#mirrorMap td {
+	padding: 5px;
+	transition: all 0.3s;
+}
+
+#mirrorMap tr {
+	transition: all 0.3s;
+}
+
+#mirrorMap td.active {
+	background-color: #ccc;
+	cursor: pointer;
+}
+
+.mirrorVertical {
+	transform: scale(1, -1);
+}
+
+.mirrorHorizontal {
+	transform: scale(-1, 1);
+}
+
+.mirrorBoth {
+	transform: scale(-1, -1);
+}
