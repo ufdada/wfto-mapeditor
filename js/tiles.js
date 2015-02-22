@@ -9,12 +9,22 @@ var tiles = {
 		sizey: 1,
 		color: "pink"
 	},
+	'claimed_floor_p1': {
+		sizex: 1,
+		sizey: 1,
+		color: "pink"
+	},
 	'core_p2': {
 		sizex: 5,
 		sizey: 5,
 		color: "darkblue"
 	},
 	'claimed_earth_p2': {
+		sizex: 1,
+		sizey: 1,
+		color: "royalblue"
+	},
+	'claimed_floor_p2': {
 		sizex: 1,
 		sizey: 1,
 		color: "royalblue"
@@ -29,6 +39,11 @@ var tiles = {
 		sizey: 1,
 		color: "olive"
 	},
+	'claimed_floor_p3': {
+		sizex: 1,
+		sizey: 1,
+		color: "olive"
+	},
 	'core_p4': {
 		sizex: 5,
 		sizey: 5,
@@ -38,6 +53,26 @@ var tiles = {
 		sizex: 1,
 		sizey: 1,
 		color: "orange"
+	},
+	'claimed_floor_p4': {
+		sizex: 1,
+		sizey: 1,
+		color: "orange"
+	},
+	'herogate': {
+		sizex: 3,
+		sizey: 3,
+		color: "#efefef"
+	},
+	'claimed_earth_empire': {
+		sizex: 1,
+		sizey: 1,
+		color: "#eee"
+	},
+	'claimed_floor_empire': {
+		sizex: 1,
+		sizey: 1,
+		color: "#ddd"
 	},
 	'earth': {
 		sizex: 1,
@@ -49,10 +84,10 @@ var tiles = {
 		sizey: 1,
 		color: "dimgrey"
 	},
-	'water': {
+	'gold': {
 		sizex: 1,
 		sizey: 1,
-		color: "blue"
+		color: "goldenrod"
 	},
 	'permafrost': {
 		sizex: 1,
@@ -64,10 +99,10 @@ var tiles = {
 		sizey: 1,
 		color: "yellow"
 	},
-	'lava': {
+	'brimstone': {
 		sizex: 1,
 		sizey: 1,
-		color: "darkred"
+		color: "firebrick"
 	},
 	'dirt': {
 		sizex: 1,
@@ -79,20 +114,15 @@ var tiles = {
 		sizey: 1,
 		color: "#c0c0c0"
 	},
-	'gold': {
+	'water': {
 		sizex: 1,
 		sizey: 1,
-		color: "goldenrod"
+		color: "blue"
 	},
-	'brimstone': {
+	'lava': {
 		sizex: 1,
 		sizey: 1,
-		color: "firebrick"
-	},
-	'chasm': {
-		sizex: 1,
-		sizey: 1,
-		color: "black"
+		color: "darkred"
 	},
 	'wood_bridge': {
 		sizex: 1,
@@ -129,16 +159,14 @@ var tiles = {
 		sizey: 3,
 		color: "darkslateblue"
 	},
-	/*
-	Still missing:
-	- Shrine(s): 
-		- Perception
-	- Claimed player floor
-	- Chasm
-	- Hero Gate
-	- Bridge(s)
-		- Stone
-		- Wood
-	- Sand
-	*/
+	'perceptionshrine': {
+		sizex: 3,
+		sizey: 3,
+		color: "white"
+	},
+	'chasm': {
+		sizex: 1,
+		sizey: 1,
+		color: "black"
+	}
 }

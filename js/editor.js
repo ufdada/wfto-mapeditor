@@ -28,7 +28,7 @@ function Map(sizex, sizey) {
 	this.dragEnabled = false;
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
-	this.buttonColumns = 2;
+	this.buttonColumns = 3;
 	this.tileModeDefault = 'normal';
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
