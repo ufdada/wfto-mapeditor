@@ -37,6 +37,12 @@
 		<input type="button" id="import" value="Import" onclick="importMap()" />
 	</fieldset>
 	<fieldset>
+		<legend>Import Google CSV</legend>
+		<input type="file" id="csv" accept="*.csv" /><br />
+		<label for="csvborder">Border: </label><input size="3" type="text" id="csvborder" placeholder="border" value="3" /><br />
+		<input type="button" value="importCsv" onclick="importCsv()" />
+	</fieldset>
+	<fieldset>
 		<legend>Export Map</legend>
 		<!-- For now keep it short and simple -->
 		<!-- input type="text" id="author" placeholder="Your Name" / -->
