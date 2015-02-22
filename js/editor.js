@@ -1,4 +1,7 @@
 ﻿window.onload = function(){
+	// localStorage wrapper
+	store = new dataStorage();
+	
 	terrain = new Map();
 	terrain.getQueryOptions();
 	initOptions();
@@ -20,14 +23,14 @@ function Map(sizex, sizey) {
 	this.mapsizey = sizey || 20;
 	this.tiles = {};
 	this.tileSizeDefault = 64;
-	this.tileSize = localStorage.getItem("tileSize") || this.tileSizeDefault;
+	this.tileSize = store.getItem("tileSize") || this.tileSizeDefault;
 	this.tileSizes = [24, 32, 48, 64];
 	this.dragEnabled = false;
 	this.assetDir = './tiles/';
 	this.preloadImages = true;
 	this.buttonColumns = 2;
 	this.tileModeDefault = 'normal';
-	this.tileMode = localStorage.getItem("tileMode") || this.tileModeDefault;
+	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
 	this.options = {
 		"tileModes": {
@@ -61,7 +64,7 @@ function Map(sizex, sizey) {
 			console.error("The tilemode " + tileMode + " is not allowed!");
 			return;
 		}
-		localStorage.setItem("tileMode", tileMode);
+		store.setItem("tileMode", tileMode);
 		map.tileMode = tileMode;
 		//map.generateTileCss();
 	}
@@ -72,7 +75,7 @@ function Map(sizex, sizey) {
 			console.error("The tileSize " + parseInt(tileSize) + " is not allowed!");
 			return;
 		}
-		localStorage.setItem("tileSize", tileSize);
+		store.setItem("tileSize", tileSize);
 		map.tileSize = tileSize;
 		// TODO: implement instant change of tilesize
 	}

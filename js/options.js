@@ -220,7 +220,7 @@ function saveOptions() {
 		}
 		// save it to local storage
 		var option = terrain.options[item].option;
-		localStorage.setItem(option, value);
+		store.setItem(option, value);
 		terrain[option] = value;
 		// execute post action
 		// terrain[terrain.options[item].postSave](value);
@@ -234,7 +234,7 @@ function saveOptions() {
 }
 
 function resetOptions() {
-	localStorage.clear();
+	store.clear();
 	/*for (var item in terrain.options) {
 		var option = terrain[terrain.options[item].option + "Default"];
 		// execute post action
