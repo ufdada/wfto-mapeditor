@@ -64,6 +64,10 @@ td:hover {
 	margin: 10px;
 }
 
+#options input{
+	margin: 2px;
+}
+
 #infoBox {
 	position: absolute;
 	background-color: #ccc;
