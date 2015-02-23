@@ -59,6 +59,8 @@ var tiles = {
 		sizey: 1,
 		color: "orange"
 	},
+	/*
+	exclude them for now
 	'herogate': {
 		sizex: 3,
 		sizey: 3,
@@ -74,6 +76,7 @@ var tiles = {
 		sizey: 1,
 		color: "#ddd"
 	},
+	*/
 	'earth': {
 		sizex: 1,
 		sizey: 1,
