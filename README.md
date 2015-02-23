@@ -26,13 +26,3 @@ This map editor should make it fairly easy to create and share maps for "War for
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)
 - Several placeholder tiles (like the ugly dungeon cores)
-- Several missing tiles, like:
-	- Shrine(s): 
-		- Perception
-	- Claimed player floor
-	- Chasm
-	- Hero Gate
-	- Bridge(s)
-		- Stone
-		- Wood
-	- Sand
