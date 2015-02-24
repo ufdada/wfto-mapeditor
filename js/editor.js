@@ -26,7 +26,7 @@ function Map(sizex, sizey) {
 	this.tileSize = store.getItem("tileSize") || this.tileSizeDefault;
 	this.tileSizes = [24, 32, 48, 64];
 	this.dragEnabled = false;
-	this.assetDir = './tiles/';
+	this.assetDir = 'tiles';
 	this.preloadImages = true;
 	this.buttonColumns = 3;
 	this.tileModeDefault = 'normal';
