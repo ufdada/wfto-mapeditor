@@ -397,41 +397,35 @@ function importCsv() {
 					var y = calcRooms[k][0];
 					var x = calcRooms[k][1];
 					var tileName = mapData.tiles[mapData.map[y][x]['tile']];
-					var cellTop = y > 0 ? mapData.map[y - 1][x] : null;
-					var dataTop = cellTop ? cellTop['data-id'] : "";
-					var cellLeft = x > 0 ? mapData.map[y][x - 1] : null;
-					var dataLeft = cellLeft ? cellLeft['data-id'] : "";
-					
-					if (isNaN(parseInt(dataTop)) && isNaN(parseInt(dataLeft))) {
+					// There is no tile left or above it, so lets create a new room
+					if (isNaN(parseInt(mapData.map[y][x]['data-id'])))
+					{
 						// new room
-						mapData.tileIds.push(new Date().getTime() - parseInt(Math.random() * 3000000));
-						mapData.map[y][x]['data-id'] = mapData.tileIds.length - 1;
-						mapData.map[y][x]['data-pos-x'] = "0";
-						mapData.map[y][x]['data-pos-y'] = "0";
+						var id = new Date().getTime() - parseInt(Math.random() * 3000000).toString();
+						mapData.tileIds.push(id);
+						var roomTile = tiles[tileName];
+						var coreTile = '';
 						
 						var match = tileName.match(/core_p([1-8])/);
 						if (match) {
 							var player = parseInt(match[1]);
-							if (usedCores.indexOf(player) != -1) {
+							if (usedCores.indexOf(player) != -1 && player < 5) {
 								player = usedCores.length + 1;
 								mapData.tiles.push(tileName.replace(/_p([1-8])/, "_p" + player));
-								mapData.map[y][x]['tile'] = mapData.tiles.length - 1;
+								coreTile = mapData.tiles.length - 1;
 							}
 							usedCores.push(player);
 						}
-					} else {
-						if (isNaN(parseInt(dataTop))) {
-							mapData.map[y][x]['data-id'] = dataLeft;
-							mapData.map[y][x]['data-pos-x'] = (parseInt(cellLeft['data-pos-x']) + 1).toString();
-							mapData.map[y][x]['data-pos-y'] = cellLeft['data-pos-y'];
-							
-							mapData.map[y][x]['tile'] = cellLeft['tile'];
-						} else {
-							mapData.map[y][x]['data-id'] = dataTop;
-							mapData.map[y][x]['data-pos-x'] = cellTop['data-pos-x'];
-							mapData.map[y][x]['data-pos-y'] = (parseInt(cellTop['data-pos-y']) + 1).toString();
-							
-							mapData.map[y][x]["tile"] = cellTop['tile'];
+						
+						for (var posy = 0; posy < roomTile.sizey; posy++) {
+							for (var posx = 0; posx < roomTile.sizex; posx++) {
+								if (coreTile) {
+									mapData.map[y + posy][x + posx]['tile'] = coreTile;
+								}
+								mapData.map[y + posy][x + posx]['data-id'] = mapData.tileIds.length - 1;
+								mapData.map[y + posy][x + posx]['data-pos-x'] = posx.toString();
+								mapData.map[y + posy][x + posx]['data-pos-y'] = posy.toString();
+							}
 						}
 					}
 				}
