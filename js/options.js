@@ -396,7 +396,8 @@ function importCsv() {
 				for (var k = 0; k < calcRooms.length; k++) {
 					var y = calcRooms[k][0];
 					var x = calcRooms[k][1];
-					var tileName = mapData.tiles[mapData.map[y][x]['tile']];
+					var tileId = mapData.map[y][x]['tile'];
+					var tileName = mapData.tiles[tileId];
 					// There is no tile left or above it, so lets create a new room
 					if (isNaN(parseInt(mapData.map[y][x]['data-id'])))
 					{
@@ -411,17 +412,16 @@ function importCsv() {
 							var player = parseInt(match[1]);
 							if (usedCores.indexOf(player) != -1 && player < 5) {
 								player = usedCores.length + 1;
-								mapData.tiles.push(tileName.replace(/_p([1-8])/, "_p" + player));
-								coreTile = mapData.tiles.length - 1;
+								tileName = tileName.replace(/_p([1-8])/, "_p" + player)
+								mapData.tiles.push(tileName);
+								tileId = mapData.tiles.length - 1;
 							}
 							usedCores.push(player);
 						}
 						
 						for (var posy = 0; posy < roomTile.sizey; posy++) {
 							for (var posx = 0; posx < roomTile.sizex; posx++) {
-								if (coreTile) {
-									mapData.map[y + posy][x + posx]['tile'] = coreTile;
-								}
+								mapData.map[y + posy][x + posx]['tile'] = tileId;
 								mapData.map[y + posy][x + posx]['data-id'] = mapData.tileIds.length - 1;
 								mapData.map[y + posy][x + posx]['data-pos-x'] = posx.toString();
 								mapData.map[y + posy][x + posx]['data-pos-y'] = posy.toString();
