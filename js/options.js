@@ -297,3 +297,146 @@ function toggleOptions(show) {
 		document.getElementById("width").focus();
 	}
 }
+
+function importCsv() {
+	var files = document.getElementById("csv").files;
+	var bordersize = parseInt(document.getElementById("csvborder").value) || 3;
+	
+	if (files.length == 1) {
+		
+		var reader = new FileReader();
+		reader.readAsText(files[0]);
+		
+		reader.onload = function(e) {
+			var calcRooms = [];
+			var usedCores = [];
+			var mapData = {
+				version: "1.2",
+				author: "",
+				border: 1,
+				tiles: [],
+				tileIds: [],
+				map: []
+			}
+			var rows = this.result.split("\n");
+			if (rows.length > bordersize * bordersize) {
+				for (var i = bordersize; i < rows.length - bordersize; i++) {
+					var rowData = []
+					var cells = rows[i].split(",");
+					
+					for (var j = bordersize; j < cells.length - bordersize; j++) {
+						var tileName = "";
+						var cell = {};
+						switch(cells[j].substring(0,2)) {
+							case 'go':
+								tileName = "gold";
+								break;
+							case 'di':
+								tileName = "dirt";
+								break;
+							case 'ch':
+								tileName = "chasm";
+								break;
+							case 'wa':
+								tileName = "water";
+								break;
+							case 'ga':
+								tileName = "gateway";
+								break;
+							case 'la':
+								tileName = "lava";
+								break;
+							case 'co':
+								tileName = "core_p1";
+								break;
+							case 'im':
+								tileName = "impenetrable";
+								break;
+							case 'br':
+								tileName = "brimstone";
+								break;
+							case 'se':
+								tileName = "sacred_earth";
+							case 'nb':
+								tileName = "stone_bridge";
+								break;
+							case 'pf':
+								tileName = "permafrost";
+								break;
+							case 'sa':
+								tileName = "sand";
+								break;
+							case 'sh':
+								tileName = "archiveshrine";
+								break;
+							case '':
+								tileName = "earth";
+								break;
+							default:
+								tileName = cells[j];
+						}
+						
+						var tileConfig = tiles[tileName];
+						if (tileConfig && tileConfig.sizex * tileConfig.sizey > 1) {
+							calcRooms.push([i - bordersize, j - bordersize]);
+						}
+						
+						var tileTypeId = mapData.tiles.indexOf(tileName);
+						if (tileTypeId == -1) {
+							// save tilename only once and make a reference
+							mapData.tiles.push(tileName);
+							tileTypeId = mapData.tiles.length - 1;
+						}
+						cell["tile"] = tileTypeId;
+						rowData.push(cell);
+					}
+					mapData.map.push(rowData);
+				}
+				
+				for (var k = 0; k < calcRooms.length; k++) {
+					var y = calcRooms[k][0];
+					var x = calcRooms[k][1];
+					var tileId = mapData.map[y][x]['tile'];
+					var tileName = mapData.tiles[tileId];
+					// There is no tile left or above it, so lets create a new room
+					if (isNaN(parseInt(mapData.map[y][x]['data-id'])))
+					{
+						// new room
+						var id = new Date().getTime() - parseInt(Math.random() * 3000000).toString();
+						mapData.tileIds.push(id);
+						var roomTile = tiles[tileName];
+						var coreTile = '';
+						
+						var match = tileName.match(/core_p([1-8])/);
+						if (match) {
+							var player = parseInt(match[1]);
+							if (usedCores.indexOf(player) != -1 && player < 5) {
+								player = usedCores.length + 1;
+								tileName = tileName.replace(/_p([1-8])/, "_p" + player)
+								mapData.tiles.push(tileName);
+								tileId = mapData.tiles.length - 1;
+							}
+							usedCores.push(player);
+						}
+						
+						for (var posy = 0; posy < roomTile.sizey; posy++) {
+							for (var posx = 0; posx < roomTile.sizex; posx++) {
+								mapData.map[y + posy][x + posx]['tile'] = tileId;
+								mapData.map[y + posy][x + posx]['data-id'] = mapData.tileIds.length - 1;
+								mapData.map[y + posy][x + posx]['data-pos-x'] = posx.toString();
+								mapData.map[y + posy][x + posx]['data-pos-y'] = posy.toString();
+							}
+						}
+					}
+				}
+				terrain.import(JSON.stringify(mapData));
+			} else {
+				alert("Please select a valid map file");
+				return;
+			}
+		}
+	} else {
+		alert("Please select a valid map file");
+	}
+	toggleOptions(false);
+}
