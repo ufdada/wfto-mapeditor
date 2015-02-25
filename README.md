@@ -18,10 +18,10 @@ This map editor should make it fairly easy to create and share maps for "War for
 - Export/Import of created Maps (Extension .wfto)
 - Creating a Path by holding the left mousebutton and moving the mouse (Only works for 1x1 tiles)
 
-### Upcoming Features:
+### Upcoming Features/Bugfixes:
 - [x] Visual improvement of tiles
 - [x] Add missing tiles
-- [ ] Google CSV import
+- [x] Google CSV import
 - [ ] Resizing of current Map
 - [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
@@ -29,4 +29,3 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)
-- Several placeholder tiles (like the ugly dungeon cores)
