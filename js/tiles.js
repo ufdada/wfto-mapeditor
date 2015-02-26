@@ -160,6 +160,11 @@ var tiles = {
 	'siegeshrine': {
 		sizex: 3,
 		sizey: 3,
+		color: "#b01804"
+	},
+	'defencepartshrine': {
+		sizex: 3,
+		sizey: 3,
 		color: "darkslateblue"
 	},
 	'perceptionshrine': {
