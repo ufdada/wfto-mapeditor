@@ -370,6 +370,21 @@ function importCsv() {
 							case 'sh':
 								tileName = "archiveshrine";
 								break;
+							case 'sg':
+								tileName = "goldshrine";
+								break;
+							case 'ss':
+								tileName = "siegeshrine";
+								break;
+							case 'sd':
+								tileName = "defencepartshrine";
+								break;
+							case 'sm':
+								tileName = "manashrine";
+								break;
+							case 'sp':
+								tileName = "perceptionshrine";
+								break;
 							case '':
 								tileName = "earth";
 								break;
