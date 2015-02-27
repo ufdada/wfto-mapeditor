@@ -357,6 +357,7 @@ function importCsv() {
 								break;
 							case 'se':
 								tileName = "sacred_earth";
+								break;
 							case 'nb':
 								tileName = "stone_bridge";
 								break;
@@ -373,7 +374,8 @@ function importCsv() {
 								tileName = "earth";
 								break;
 							default:
-								tileName = cells[j];
+								console.error("Tile " + cells[j] + " could not be converted!");
+								tileName = "earth";
 						}
 						
 						var tileConfig = tiles[tileName];
