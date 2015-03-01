@@ -189,7 +189,6 @@ function Map(sizex, sizey) {
 		map.createButtons();
 		
 		mapParent.ondrop = map.dropMap;
-		mapParent.ondragleave = map.dragLeaveMap;
 		mapParent.ondragover = map.dragOverMap;
 		
 		var table = document.createElement("table");
