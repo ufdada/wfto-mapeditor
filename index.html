@@ -8,13 +8,14 @@
 <script type="text/javascript" src="./js/options.js"></script>
 </head>
 <body>
+<div id="dropMessage"><p>Drop your Mapfile here</p></div>
 <div id="preload" data-message="Preloading Image $1 of $2" style="display: none;"><p></p></div>
-<div id="infoBox" style="display: none;">
+<div id="infoBox">
 	<p>x: <span id="posx"></span></p>
 	<p>y: <span id="posy"></span></p>
 	<p>tile: <span id="tile"></span></p>
 </div>
-<div id="toolBox" style="display: none;">
+<div id="toolBox">
 	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" />
 	<a href="https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md" target="_blank"><button>?</button></a>
 	<!-- here are the tile buttons -->

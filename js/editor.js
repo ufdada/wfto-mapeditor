@@ -32,6 +32,7 @@ function Map(sizex, sizey) {
 	this.tileModeDefault = 'normal';
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
+	this.dropTimeout = 0;
 	this.mouseButton = {
 		left: 0,
 		middle: 1,
@@ -51,6 +52,7 @@ function Map(sizex, sizey) {
 	}
 
 	var mapParent = document.getElementsByTagName('body')[0];
+	var dropMessage = document.getElementById("dropMessage");
 
 	this.getQueryOptions = function() {
 		for (var item in map.options) {
@@ -186,11 +188,15 @@ function Map(sizex, sizey) {
 		map.destroy();
 		map.createButtons();
 		
+		mapParent.ondrop = map.dropMap;
+		mapParent.ondragleave = map.dragLeaveMap;
+		mapParent.ondragover = map.dragOverMap;
+		
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
 		table.style.marginLeft = parseInt(map.tileSize * map.buttonColumns) + 30 + "px";
-		table.style.marginTop = "10px";
+		table.style.paddingTop = "10px";
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
 		
@@ -708,6 +714,43 @@ function Map(sizex, sizey) {
 		for (var row = y1; row < y2; row++){
 			for (var col = x1; col < x2; col++){
 				callback.call(this, col, row);
+			}
+		}
+	}
+	
+	this.cancelDrop = function() {
+		dropMessage.style.display = "none";
+		clearTimeout(map.dropTimeout);
+	}
+
+	this.dragOverMap = function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		
+		clearTimeout(map.dropTimeout);
+		map.dropTimeout = setTimeout(function(){ map.cancelDrop() }, 200);
+		
+		dropMessage.style.display = "block";
+	}
+
+	this.dropMap = function(evt) {
+		dropMessage.style.display = "none";
+		
+		evt.preventDefault();
+		
+		var dt = evt.dataTransfer;
+		var files = dt.files;
+
+		if(files && files.length != 0) {
+			var reader = new FileReader();
+			reader.readAsText(files[0]);
+		
+			reader.onload = function(e) {
+				try {
+					map.import(atob(this.result));
+				} catch(e) {
+					alert("Could not load map.\n\n" + e.message);
+				}
 			}
 		}
 	}
