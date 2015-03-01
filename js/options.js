@@ -85,12 +85,27 @@ function mirrorPreview(type) {
 		case 'second':
 			first.setAttribute("class", "active");
 			second.setAttribute("class", "active");
-			third.innerHTML = '1';
-			fourth.innerHTML = '2';
-			if (reverse.checked) {
-				third.parentNode.setAttribute("class", "mirrorBoth");
+			if (store.localStorage) {
+				third.innerHTML = '1';
+				fourth.innerHTML = '2';
+				if (reverse.checked) {
+					third.parentNode.setAttribute("class", "mirrorBoth");
+				} else {
+					third.parentNode.setAttribute("class", "mirrorVertical");
+				}
 			} else {
-				third.parentNode.setAttribute("class", "mirrorVertical");
+				// ie fallback
+				if (reverse.checked) {
+					third.innerHTML = '2';
+					third.setAttribute("class", "mirrorBoth");
+					fourth.innerHTML = '1';
+					fourth.setAttribute("class", "mirrorBoth");
+				} else {
+					third.innerHTML = '1';
+					third.setAttribute("class", "mirrorVertical");
+					fourth.innerHTML = '2';
+					fourth.setAttribute("class", "mirrorVertical");
+				}
 			}
 			if (terrain.mapsizey * 2 > terrain.maxsize) {
 				extend.disabled = "disabled";
