@@ -306,8 +306,6 @@ function Map(sizex, sizey) {
 		var infoBox = document.getElementById("infoBox");
 		var left = evt.pageX + 20;
 		var top = evt.pageY + 20;
-		infoBox.style.top = top + "px";
-		infoBox.style.left = left + "px";
 		
 		var height = infoBox.clientHeight;
 		var width = infoBox.clientWidth;
@@ -317,13 +315,17 @@ function Map(sizex, sizey) {
 		var pageOffsetY = window.pageYOffset;
 		
 		if (top + height > windowHeight + pageOffsetY - 10) {
-			// at the bottom
+			// at the bottom edge
 			infoBox.style.top = top - height - 30 + "px";
+		} else {
+			infoBox.style.top = top + "px";
 		}
 		
 		if (left + width > windowWidth + pageOffsetX - 10) {
-			// at the right
+			// at the right edge
 			infoBox.style.left = left - width - 30 + "px";
+		} else {
+			infoBox.style.left = left + "px";
 		}
 		
 		infoBox.style.display = "block";
