@@ -10,6 +10,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 - Overall visual improvement of tiles
 - Add missing tiles
 - Replace siegeshrine asset with correct siegeshrine and add defence parts shrine
+- Improve mirror visual for internet explorer
 
 ### Release 1.1
 #### New Features:
