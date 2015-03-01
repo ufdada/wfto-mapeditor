@@ -25,6 +25,9 @@ This map editor should make it fairly easy to create and share maps for "War for
 - [ ] Resizing of current Map
 - [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
+- [ ] Get rid of the position in the mapfile on bigger rooms and calculate it instead
+- [ ] Name input field for files (with versioning)
+- [ ] Drag and drop import of mapfiles
 - [x] Replace siegeshrine asset with correct siegeshrine and add defence parts shrine
 
 ### Known Issues:
