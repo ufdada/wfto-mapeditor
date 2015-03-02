@@ -3,6 +3,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 ### Release 1.3
 #### New Features:
+- Name input field for files (with versioning)
 
 #### Improvements:
 - Get rid of the position in the mapfile on bigger rooms and calculate it instead
@@ -12,7 +13,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 - Drag and drop import of mapfiles
 - Google CSV import
 
-### Bugfixes:
+#### Bugfixes:
 - Overall visual improvement of tiles
 - Add missing tiles
 - Replace siegeshrine asset with correct siegeshrine and add defence parts shrine
@@ -39,7 +40,6 @@ This map editor should make it fairly easy to create and share maps for "War for
 - [ ] Resizing of current Map
 - [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
-- [ ] Name input field for files (with versioning)
 
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)
