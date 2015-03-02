@@ -33,6 +33,7 @@ function Map(sizex, sizey) {
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
 	this.dropTimeout = 0;
+	this.version = "001";
 	this.mouseButton = {
 		left: 0,
 		middle: 1,
@@ -187,6 +188,7 @@ function Map(sizex, sizey) {
 		// only one map is allowed at the same time
 		map.destroy();
 		map.createButtons();
+		map.version = "001";
 		
 		mapParent.ondrop = map.dropMap;
 		mapParent.ondragover = map.dragOverMap;

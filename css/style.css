@@ -148,3 +148,8 @@ td:hover {
 	margin-top: 20%;
 	font-size: 45px;
 }
+
+#versionInfo {
+	display: none;
+	margin-top: 3px;
+}

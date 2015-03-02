@@ -5,9 +5,12 @@
 	var fourth = document.getElementById('fourth');
 	var reverse = document.getElementById('reverse');
 	var extend = document.getElementById('extend');
+	var versioning = document.getElementById('versioning');
 
 	reverse.checked = "";
 	extend.checked = "";
+	
+	versioning.checked = store.getItem("versioning") || false;
 	
 	reverse.onchange = resetPreview;
 
@@ -179,8 +182,14 @@ function exportMap() {
 	var author = ''; //document.getElementById("author").value;
 	// export as base64
 	var data = btoa(terrain.export(author));
-	var mapName = "Map.wfto";
-
+	var mapName = document.getElementById("mapName").value;
+	if (mapName.length < 1 && mapName.match(/[^A-Za-z0-9.-_ öüäÖÜÄ]/g)) {
+		alert("Invalid filename!");
+		return;
+	}
+	mapName += versioning.checked ? "_" + terrain.version : "";
+	mapName += ".wfto";
+	
 	// Use the native blob constructor
 	var blob = new Blob([data], {type: "application/octet-stream"});
 	
@@ -204,14 +213,25 @@ function importMap() {
 	if (window.FileReader) {
 		var files = document.getElementById("mapFile").files;
 		
-		if (files.length == 1) {
-			
+		if (files.length == 1) {	
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
 			
 			reader.onload = function(e) {
 				// map geladen
 				terrain.import(atob(this.result));
+				
+				var name = files[0].name.split(".")[0];
+				var nameInput = document.getElementById("mapName");
+				
+				var version = name.split("_");
+				if (version.length > 1) {
+					versioning.checked = true;
+					var newVersion = "00" + (version[1] -(-1));
+					terrain.version = newVersion.substring(newVersion.length - 3);
+				}
+				
+				nameInput.value = version[0];
 			}
 		} else {
 			alert("Please select a valid map file");
@@ -301,6 +321,8 @@ function refreshOptions() {
 		generalOptions.appendChild(document.createElement("br"));
 	}
 	general.insertBefore(generalOptions, saveOptions);
+	
+	setVersioning(document.getElementById("versioning"));
 }
 
 function toggleOptions(show) {
@@ -469,4 +491,13 @@ function importCsv() {
 		alert("Please select a valid map file");
 	}
 	toggleOptions(false);
+}
+
+function setVersioning(element) {
+	store.setItem(element.id, element.checked);
+	var mapVersion = document.getElementById("mapVersion");
+	mapVersion.innerText = terrain.version;
+	
+	mapVersion.parentNode.style.display = element.checked ? "block" : "none";
+	
 }
