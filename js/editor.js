@@ -201,19 +201,20 @@ function Map(sizex, sizey) {
 		
 		map.setHtml("mapsize", map.mapsizex + "x" + map.mapsizey);
 		
-		for (var i = 0; i < map.mapsizey + (map.borderSize * 2); i++) {		
+		// saving the current col/row of a room
+		var importedRooms = {};
+		
+		for (var row = 0; row < map.mapsizey + (map.borderSize * 2); row++) {		
 			var tr = document.createElement("tr");
-			tr.setAttribute('id', 'row_' + i);
+			tr.setAttribute('id', 'row_' + row);
 			tr.setAttribute('style', 'height: ' + map.tileSize + 'px;');
 			
-			for (var k = 0; k < map.mapsizex + (map.borderSize * 2); k++) {
+			for (var col = 0; col < map.mapsizex + (map.borderSize * 2); col++) {
 				var tile = document.createElement("td");
-				tile.setAttribute('id', 'col_' + i + '_' + k);
+				tile.setAttribute('id', 'col_' + row + '_' + col);
 				var roomTile = map.defaultTile;
-				var isBorder = map.borderSize > 0 && i <= map.borderSize - 1 || k <= map.borderSize - 1 || i >= map.mapsizey + map.borderSize || k >= map.mapsizex + map.borderSize;
+				var isBorder = map.borderSize > 0 && row <= map.borderSize - 1 || col <= map.borderSize - 1 || row >= map.mapsizey + map.borderSize || col >= map.mapsizex + map.borderSize;
 				var id = null;
-				var row = null;
-				var col = null;
 
 				if (!isBorder) {
 					// we don't want to listen to this events on the border
@@ -231,25 +232,25 @@ function Map(sizex, sizey) {
 					tile.onmousemove = map.hideInfoBox;
 				} else if (mapObject && mapObject.map && mapObject.tileIds && mapObject.tiles) {
 					// import map
-					var cell = mapObject.map[i - map.borderSize][k - map.borderSize];
+					var cell = mapObject.map[row - map.borderSize][col- map.borderSize];
 					roomTile = mapObject.tiles[cell["tile"]];
-					row = cell["data-pos-y"];
-					col = cell["data-pos-x"];
 					id = !isNaN(cell["data-id"]) && mapObject.tileIds[cell["data-id"]] || null;
 					if (id) {
 						tile.setAttribute("data-id", id);
-						if (row && col) {
-							map.tiles[id] = map.tiles[id] || [];
-							map.tiles[id].push("col_" + i + "_" + k );
-							tile.setAttribute("data-pos-x", col);
-							tile.setAttribute("data-pos-y", row);
+						map.tiles[id] = map.tiles[id] || [];
+						if (map.tiles[id].length == 0) {
+							// mark the start point of a new room
+							importedRooms[id] = { col: col, row: row }
 						}
+						map.tiles[id].push("col_" + row+ "_" + col );
+						tile.setAttribute("data-pos-x", col - importedRooms[id].col);
+						tile.setAttribute("data-pos-y", row - importedRooms[id].row);
 					}
 				} else if (mapObject && (!mapObject.map || !mapObject.tileIds || !mapObject.tiles)) {
 					throw new Error("Invalid map file!");
 				}
 				
-				map.setTile(tile, roomTile, row, col);
+				map.setTile(tile, roomTile);
 				tr.appendChild(tile);
 			}
 			table.appendChild(tr);
@@ -497,12 +498,14 @@ function Map(sizex, sizey) {
 		return tile.style.backgroundPosition;
 	}
 
-	this.setTile = function(tile, currentTile, row, col) {
+	this.setTile = function(tile, currentTile) {
 		var roomTile = tiles[currentTile];
 		if (roomTile) {
 			tile.setAttribute("class", currentTile);
 			tile.style.backgroundSize = parseInt(map.tileSize * roomTile.sizex) + "px " + parseInt(map.tileSize * roomTile.sizey)+ "px ";
-			if (!isNaN(parseInt(row)) && !isNaN(parseInt(col))) {
+			var col = parseInt(tile.getAttribute("data-pos-x"));
+			var row = parseInt(tile.getAttribute("data-pos-y"));
+			if (!isNaN(col) && !isNaN(row)) {
 				map.setTilePosition(tile, parseInt(-col * map.tileSize) + "px " + parseInt(-row * map.tileSize) + "px");
 			}
 		} else {
