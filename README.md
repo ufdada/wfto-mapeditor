@@ -1,6 +1,12 @@
 ﻿# wfto-mapeditor
 This map editor should make it fairly easy to create and share maps for "War for the Overworld"
 
+### Release 1.3
+#### New Features:
+
+#### Improvements:
+- Get rid of the position in the mapfile on bigger rooms and calculate it instead
+
 ### Release 1.2
 #### New Features:
 - Drag and drop import of mapfiles
@@ -33,11 +39,10 @@ This map editor should make it fairly easy to create and share maps for "War for
 - [ ] Resizing of current Map
 - [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
-- [x] Get rid of the position in the mapfile on bigger rooms and calculate it instead
 - [ ] Name input field for files (with versioning)
 
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)
 
 Special Thanks to:
-- Marrados: for helping with the assets
+- Marados: for helping with the assets
