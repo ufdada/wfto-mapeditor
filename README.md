@@ -33,7 +33,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 - [ ] Resizing of current Map
 - [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
-- [ ] Get rid of the position in the mapfile on bigger rooms and calculate it instead
+- [x] Get rid of the position in the mapfile on bigger rooms and calculate it instead
 - [ ] Name input field for files (with versioning)
 
 ### Known Issues:
