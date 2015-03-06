@@ -519,6 +519,10 @@ function Map(sizex, sizey) {
 		if (temp) {
 			tile.setAttribute('data-temp', tile.getAttribute("class"));
 			tile.setAttribute('data-temp-pos', map.getTilePosition(tile));
+			
+			tile.setAttribute("data-pos-x", col);
+			tile.setAttribute("data-pos-y", row);
+			
 			tile.style.opacity = "0.7";
 		} else {
 			maxsize != 1 && tile.setAttribute("data-pos-x", col);
