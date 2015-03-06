@@ -475,8 +475,6 @@ function Map(sizex, sizey) {
 							tileId = mapData.tileIds.length - 1;
 						}
 						col["data-id"] = tileId;
-						col["data-pos-x"] = tile.getAttribute("data-pos-x");
-						col["data-pos-y"] = tile.getAttribute("data-pos-y");
 					}
 				
 					col["tile"] = tileTypeId;
