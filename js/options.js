@@ -455,8 +455,6 @@ function importCsv() {
 							for (var posx = 0; posx < roomTile.sizex; posx++) {
 								mapData.map[y + posy][x + posx]['tile'] = tileId;
 								mapData.map[y + posy][x + posx]['data-id'] = mapData.tileIds.length - 1;
-								mapData.map[y + posy][x + posx]['data-pos-x'] = posx.toString();
-								mapData.map[y + posy][x + posx]['data-pos-y'] = posy.toString();
 							}
 						}
 					}
