@@ -546,11 +546,6 @@ function Map(sizex, sizey) {
 	 * Mirrors a part of the map to get a better
 	 * @param mirrorType determines how the map should be mirrored
 	 *					 It's the sum of the cellvalues in the option menu
-	 * 		---------
-	 * 		| 1 | 2 | 
-	 * 		---------
-	 * 		| 3 | 4 |
-	 *		---------
 	 */
 	this.mirrorMap = function(mirrorType, reverse) {
 		var mapObject = map.mapToJson();
@@ -623,10 +618,6 @@ function Map(sizex, sizey) {
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			// clone the mapobject cell
 			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
-			var posy = mirrorPart['data-pos-y'];
-			var newPosy = 0;
-			var posx = mirrorPart['data-pos-x'];
-			var newPosx = 0;
 			var newCol = map.mapsizex - 1 - col;
 			var newHCol = reverse ? (x2 - 1 - col) : col;
 			var newRow = map.mapsizey - 1 - row;
@@ -682,29 +673,9 @@ function Map(sizex, sizey) {
 				}
 			}
 			
-			if (posx && posy) {
-				// parse it to string, otherwise the import fails
-				newPosx = (tiles[tileName].sizex - posx - 1).toString();
-				newPosy = (tiles[tileName].sizey - posy - 1).toString();
-			}
-			
 			if (type == "horizontal") {
-				// fix tileposition
-				if (reverse && posx){
-					mirrorPart['data-pos-x'] = newPosx;
-				}
-				if (posy) {
-					mirrorPart['data-pos-y'] = newPosy;
-				}
 				mapObject.map[newRow][newHCol] = mirrorPart;
 			} else {
-				// fix tileposition
-				if (reverse && posy){
-					mirrorPart['data-pos-y'] = newPosy;
-				}
-				if (posx) {
-					mirrorPart['data-pos-x'] = newPosx;
-				}
 				mapObject.map[newVRow][newCol] = mirrorPart;
 			}
 		});
