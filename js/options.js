@@ -326,7 +326,7 @@ function importCsv() {
 			var calcRooms = [];
 			var usedCores = [];
 			var mapData = {
-				version: "1.2",
+				version: "1.3",
 				author: "",
 				border: 1,
 				tiles: [],

@@ -436,7 +436,7 @@ function Map(sizex, sizey) {
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
 		var mapData = {
-			version: "1.2",
+			version: "1.3",
 			author: author || "",
 			border: map.borderSize,
 			tiles: [],
