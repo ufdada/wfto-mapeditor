@@ -1,11 +1,12 @@
 ﻿function initOptions() {
-	var first = document.getElementById('first');
-	var second = document.getElementById('second');
-	var third = document.getElementById('third');
-	var fourth = document.getElementById('fourth');
-	var reverse = document.getElementById('reverse');
-	var extend = document.getElementById('extend');
-	var versioning = document.getElementById('versioning');
+	first = document.getElementById('first');
+	second = document.getElementById('second');
+	third = document.getElementById('third');
+	fourth = document.getElementById('fourth');
+	reverse = document.getElementById('reverse');
+	extend = document.getElementById('extend');
+	versioning = document.getElementById('versioning');
+	mapNameInput = document.getElementById("mapName");
 
 	reverse.checked = "";
 	extend.checked = "";
@@ -182,7 +183,7 @@ function exportMap() {
 	var author = ''; //document.getElementById("author").value;
 	// export as base64
 	var data = btoa(terrain.export(author));
-	var mapName = document.getElementById("mapName").value;
+	var mapName = mapNameInput.value;
 	if (mapName.length < 1 && mapName.match(/[^A-Za-z0-9.-_ öüäÖÜÄ]/g)) {
 		alert("Invalid filename!");
 		return;
@@ -219,19 +220,23 @@ function importMap() {
 			
 			reader.onload = function(e) {
 				// map geladen
-				terrain.import(atob(this.result));
-				
-				var name = files[0].name.split(".")[0];
-				var nameInput = document.getElementById("mapName");
-				
-				var version = name.split("_");
-				if (version.length > 1) {
-					versioning.checked = true;
-					var newVersion = "00" + (version[1] -(-1));
-					terrain.version = newVersion.substring(newVersion.length - 3);
+				try {
+					terrain.import(atob(this.result));
+					
+					var name = files[0].name.split(".")[0];
+					
+					var version = name.split("_");
+					if (version.length > 1) {
+						versioning.checked = true;
+						var newVersion = "00" + (version[1] -(-1));
+						terrain.version = newVersion.substring(newVersion.length - 3);
+					}
+					
+					mapNameInput.value = version[0];
+				} catch(e) {
+					alert("Please select a valid map file.\n" + e.message);
+					return;
 				}
-				
-				nameInput.value = version[0];
 			}
 		} else {
 			alert("Please select a valid map file");
@@ -344,6 +349,10 @@ function importCsv() {
 		var reader = new FileReader();
 		reader.readAsText(files[0]);
 		
+		var mapName = files[0].name;
+		mapName = mapName.substr(0, mapName.lastIndexOf("."));
+		mapNameInput.value = mapName;
+		
 		reader.onload = function(e) {
 			var calcRooms = [];
 			var usedCores = [];
@@ -355,6 +364,7 @@ function importCsv() {
 				tileIds: [],
 				map: []
 			}
+
 			var rows = this.result.split("\n");
 			if (rows.length > bordersize * bordersize) {
 				for (var i = bordersize; i < rows.length - bordersize; i++) {
