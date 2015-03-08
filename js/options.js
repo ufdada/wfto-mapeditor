@@ -11,11 +11,13 @@ function initOptions() {
 	mapNameInput = document.getElementById("mapName");
 
 	reverse.checked = "";
+	rotate.checked = "";
 	extend.checked = "";
 	
 	versioning.checked = store.getItem("versioning") || false;
 	
 	reverse.onchange = resetPreview;
+	rotate.onchange = resetPreview;
 
 	first.onmouseover = mirrorTable;
 	second.onmouseover = mirrorTable;
@@ -78,12 +80,20 @@ function mirrorPreview(type) {
 		case 'first':
 			first.setAttribute("class", "active");
 			second.innerHTML = '1';
-			second.setAttribute("class", "mirrorHorizontal");
 			third.innerHTML = '1';
-			third.setAttribute("class", "mirrorVertical");
 			fourth.innerHTML = '1';
-			fourth.setAttribute("class", "mirrorBoth");
 			reverse.disabled = "disabled";
+			rotate.disabled = "";
+			fourth.setAttribute("class", "mirrorBoth");
+			if (!rotate.checked) {
+				second.setAttribute("class", "mirrorHorizontal");
+				third.setAttribute("class", "mirrorVertical");
+			} else {
+				second.setAttribute("class", "rotate90");
+				third.setAttribute("class", "rotate270");
+				// four keeps the same
+				// fourth.setAttribute("class", "rotate180");
+			}
 			if (terrain.mapsizex * 2 > terrain.maxsize || terrain.mapsizey * 2 > terrain.maxsize) {
 				extend.disabled = "disabled";
 			}
@@ -91,6 +101,7 @@ function mirrorPreview(type) {
 		case 'second':
 			first.setAttribute("class", "active");
 			second.setAttribute("class", "active");
+			rotate.disabled = "disabled";
 			if (store.localStorage) {
 				third.innerHTML = '1';
 				fourth.innerHTML = '2';
@@ -121,6 +132,7 @@ function mirrorPreview(type) {
 		default:
 			first.setAttribute("class", "active");
 			third.setAttribute("class", "active");
+			rotate.disabled = "disabled";
 			if (reverse.checked) {
 				second.innerHTML = '3';
 				second.setAttribute("class", "mirrorBoth");
@@ -150,6 +162,7 @@ function resetPreview(){
 function resetMirror() {
 	reverse.disabled = "";
 	extend.disabled = "";
+	rotate.disabled = "";
 
 	first.removeAttribute("class");
 	second.innerHTML = '2';

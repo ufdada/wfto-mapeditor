@@ -103,6 +103,7 @@ td:hover {
 }
 
 #mirrorMap td {
+	width: 15px;
 	padding: 5px;
 	transition: all 0.3s;
 	border: 1px solid black;
@@ -115,6 +116,18 @@ td:hover {
 #mirrorMap td.active {
 	background-color: #ccc;
 	cursor: pointer;
+}
+
+.rotate90 {
+	transform: rotate(90deg);
+}
+
+.rotate180 {
+	transform: rotate(180deg);
+}
+
+.rotate270 {
+	transform: rotate(270deg);
 }
 
 .mirrorVertical {
