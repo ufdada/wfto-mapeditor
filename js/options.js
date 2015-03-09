@@ -1,4 +1,4 @@
-﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\söüäÖÜÄ]/g;
+﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g;
 
 function initOptions() {
 	first = document.getElementById('first');
