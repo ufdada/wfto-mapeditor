@@ -1,4 +1,6 @@
-﻿function initOptions() {
+﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\söüäÖÜÄ]/g;
+
+function initOptions() {
 	first = document.getElementById('first');
 	second = document.getElementById('second');
 	third = document.getElementById('third');
@@ -184,7 +186,7 @@ function exportMap() {
 	// export as base64
 	var data = btoa(terrain.export(author));
 	var mapName = mapNameInput.value;
-	if (mapName.length < 1 || mapName.match(/[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g)) {
+	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
 		alert("Invalid filename!");
 		return;
 	}
@@ -214,7 +216,12 @@ function importMap() {
 	if (window.FileReader) {
 		var files = document.getElementById("mapFile").files;
 		
-		if (files.length == 1) {	
+		if (files.length == 1) {
+			if (files[0].name.match(invalidLetterRegex)) {
+				alert("Invalid filename!");
+				return;
+			}
+			
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
 			
@@ -345,6 +352,11 @@ function importCsv() {
 	var bordersize = parseInt(document.getElementById("csvborder").value) || 3;
 	
 	if (files.length == 1) {
+		
+		if (files[0].name.match(invalidLetterRegex)) {
+			alert("Invalid filename!");
+			return;
+		}
 		
 		var reader = new FileReader();
 		reader.readAsText(files[0]);
