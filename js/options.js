@@ -10,9 +10,7 @@ function initOptions() {
 	versioning = document.getElementById('versioning');
 	mapNameInput = document.getElementById("mapName");
 
-	reverse.checked = "";
-	rotate.checked = "";
-	extend.checked = "";
+	resetMirror();
 	
 	versioning.checked = store.getItem("versioning") || false;
 	
@@ -78,13 +76,16 @@ function mirrorTable() {
 function mirrorPreview(type) {
 	switch(type) {
 		case 'first':
+			extend.disabled = "";
+			reverse.disabled = "disabled";
+			rotate.disabled = "";
+		
 			first.setAttribute("class", "active");
 			second.innerHTML = '1';
 			third.innerHTML = '1';
 			fourth.innerHTML = '1';
-			reverse.disabled = "disabled";
-			rotate.disabled = "";
 			fourth.setAttribute("class", "mirrorBoth");
+			
 			if (!rotate.checked) {
 				second.setAttribute("class", "mirrorHorizontal");
 				third.setAttribute("class", "mirrorVertical");
@@ -99,9 +100,13 @@ function mirrorPreview(type) {
 			}
 			break;
 		case 'second':
+			extend.disabled = "";
+			reverse.disabled = "";
+			rotate.disabled = "disabled";
+		
 			first.setAttribute("class", "active");
 			second.setAttribute("class", "active");
-			rotate.disabled = "disabled";
+			
 			if (store.localStorage) {
 				third.innerHTML = '1';
 				fourth.innerHTML = '2';
@@ -130,9 +135,13 @@ function mirrorPreview(type) {
 			break;
 		case 'third':
 		default:
+			extend.disabled = "";
+			reverse.disabled = "";
+			rotate.disabled = "disabled";
+		
 			first.setAttribute("class", "active");
 			third.setAttribute("class", "active");
-			rotate.disabled = "disabled";
+
 			if (reverse.checked) {
 				second.innerHTML = '3';
 				second.setAttribute("class", "mirrorBoth");
@@ -160,9 +169,12 @@ function resetPreview(){
 }
 
 function resetMirror() {
-	reverse.disabled = "";
 	extend.disabled = "";
+	reverse.disabled = "";
 	rotate.disabled = "";
+	extend.disabled = "disabled";
+	reverse.disabled = "disabled";
+	rotate.disabled = "disabled";
 
 	first.removeAttribute("class");
 	second.innerHTML = '2';
