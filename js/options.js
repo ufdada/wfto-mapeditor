@@ -229,17 +229,19 @@ function importMap() {
 				// map geladen
 				try {
 					terrain.import(atob(this.result));
-					
-					var name = files[0].name.split(".")[0];
+					var filename = files[0].name;
+					var name = filename.substr(0, filename.lastIndexOf("."));
 					
 					var versionIndex = name.lastIndexOf("_");
-					var version = parseInt(name.substr(versionIndex + 1, 3));
+					var version = name.substr(-3) -(-1);
 					
 					if (versionIndex !== -1 && !isNaN(version)) {
 						versioning.checked = true;
-						var newVersion = "00" + (version + 1);
-						terrain.version = newVersion.substring(newVersion.length - 3);
+						var newVersion = "00" + version;
+						terrain.version = newVersion.substring(-3);
 						name = name.substr(0, versionIndex);
+					} else {
+						versioning.checked = false;
 					}
 					
 					mapNameInput.value = name;
