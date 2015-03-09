@@ -232,14 +232,17 @@ function importMap() {
 					
 					var name = files[0].name.split(".")[0];
 					
-					var version = name.split("_");
-					if (version.length > 1) {
+					var versionIndex = name.lastIndexOf("_");
+					var version = parseInt(name.substr(versionIndex + 1, 3));
+					
+					if (versionIndex !== -1 && !isNaN(version)) {
 						versioning.checked = true;
-						var newVersion = "00" + (version[1] -(-1));
+						var newVersion = "00" + (version + 1);
 						terrain.version = newVersion.substring(newVersion.length - 3);
+						name = name.substr(0, versionIndex);
 					}
 					
-					mapNameInput.value = version[0];
+					mapNameInput.value = name;
 				} catch(e) {
 					alert("Please select a valid map file.\n" + e.message);
 					return;
