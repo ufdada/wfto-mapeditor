@@ -14,6 +14,7 @@ function initOptions() {
 	
 	versioning.checked = store.getItem("versioning") || false;
 	
+	extend.onchange = resetPreview;
 	reverse.onchange = resetPreview;
 	rotate.onchange = resetPreview;
 
@@ -94,6 +95,10 @@ function mirrorPreview(type) {
 				third.setAttribute("class", "rotate270");
 				// four keeps the same
 				// fourth.setAttribute("class", "rotate180");
+			}
+			// both sides need to have the same size to work properly
+			if (extend.checked && terrain.mapsizex != terrain.mapsizey || !extend.checked && (terrain.mapsizex / 2 % 1 != 0 || terrain.mapsizex / 2 != terrain.mapsizey / 2)) {
+				rotate.disabled = "disabled";
 			}
 			if (terrain.mapsizex * 2 > terrain.maxsize || terrain.mapsizey * 2 > terrain.maxsize) {
 				extend.disabled = "disabled";
