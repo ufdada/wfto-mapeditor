@@ -184,7 +184,7 @@ function exportMap() {
 	// export as base64
 	var data = btoa(terrain.export(author));
 	var mapName = mapNameInput.value;
-	if (mapName.length < 1 && mapName.match(/[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g)) {
+	if (mapName.length < 1 || mapName.match(/[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g)) {
 		alert("Invalid filename!");
 		return;
 	}
