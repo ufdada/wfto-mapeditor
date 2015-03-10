@@ -561,7 +561,7 @@ function Map(sizex, sizey) {
 		switch(mirrorType) {
 			case 'first':
 				// mirror 1 & 3 to 2 & 4
-				map.mirrorPart(mapObject, cols, rows, rotate ? "rotate" : "vertical", reverse);
+				map.mirrorPart(mapObject, cols, rows, rotate ? "rotate" : "vertical");
 				// mirror 1 & 2 to 3 & 4
 				map.mirrorPart(mapObject, cols, rows, "horizontal", rotate ? true : false);
 				break;
@@ -652,6 +652,7 @@ function Map(sizex, sizey) {
 			var newRRow = col;
 			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
 			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
+			var tileIdRot = mapObject.tileIds[mapObject.map[newRRow][newRCol]["data-id"]];
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
 			var tileName = mapObject.tiles[mirrorPart['tile']] || "";
 			
@@ -660,6 +661,9 @@ function Map(sizex, sizey) {
 				return;
 			} else if (type == "vertical" && tileIdVert && tileIdVert in uncompleteRooms){
 				// the same as above in vertical mirror
+				return;
+			} else if (type == "rotate" && tileIdRot && tileIdRot in uncompleteRooms){
+				// the same as above in rotation
 				return;
 			} else if (tileIdMir && tileIdMir in uncompleteRooms) {
 				// see above
