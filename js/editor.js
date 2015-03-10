@@ -213,6 +213,7 @@ function Map(sizex, sizey) {
 			
 			for (var col = 0; col < map.mapsizex + (map.borderSize * 2); col++) {
 				var tile = document.createElement("td");
+				tile.innerHTML = "&nbsp;";
 				tile.setAttribute('id', 'col_' + row + '_' + col);
 				var roomTile = map.defaultTile;
 				var isBorder = map.borderSize > 0 && row <= map.borderSize - 1 || col <= map.borderSize - 1 || row >= map.mapsizey + map.borderSize || col >= map.mapsizex + map.borderSize;
