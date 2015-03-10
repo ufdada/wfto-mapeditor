@@ -644,25 +644,35 @@ function Map(sizex, sizey) {
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			// clone the mapobject cell
 			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
-			var newCol = map.mapsizex - 1 - col;
-			var newHCol = reverse ? (x2 - 1 - col) : col;
-			var newRow = map.mapsizey - 1 - row;
-			var newVRow = reverse ? (y2 - 1 - row) : row;
-			var newRCol = y2 * 2 - 1 - row;
-			var newRRow = col;
-			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
-			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
-			var tileIdRot = mapObject.tileIds[mapObject.map[newRRow][newRCol]["data-id"]];
+			
+			switch (type) {
+				case "vertical":
+					var newCol = map.mapsizex - 1 - col;
+					var newVRow = reverse ? (y2 - 1 - row) : row;
+					var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
+					break;
+				case "horizontal":
+					var newHCol = reverse ? (x2 - 1 - col) : col;
+					var newRow = map.mapsizey - 1 - row;
+					var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
+					break;
+				case "rotate":
+					var newRCol = y2 * 2 - 1 - row;
+					var newRRow = col;
+					var tileIdRot = mapObject.tileIds[mapObject.map[newRRow][newRCol]["data-id"]];
+					break;
+			}
+			
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
 			var tileName = mapObject.tiles[mirrorPart['tile']] || "";
 			
-			if (type == "horizontal" && tileIdHor && tileIdHor in uncompleteRooms) {
+			if (tileIdHor && tileIdHor in uncompleteRooms) {
 				// an uncomplete room should not get mirrored, we keep the tiles
 				return;
-			} else if (type == "vertical" && tileIdVert && tileIdVert in uncompleteRooms){
+			} else if (tileIdVert && tileIdVert in uncompleteRooms){
 				// the same as above in vertical mirror
 				return;
-			} else if (type == "rotate" && tileIdRot && tileIdRot in uncompleteRooms){
+			} else if (tileIdRot && tileIdRot in uncompleteRooms){
 				// the same as above in rotation
 				return;
 			} else if (tileIdMir && tileIdMir in uncompleteRooms) {
