@@ -59,7 +59,9 @@ function mirrorMap() {
 		}
 	}
 	if (ok) {
-		terrain.mirrorMap(active, !reverse.disabled ? reverse.checked : false);
+		var rev = !reverse.disabled ? reverse.checked : false;
+		var rot = !rotate.disabled ? rotate.checked : false;
+		terrain.mirrorMap(active, rev, rot);
 		toggleOptions(false);
 	}
 }

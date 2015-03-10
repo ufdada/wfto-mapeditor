@@ -553,7 +553,7 @@ function Map(sizex, sizey) {
 	 * @param mirrorType determines how the map should be mirrored
 	 *					 It's the sum of the cellvalues in the option menu
 	 */
-	this.mirrorMap = function(mirrorType, reverse) {
+	this.mirrorMap = function(mirrorType, reverse, rotate) {
 		var mapObject = map.mapToJson();
 		var cols = mapObject.map[0].length;
 		var rows = mapObject.map.length;
@@ -561,16 +561,16 @@ function Map(sizex, sizey) {
 		switch(mirrorType) {
 			case 'first':
 				// mirror 1 & 3 to 2 & 4
-				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
+				map.mirrorPart(mapObject, cols, rows, rotate ? "rotate" : "vertical", reverse);
 				// mirror 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
+				map.mirrorPart(mapObject, cols, rows, "horizontal", rotate ? true : false);
 				break;
 			case 'second': // 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
+				map.mirrorPart(mapObject, cols, rows, "horizontal", reverse);
 				break;
 			case 'third': // 1 & 3 to 2 & 4
 			default:
-				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
+				map.mirrorPart(mapObject, cols, rows, "vertical", reverse);
 				break;
 		}
 		
@@ -578,12 +578,32 @@ function Map(sizex, sizey) {
 		map.import(str);
 	}
 
-	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
+	this.mirrorPart = function(mapObject, cols, rows, type, reverse) {
 		var uncompleteRooms = {};
 		var copiedRooms = {};
 		var players = [1, 2, 3, 4];
 		var playerSearch = /_p[1-8]/g;
 		var mirrorPlayer = {};
+		switch (type) {
+			case "vertical":
+				var x1 = 0;
+				var x2 = parseInt(cols / 2);
+				var y1 = 0;
+				var y2 = parseInt(rows);
+				break;
+			case "horizontal":
+				var x1 = 0;
+				var x2 = parseInt(cols);
+				var y1 = 0;
+				var y2 = parseInt(rows / 2);
+				break;
+			case "rotate":
+				var x1 = 0;
+				var x2 = parseInt(cols / 2);
+				var y1 = 0;
+				var y2 = parseInt(rows / 2);
+				break;
+		}
 		
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
@@ -628,6 +648,8 @@ function Map(sizex, sizey) {
 			var newHCol = reverse ? (x2 - 1 - col) : col;
 			var newRow = map.mapsizey - 1 - row;
 			var newVRow = reverse ? (y2 - 1 - row) : row;
+			var newRCol = y2 * 2 - 1 - row;
+			var newRRow = col;
 			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
 			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
@@ -679,10 +701,16 @@ function Map(sizex, sizey) {
 				}
 			}
 			
-			if (type == "horizontal") {
-				mapObject.map[newRow][newHCol] = mirrorPart;
-			} else {
-				mapObject.map[newVRow][newCol] = mirrorPart;
+			switch(type) {
+				case "vertical":
+					mapObject.map[newVRow][newCol] = mirrorPart;
+					break;
+				case "horizontal":
+					mapObject.map[newRow][newHCol] = mirrorPart;
+					break;
+				case "rotate":
+					mapObject.map[newRRow][newRCol] = mirrorPart;
+					break;
 			}
 		});
 	}
