@@ -3,7 +3,6 @@
   "description": "A html based map editor for 'War for the Overworld'",
   "version": "0.12.0",
   "devDependencies": {
-    "dalek-browser-chrome": "0.0.11",
     "dalekjs": "0.0.9"
   }
 }
