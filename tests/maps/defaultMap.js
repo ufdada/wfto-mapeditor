@@ -1,8 +1,6 @@
 module.exports = {
-	'Draw test map': function (test) {
-		test
-			.open("index.html")
-			.waitForElement('#core_p1')
+	'drawDefaultMap': function (test, external) {
+		test.waitForElement('#core_p1')
 			.click('#core_p1')
 			.click('#col_3_3')
 			.click('#claimed_earth_p1')
@@ -67,7 +65,12 @@ module.exports = {
 			.click('#col_14_15')
 			.click('#col_15_15')
 			.click('#col_16_15')
-			.screenshot("test.png")
-			.done();
+			.screenshot("./tests/images/:browser/defaultMap.png");
+		
+		if (external) {
+			return test;
+		} else {
+			test.done();
+		}
 	}
 };
