@@ -1,7 +1,7 @@
 module.exports = {
-	'new': function (test, external, width, height) {
-		var width = width || '40';
-		var height = height || '40';
+	'generate': function (test, external, width, height) {
+		width = width || '40';
+		height = height || '40';
 		
 		if (!external) { test.open("index.html"); }
 		
@@ -10,6 +10,10 @@ module.exports = {
 		.type('#width', width)
 		.type('#height', height)
 		.click('input[type="submit"]')
+		.execute(function(){
+			this.assert.ok(window.terrain.mapsizex == width.value, "Mapwidth is " + width.value);
+			this.assert.ok(window.terrain.mapsizey == height.value, "Mapwidth is " + height.value);
+		});
 
 		if (external) {
 			return test;

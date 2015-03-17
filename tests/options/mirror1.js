@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
 	'mirror': function (test, external) {
 		test.click('#optionButton')

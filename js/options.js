@@ -1,14 +1,17 @@
 ﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g;
+var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "";
+
 
 function initOptions() {
-	first = document.getElementById('first');
-	second = document.getElementById('second');
-	third = document.getElementById('third');
-	fourth = document.getElementById('fourth');
-	reverse = document.getElementById('reverse');
-	extend = document.getElementById('extend');
-	versioning = document.getElementById('versioning');
+	first = document.getElementById('first'),
+	second = document.getElementById('second'),
+	third = document.getElementById('third'),
+	fourth = document.getElementById('fourth'),
+	reverse = document.getElementById('reverse'),
+	extend = document.getElementById('extend'),
+	versioning = document.getElementById('versioning'),
 	mapNameInput = document.getElementById("mapName");
+	rotate = document.getElementById("rotate");
 
 	resetMirror();
 	
@@ -32,8 +35,6 @@ function initOptions() {
 	second.onclick = setActive;
 	third.onclick = setActive;
 	fourth.onclick = setActive;
-
-	active = "";
 }
 
 function mirrorMap() {
@@ -53,6 +54,7 @@ function mirrorMap() {
 				terrain.mapsizey *= 2;
 				break;
 			case 'third':
+			/* falls through */
 			default:
 				terrain.mapsizex *= 2;
 				break;
@@ -99,7 +101,7 @@ function mirrorPreview(type) {
 				// fourth.setAttribute("class", "rotate180");
 			}
 			// both sides need to have the same size to work properly
-			if (extend.checked && terrain.mapsizex != terrain.mapsizey || !extend.checked && (terrain.mapsizex / 2 % 1 != 0 || terrain.mapsizex / 2 != terrain.mapsizey / 2)) {
+			if (extend.checked && terrain.mapsizex !== terrain.mapsizey || !extend.checked && (terrain.mapsizex / 2 % 1 !== 0 || terrain.mapsizex / 2 !== terrain.mapsizey / 2)) {
 				rotate.disabled = "disabled";
 			}
 			if (terrain.mapsizex * 2 > terrain.maxsize || terrain.mapsizey * 2 > terrain.maxsize) {
@@ -141,6 +143,7 @@ function mirrorPreview(type) {
 			}
 			break;
 		case 'third':
+		/* falls through */
 		default:
 			extend.disabled = "";
 			reverse.disabled = "";
@@ -216,7 +219,7 @@ function exportMap() {
 	// Maybe later
 	var author = ''; //document.getElementById("author").value;
 	// export as base64
-	var data = btoa(terrain.export(author));
+	var data = btoa(terrain.exportData(author));
 	var mapName = mapNameInput.value;
 	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
 		alert("Invalid filename!");
@@ -248,7 +251,7 @@ function importMap() {
 	if (window.FileReader) {
 		var files = document.getElementById("mapFile").files;
 		
-		if (files.length == 1) {
+		if (files.length === 1) {
 			if (files[0].name.match(invalidLetterRegex)) {
 				alert("Invalid filename!");
 				return;
@@ -257,10 +260,10 @@ function importMap() {
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
 			
-			reader.onload = function(e) {
+			reader.onload = function(evt) {
 				// map geladen
 				try {
-					terrain.import(atob(this.result));
+					terrain.importData(atob(this.result));
 					var filename = files[0].name;
 					var name = filename.substr(0, filename.lastIndexOf("."));
 					
@@ -281,7 +284,7 @@ function importMap() {
 					alert("Please select a valid map file.\n" + e.message);
 					return;
 				}
-			}
+			};
 		} else {
 			alert("Please select a valid map file");
 			return;
@@ -295,7 +298,7 @@ function importMap() {
 
 function saveOptions() {
 	// save terrain temporary
-	var map = terrain.export();
+	var map = terrain.exportData();
 	for (var item in terrain.options) {
 		var element = document.getElementById(item);
 		switch(element.nodeName.toLowerCase()) {
@@ -313,7 +316,7 @@ function saveOptions() {
 	}
 	// apply possible changes
 	terrain.generateTileCss();
-	terrain.import(map);
+	terrain.importData(map);
 	
 	toggleOptions(false);
 }
@@ -325,9 +328,9 @@ function resetOptions() {
 		// execute post action
 		terrain[terrain.options[item].postSave](option);
 	}*/
-	var map = terrain.export();
+	var map = terrain.exportData();
 	terrain.resetToDefault();
-	terrain.import(map);
+	terrain.importData(map);
 	toggleOptions(false);
 }
 
@@ -388,7 +391,7 @@ function importCsv() {
 	var files = document.getElementById("csv").files;
 	var bordersize = parseInt(document.getElementById("csvborder").value) || 3;
 	
-	if (files.length == 1) {
+	if (files.length === 1) {
 		
 		if (files[0].name.match(invalidLetterRegex)) {
 			alert("Invalid filename!");
@@ -412,12 +415,12 @@ function importCsv() {
 				tiles: [],
 				tileIds: [],
 				map: []
-			}
+			};
 
 			var rows = this.result.split("\n");
 			if (rows.length > bordersize * bordersize) {
 				for (var i = bordersize; i < rows.length - bordersize; i++) {
-					var rowData = []
+					var rowData = [];
 					var cells = rows[i].split(",");
 					
 					for (var j = bordersize; j < cells.length - bordersize; j++) {
@@ -495,7 +498,7 @@ function importCsv() {
 						}
 						
 						var tileTypeId = mapData.tiles.indexOf(tileName);
-						if (tileTypeId == -1) {
+						if (tileTypeId === -1) {
 							// save tilename only once and make a reference
 							mapData.tiles.push(tileName);
 							tileTypeId = mapData.tiles.length - 1;
@@ -510,23 +513,23 @@ function importCsv() {
 					var y = calcRooms[k][0];
 					var x = calcRooms[k][1];
 					var tileId = mapData.map[y][x]['tile'];
-					var tileName = mapData.tiles[tileId];
+					var tile = mapData.tiles[tileId];
 					// There is no tile left or above it, so lets create a new room
 					if (isNaN(parseInt(mapData.map[y][x]['data-id'])))
 					{
 						// new room
 						var id = new Date().getTime() - parseInt(Math.random() * 3000000).toString();
 						mapData.tileIds.push(id);
-						var roomTile = tiles[tileName];
+						var roomTile = tiles[tile];
 						var coreTile = '';
 						
-						var match = tileName.match(/core_p([1-8])/);
+						var match = tile.match(/core_p([1-8])/);
 						if (match) {
 							var player = parseInt(match[1]);
 							if (usedCores.indexOf(player) != -1 && player < 5) {
 								player = usedCores.length + 1;
-								tileName = tileName.replace(/_p([1-8])/, "_p" + player)
-								mapData.tiles.push(tileName);
+								tile = tile.replace(/_p([1-8])/, "_p" + player);
+								mapData.tiles.push(tile);
 								tileId = mapData.tiles.length - 1;
 							}
 							usedCores.push(player);
@@ -540,12 +543,12 @@ function importCsv() {
 						}
 					}
 				}
-				terrain.import(JSON.stringify(mapData));
+				terrain.importData(JSON.stringify(mapData));
 			} else {
 				alert("Please select a valid map file");
 				return;
 			}
-		}
+		};
 	} else {
 		alert("Please select a valid map file");
 	}

@@ -99,6 +99,8 @@ td:hover {
 }
 
 #mirrorMap {
+    border-spacing: 1;
+    border-collapse: separate;
 	display: inline-block;
 }
 

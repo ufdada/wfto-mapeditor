@@ -17,7 +17,7 @@
 </div>
 <div id="toolBox">
 	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" />
-	<a href="https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md" target="_blank"><button>?</button></a>
+	<button onclick="window.location.href='https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md'">?</button>
 	<!-- here are the tile buttons -->
 	<div id="info">
 		<p>Size: <span id="mapsize"></span></p>
@@ -34,12 +34,12 @@
 	</fieldset>
 	<fieldset>
 		<legend>Import Map</legend>
-		<input type="file" id="mapFile" accept="*.wfto"/>
+		<input type="file" id="mapFile" accept=".wfto"/>
 		<input type="button" id="import" value="Import" onclick="importMap()" />
 	</fieldset>
 	<fieldset>
 		<legend>Import Google CSV</legend>
-		<input type="file" id="csv" accept="*.csv" /><br />
+		<input type="file" id="csv" accept=".csv" /><br />
 		<label for="csvborder">Border: </label><input size="3" type="text" id="csvborder" placeholder="border" value="3" /><br />
 		<input type="button" value="Import CSV" onclick="importCsv()" />
 	</fieldset>
@@ -50,7 +50,7 @@
 		<label for="versioning">Versioning: </label><input title="Adds a version number to the name, starting with 001" type="checkbox" onchange="setVersioning(this)" id="versioning" /><br />
 		<p id="versionInfo">Current version: <span id="mapVersion"></span></p>
 		<label for="mapName">Mapname: </label><input type="text" id="mapName" value="Map"/><br />
-		<a href="#" id="export" onclick="exportMap()"><button>Export</button></a>
+		<button id="export" onclick="exportMap()">Export</button>
 	</fieldset>
 	<fieldset id="general">
 		<legend>General Options</legend>
@@ -59,7 +59,7 @@
 	</fieldset>
 	<fieldset>
 		<legend>Mirror Map</legend>
-		<table id="mirrorMap" border="0" cellspacing="1" cellpadding="1">
+		<table id="mirrorMap">
 			<tr>
 				<td id="first">1</td><td id="second">2</td>
 			</tr>

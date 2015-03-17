@@ -5,14 +5,14 @@
 		
 		var reader = new FileReader();
 		reader.readAsText(file);
-		reader.onload = function(){
+		reader.onload = function() {
 			var text = convertTests(this.result);
 			var output = document.getElementById("output");
 			var pre = document.createElement("pre");
 			
 			pre.innerHTML= text;
 			output.appendChild(pre);
-		}
+		};
 	}
 }
 
@@ -27,8 +27,9 @@ function convertTests(content) {
 	var footer = "\t\tif (external) {\r\n\t\t\treturn test;\r\n\t\t} else {\r\n\t\t\ttest.done();\r\n\t\t}\r\n\t}\r\n};";
 	
 	var rc = header;
-	
-	while (tests = testRegex.exec(content)){
+	var tests = null;
+
+	while ((testRegex.exec(content)) !== null){
 		var cmd = tests[1];
 		var selector = tests[2];
 		var val = tests[3];
@@ -40,7 +41,7 @@ function convertTests(content) {
 			.replace(/&gt;/g, ">")
 			.replace(/&lt;/g, "<")
 			.replace(/&quot;/g, "\"");
-		params = val ? selector + "', '" + val : selector;
+		var params = val ? selector + "', '" + val : selector;
 
 		// correct cmd
 		cmd = cmd
@@ -50,7 +51,7 @@ function convertTests(content) {
 			.replace(/waitForNotVisible/g, 'waitFor(function () { return document.getElementById("' + selector.substr(1) + '").style.display == none;}, [], 10000) //')
 			.replace(/assertEval/g, 'assert.ok("' + selector + ' == ' + val + '", "' + selector + ' == ' + val + '") //');
 		
-		command = "\t\t." + cmd + "('" + params + "')";
+		var command = "\t\t." + cmd + "('" + params + "')";
 		rc += command + "\r\n";
 	}
 	

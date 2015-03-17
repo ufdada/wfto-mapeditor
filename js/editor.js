@@ -9,7 +9,7 @@
 		terrain.generateTileCss();
 		terrain.init();
 	});
-}
+};
 
 function Map(sizex, sizey) {
 	var map = this;
@@ -50,7 +50,7 @@ function Map(sizex, sizey) {
 			option: "tileSize",
 			postSave: "setTileSize"
 		}
-	}
+	};
 
 	var mapParent = document.getElementsByTagName('body')[0];
 	var dropMessage = document.getElementById("dropMessage");
@@ -64,7 +64,7 @@ function Map(sizex, sizey) {
 				map[postSave](match[2]);
 			}
 		}
-	}
+	};
 	
 	// TODO: Implement to save dom operations
 	this.setTileMode = function(tileMode) {
@@ -75,7 +75,7 @@ function Map(sizex, sizey) {
 		store.setItem("tileMode", tileMode);
 		map.tileMode = tileMode;
 		//map.generateTileCss();
-	}
+	};
 	
 	// TODO: Implement to save dom operations
 	this.setTileSize = function(tileSize) {
@@ -86,7 +86,7 @@ function Map(sizex, sizey) {
 		store.setItem("tileSize", tileSize);
 		map.tileSize = tileSize;
 		// TODO: implement instant change of tilesize
-	}
+	};
 	
 	this.resetToDefault = function() {
 		for (var item in map.options) {
@@ -94,7 +94,7 @@ function Map(sizex, sizey) {
 			map[option] = map[option + "Default"];
 		}
 		terrain.generateTileCss();
-	}
+	};
 	
 	this.generateTileCss = function() {
 		var style = document.getElementById('tileCss') || document.createElement('style');
@@ -107,17 +107,17 @@ function Map(sizex, sizey) {
 			var css = '';
 			switch (map.tileMode) {
 				case "color":
-					var css = ' { background-color: ' + tiles[item].color + '; }\n';
+					css = ' { background-color: ' + tiles[item].color + '; }\n';
 					break;
 				default:
-					var css = ' { background-image: url("img/' + map.assetDir  + "/" + map.tileMode + "/" + item + '.png"); }\n';
+					css = ' { background-image: url("img/' + map.assetDir  + "/" + map.tileMode + "/" + item + '.png"); }\n';
 					break;
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
-	}
+	};
 
 	this.preloadTiles = function(callback) {
 		var images = Object.keys(tiles);
@@ -149,14 +149,14 @@ function Map(sizex, sizey) {
 		for (var i=0; i< images.length; i++){
 			image[i] = new Image();
 			image[i].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
-			image[i].onload=function(){
+			image[i].onload = function(){
 				imageLoaded();
-			}
-			image[i].onerror=function(){
+			};
+			image[i].onerror = function(){
 				imageLoaded();
-			}
+			};
 		}
-	}
+	};
 
 	this.createButtons = function() {
 		var toolBox = document.getElementById("toolBox");
@@ -172,7 +172,7 @@ function Map(sizex, sizey) {
 			button.id = item;
 			button.onclick = function () {
 				map.setCurrentTile(this.id);
-			}
+			};
 			//button.value = item;
 			button.type = "button";
 			button.setAttribute("class", item + " tileButton");
@@ -182,7 +182,7 @@ function Map(sizex, sizey) {
 		}
 		toolBox.insertBefore(buttons, info);
 		toolBox.style.display = "block";
-	}
+	};
 
 	this.init = function(mapObject) {
 		// only one map is allowed at the same time
@@ -231,7 +231,7 @@ function Map(sizex, sizey) {
 				
 				if (isBorder) {
 					// generate border
-					var roomTile = map.borderTile;
+					roomTile = map.borderTile;
 					tile.onmousemove = map.hideInfoBox;
 				} else if (mapObject && mapObject.map && mapObject.tileIds && mapObject.tiles) {
 					// import map
@@ -241,9 +241,9 @@ function Map(sizex, sizey) {
 					if (id) {
 						tile.setAttribute("data-id", id);
 						map.tiles[id] = map.tiles[id] || [];
-						if (map.tiles[id].length == 0) {
+						if (map.tiles[id].length === 0) {
 							// mark the start point of a new room
-							importedRooms[id] = { col: col, row: row }
+							importedRooms[id] = { col: col, row: row };
 						}
 						map.tiles[id].push("col_" + row+ "_" + col );
 						tile.setAttribute("data-pos-x", col - importedRooms[id].col);
@@ -259,7 +259,7 @@ function Map(sizex, sizey) {
 			table.appendChild(tr);
 		}
 		mapParent.appendChild(table);
-	}
+	};
 
 	this.destroy = function() {
 		map.tiles = {};
@@ -274,9 +274,9 @@ function Map(sizex, sizey) {
 		} else {
 			return false;
 		}
-	}
+	};
 
-	this.import = function(mapString) {
+	this.importData = function(mapString) {
 		var mapObject = JSON.parse(mapString);
 		if (!mapObject || !mapObject.map) {
 			throw new Error("Not a valid Map!");
@@ -291,13 +291,13 @@ function Map(sizex, sizey) {
 		} else {
 			throw new Error("Not a valid Map!");
 		}
-	}
+	};
 
-	this.export = function(author) {
+	this.exportData = function(author) {
 		var json = map.mapToJson(author);
 		var str = JSON.stringify(json);
 		return str;
-	}
+	};
 
 	this.enableDrag = function(evt) {
 		if (evt.button == map.mouseButton.left) {
@@ -305,11 +305,11 @@ function Map(sizex, sizey) {
 			map.insertTile(this, false, false);
 		}
 		return false;
-	}
+	};
 
 	this.disableDrag = function() {
 		map.dragEnabled = false;
-	}
+	};
 
 	this.setRoomOnDrag = function(evt) {
 		var infoBox = document.getElementById("infoBox");
@@ -340,15 +340,15 @@ function Map(sizex, sizey) {
 		infoBox.style.display = "block";
 		
 		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
-	}
+	};
 	
 	this.hideInfoBox = function() {
 		map.hideElement("infoBox");
-	}
+	};
 
 	this.resetRoom = function() {
 		map.insertTile(this, false, true);
-	}
+	};
 
 	this.displayRoom = function(evt) {
 		map.insertTile(this, true, false);
@@ -363,7 +363,7 @@ function Map(sizex, sizey) {
 		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
 			map.insertTile(this, false, false);
 		}
-	}
+	};
 
 	this.setRoom = function(evt) {
 		// helper for selenium
@@ -371,7 +371,7 @@ function Map(sizex, sizey) {
 		if (evt.button == map.mouseButton.left) {
 			map.insertTile(this, false, false);
 		}
-	}
+	};
 
 	this.destroyRoom = function(id) {
 		if (!id) {
@@ -386,8 +386,7 @@ function Map(sizex, sizey) {
 			tile.removeAttribute('data-pos-x');
 			tile.removeAttribute('data-pos-y');
 		}
-		
-	}
+	};
 
 	this.insertTile = function(tile, temp, reset) {
 		var roomTile = tiles[map.currentTile];
@@ -403,7 +402,7 @@ function Map(sizex, sizey) {
 				
 				for (var i = 0; i < roomTile.sizey; i++) {
 					for (var k = 0; k < roomTile.sizex; k++) {
-						var tile = document.getElementById("col_" + (startNoY + i) + "_" + (startNoX + k));
+						tile = document.getElementById("col_" + (startNoY + i) + "_" + (startNoX + k));
 						
 						if (!reset) {
 							// Only add the roomTile if really set
@@ -427,14 +426,14 @@ function Map(sizex, sizey) {
 				roomTileTiles.length > 0 ? map.tiles[id] = roomTileTiles : "";
 			}
 		}
-	}
+	};
 
 	this.resetTile = function(tile) {
 		tile.hasAttribute('data-temp') && map.setTile(tile, tile.getAttribute('data-temp'));
 		tile.hasAttribute('data-temp-pos') && map.setTilePosition(tile, tile.getAttribute('data-temp-pos'));
 		tile.removeAttribute('data-temp');
 		tile.removeAttribute('data-temp-pos');
-	}
+	};
 
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
@@ -445,7 +444,7 @@ function Map(sizex, sizey) {
 			tiles: [],
 			tileIds: [],
 			map: []
-		}
+		};
 		
 		for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
 
@@ -488,16 +487,16 @@ function Map(sizex, sizey) {
 
 			mapData.map.push(colData);
 		}
-		return mapData;		
-	}
+		return mapData;
+	};
 
 	this.setTilePosition = function(tile, pos) {
 		tile.style.backgroundPosition = pos;
-	}
+	};
 
 	this.getTilePosition = function(tile) {
 		return tile.style.backgroundPosition;
-	}
+	};
 
 	this.setTile = function(tile, currentTile) {
 		var roomTile = tiles[currentTile];
@@ -512,7 +511,7 @@ function Map(sizex, sizey) {
 		} else {
 			console.error("No tile found for "+ currentTile);
 		}
-	}
+	};
 
 	this.generateRoom = function(tile, row, col, temp) {
 		var roomTile = tiles[map.currentTile];
@@ -533,21 +532,21 @@ function Map(sizex, sizey) {
 			tile.style.opacity = "1";
 		}
 		map.setTile(tile, map.currentTile, row, col);
-	}
+	};
 
 	this.setCurrentTile = function(roomTile) {
 		// helper for selenium
 		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + roomTile + "</td>\n\t<td></td>\n</tr>");
 		map.currentTile = roomTile;
-	}
+	};
 	
 	this.setHtml = function(id, html) {
 		document.getElementById(id).innerHTML = html;		
-	}
+	};
 	
 	this.hideElement = function(id) {
 		document.getElementById(id).style.display = "none";	
-	}
+	};
 
 	/**
 	 * Mirrors a part of the map to get a better
@@ -570,14 +569,15 @@ function Map(sizex, sizey) {
 				map.mirrorPart(mapObject, cols, rows, "horizontal", reverse);
 				break;
 			case 'third': // 1 & 3 to 2 & 4
+			/* falls through */
 			default:
 				map.mirrorPart(mapObject, cols, rows, "vertical", reverse);
 				break;
 		}
 		
 		var str = JSON.stringify(mapObject);
-		map.import(str);
-	}
+		map.importData(str);
+	};
 
 	this.mirrorPart = function(mapObject, cols, rows, type, reverse) {
 		var uncompleteRooms = {};
@@ -585,24 +585,19 @@ function Map(sizex, sizey) {
 		var players = [1, 2, 3, 4];
 		var playerSearch = /_p[1-8]/g;
 		var mirrorPlayer = {};
+		var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		switch (type) {
 			case "vertical":
-				var x1 = 0;
-				var x2 = parseInt(cols / 2);
-				var y1 = 0;
-				var y2 = parseInt(rows);
+				x2 = parseInt(cols / 2);
+				y2 = parseInt(rows);
 				break;
 			case "horizontal":
-				var x1 = 0;
-				var x2 = parseInt(cols);
-				var y1 = 0;
-				var y2 = parseInt(rows / 2);
+				x2 = parseInt(cols);
+				y2 = parseInt(rows / 2);
 				break;
 			case "rotate":
-				var x1 = 0;
-				var x2 = parseInt(cols / 2);
-				var y1 = 0;
-				var y2 = parseInt(rows / 2);
+				x2 = parseInt(cols / 2);
+				y2 = parseInt(rows / 2);
 				break;
 		}
 		
@@ -704,7 +699,7 @@ function Map(sizex, sizey) {
 						players.splice(0, 1);
 					}
 					if (player) {
-						var tileName = tileName.replace(playerSearch, "_p" + player);
+						tileName = tileName.replace(playerSearch, "_p" + player);
 						var tileId = mapObject.tiles.indexOf(tileName);
 						if (tileId == -1) {
 							mapObject.tiles.push(tileName);
@@ -728,7 +723,7 @@ function Map(sizex, sizey) {
 					break;
 			}
 		});
-	}
+	};
 	
 	this.forEachCell = function(x1, x2, y1, y2, callback) {
 		for (var row = y1; row < y2; row++){
@@ -736,22 +731,22 @@ function Map(sizex, sizey) {
 				callback.call(this, col, row);
 			}
 		}
-	}
+	};
 	
 	this.cancelDrop = function() {
 		dropMessage.style.display = "none";
 		clearTimeout(map.dropTimeout);
-	}
+	};
 
 	this.dragOverMap = function(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
 		
 		clearTimeout(map.dropTimeout);
-		map.dropTimeout = setTimeout(function(){ map.cancelDrop() }, 200);
+		map.dropTimeout = setTimeout(function(){ map.cancelDrop(); }, 200);
 		
 		dropMessage.style.display = "block";
-	}
+	};
 
 	this.dropMap = function(evt) {
 		dropMessage.style.display = "none";
@@ -761,17 +756,17 @@ function Map(sizex, sizey) {
 		var dt = evt.dataTransfer;
 		var files = dt.files;
 
-		if(files && files.length != 0) {
+		if(files && files.length !== 0) {
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
 		
-			reader.onload = function(e) {
+			reader.onload = function(evt) {
 				try {
-					map.import(atob(this.result));
-				} catch(e) {
-					alert("Could not load map.\n\n" + e.message);
+					map.importData(atob(this.result));
+				} catch(exception) {
+					alert("Could not load map.\n\n" + exception.message);
 				}
-			}
+			};
 		}
-	}
+	};
 }

@@ -1,6 +1,7 @@
 module.exports = {
 	'drawDefaultMap': function (test, external) {
-		test.waitForElement('#core_p1')
+		test
+			.waitForElement('#core_p1')
 			.click('#core_p1')
 			.click('#col_3_3')
 			.click('#claimed_earth_p1')
