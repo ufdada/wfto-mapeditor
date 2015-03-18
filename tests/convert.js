@@ -49,7 +49,7 @@ function convertTests(content) {
 			.replace(/assertConfirmation/g, "assert.dialogText")
 			.replace(/assertConfirmation/g, "assert.dialogText")
 			.replace(/waitForNotVisible/g, 'waitFor(function () { return document.getElementById("' + selector.substr(1) + '").style.display == none;}, [], 10000) //')
-			.replace(/assertEval/g, 'assert.ok("' + selector + ' == ' + val + '", "' + selector + ' == ' + val + '") //');
+			.replace(/assertEval/g, 'assert.ok(' + selector + ' == ' + val + ', "' + selector + ' == ' + val + '") //');
 		
 		var command = "\t\t." + cmd + "('" + params + "')";
 		rc += command + "\r\n";

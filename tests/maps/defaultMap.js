@@ -1,5 +1,8 @@
 module.exports = {
-	'drawDefaultMap': function (test, external) {
+	'drawMap': function (test, external) {
+		
+		if (!external) { test.open('index.html'); }
+		
 		test
 			.waitForElement('#core_p1')
 			.click('#core_p1')

@@ -1,7 +1,7 @@
 module.exports = {
 	'generate': function (test, external, width, height) {
-		width = width || '40';
-		height = height || '40';
+		width = width || '20';
+		height = height || '20';
 		
 		if (!external) { test.open("index.html"); }
 		

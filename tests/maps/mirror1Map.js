@@ -672,7 +672,7 @@ module.exports = {
 			.click('#col_8_29')
 			.click('#col_31_27')
 			.click('#col_32_27')
-			.click('#col_33_27')
+			.click('#col_33_27');
 
 		if (external) {
 			return test;
