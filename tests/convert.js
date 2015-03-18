@@ -29,7 +29,7 @@ function convertTests(content) {
 	var rc = header;
 	var tests = null;
 
-	while ((testRegex.exec(content)) !== null){
+	while ((tests = testRegex.exec(content)) !== null){
 		var cmd = tests[1];
 		var selector = tests[2];
 		var val = tests[3];
@@ -46,10 +46,11 @@ function convertTests(content) {
 		// correct cmd
 		cmd = cmd
 			.replace(/waitForElementPresent/g, "waitForElement")
-			.replace(/assertConfirmation/g, "assert.dialogText")
-			.replace(/assertConfirmation/g, "assert.dialogText")
+			.replace(/assertConfirmation/g, "// assert.dialogText")
+			.replace(/assertConfirmation/g, "// assert.dialogText")
 			.replace(/waitForNotVisible/g, 'waitFor(function () { return document.getElementById("' + selector.substr(1) + '").style.display == none;}, [], 10000) //')
 			.replace(/assertEval/g, 'assert.ok(' + selector + ' == ' + val + ', "' + selector + ' == ' + val + '") //');
+			.replace(/type/g, 'setValue');
 		
 		var command = "\t\t." + cmd + "('" + params + "')";
 		rc += command + "\r\n";
