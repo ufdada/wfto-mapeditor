@@ -18,8 +18,8 @@ module.exports = {
 			};
 		})
 		.click('#optionButton')
-		.type('#width', width)
-		.type('#height', height)
+		.setValue('#width', width)
+		.setValue('#height', height)
 		.click('input[type="submit"]')
 		.execute(function(){
 			this.assert.ok(window.terrain.mapsizex == width.value, "Mapwidth is " + width.value);
