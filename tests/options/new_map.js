@@ -6,6 +6,17 @@ module.exports = {
 		if (!external) { test.open("index.html"); }
 		
 		test
+		.execute(function(){
+			// Workarround for phantomjs, otherwise confirm/alert messages break tests
+			window.confirm = function(text){ 
+				//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+				return true; 
+			};
+			window.alert = function(text){ 
+				//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+				return true; 
+			};
+		})
 		.click('#optionButton')
 		.type('#width', width)
 		.type('#height', height)
