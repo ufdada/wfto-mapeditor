@@ -1,5 +1,5 @@
 module.exports = {
-	'mirror': function (test, external) {
+	'mirror': function (test, external, makeShot) {
 
 		if (!external) { test.open('index.html'); }
 
@@ -7,9 +7,8 @@ module.exports = {
 			.click('#optionButton')
 			.click('#second')
 		
-			.click('#mirrorButton')
-			//.screenshot("./tests/images/:browser/mirror2.png")
-			;
+			.click('#mirrorButton');
+			makeShot && test.screenshot("./tests/images/:browser/mirror2.png");
 
 		if (external) {
 			return test;
@@ -17,7 +16,7 @@ module.exports = {
 			test.done();
 		}
 	},
-	'mirrorExtend': function (test, external) {
+	'mirrorExtend': function (test, external, makeShot) {
 
 		if (!external) { test.open('index.html'); }
 
@@ -27,10 +26,8 @@ module.exports = {
 			//.assert.notSelected('#extend', 'Extend unchecked')
 			.click('#extend')
 			
-			.click('#mirrorButton')
-			.click('#extend')
-			//.screenshot("./tests/images/:browser/mirror2Extend.png")
-			;
+			.click('#mirrorButton');
+			makeShot && test.screenshot("./tests/images/:browser/mirror2Extend.png");
 
 		if (external) {
 			return test;
@@ -38,7 +35,7 @@ module.exports = {
 			test.done();
 		}
 	},
-	'mirrorReverse': function (test, external) {
+	'mirrorReverse': function (test, external, makeShot) {
 
 		if (!external) { test.open('index.html'); }
 
@@ -47,10 +44,8 @@ module.exports = {
 			.click('#second')
 			.click('#reverse')
 		
-			.click('#mirrorButton')
-			.click('#reverse')
-			//.screenshot("./tests/images/:browser/mirror2Reverse.png")
-			;
+			.click('#mirrorButton');
+			makeShot && test.screenshot("./tests/images/:browser/mirror2Reverse.png");
 
 		if (external) {
 			return test;
@@ -58,7 +53,7 @@ module.exports = {
 			test.done();
 		}
 	},
-	'mirrorExtendReverse': function (test, external) {
+	'mirrorExtendReverse': function (test, external, makeShot) {
 
 		if (!external) { test.open('index.html'); }
 
@@ -68,11 +63,8 @@ module.exports = {
 			.click('#reverse')
 			.click('#extend')
 			
-			.click('#mirrorButton')
-			.click('#reverse')
-			.click('#extend')
-			//.screenshot("./tests/images/:browser/mirror2ExtendReverse.png")
-			;
+			.click('#mirrorButton');
+			makeShot && test.screenshot("./tests/images/:browser/mirror2ExtendReverse.png");
 
 		if (external) {
 			return test;

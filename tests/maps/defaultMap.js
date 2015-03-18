@@ -1,5 +1,5 @@
 module.exports = {
-	'drawMap': function (test, external) {
+	'drawMap': function (test, external, makeShot) {
 		
 		if (!external) { test.open('index.html'); }
 		
@@ -68,8 +68,8 @@ module.exports = {
 			.click('#col_14_14')
 			.click('#col_14_15')
 			.click('#col_15_15')
-			.click('#col_16_15')
-			.screenshot("./tests/images/:browser/defaultMap.png");
+			.click('#col_16_15');
+			makeShot && test.screenshot("./tests/images/:browser/defaultMap.png");
 		
 		if (external) {
 			return test;
