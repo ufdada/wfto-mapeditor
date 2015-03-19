@@ -1,5 +1,9 @@
 module.exports = {
 	'generate': function (test, external, width, height) {
+		String.prototype.purple = function() {
+			return "\033[35m" + this + "\033[0m";
+		};
+		
 		width = width || '20';
 		height = height || '20';
 		

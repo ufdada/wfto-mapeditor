@@ -1,13 +1,13 @@
 module.exports = {
 	'save': function (test, external) {
-		console.log(">> Save mapdata");
+		console.log(">> Save mapdata".purple());
 		test.execute(function() {
 			this.data("mapData", window.terrain.exportData());
 		});
 		return test;
 	},
 	'load': function (test, external) {
-		console.log(">> Load mapdata");
+		console.log(">> Load mapdata".purple());
 		test.execute(function() {
 			// reset these checkoxes, since dalek doesn't do that (wether with a second click nor through a reload) 
 			window.extend.checked = "";

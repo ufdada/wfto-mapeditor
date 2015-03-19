@@ -1,6 +1,6 @@
 module.exports = {
 	'drawMap': function (test, external, makeShot) {
-		console.log(">> Draw default map");
+		console.log(">> Draw default map".purple());
 		if (!external) { test.open('index.html'); }
 		
 		test

@@ -2,7 +2,7 @@ module.exports = {
 	 /* draws a rather complex map for testing the mirror 1 feature */
 	 /* Team Brawl by Slichizard */
 	'drawMap': function (test, external) {
-		console.log(">> Draw team brawl");
+		console.log(">> Draw team brawl".purple());
 		if (!external) { test.open('index.html'); }
 
 		test
