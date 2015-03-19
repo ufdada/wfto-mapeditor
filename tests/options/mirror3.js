@@ -1,0 +1,118 @@
+module.exports = {
+	'mirror': function (test, external, makeShot) {
+		if (!external) { test.open('index.html'); }
+
+		test
+			.click('#optionButton')
+			.click('#third')
+		
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.notSelected('#reverse', 'Reverse unchecked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.notSelected('#extend', 'Extend unchecked')
+
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+
+		makeShot && test.screenshot("./tests/images/:browser/mirror3.png");
+
+		if (external) {
+			return test;
+		} else {
+			test.done();
+		}
+	},
+	'mirrorExtend': function (test, external, makeShot) {
+		if (!external) { test.open('index.html'); }
+
+		test
+			.click('#optionButton')
+			.click('#third')
+			.click('#extend')
+			
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.notSelected('#reverse', 'Reverse unchecked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.selected('#extend', 'Extend checked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize') * 2, "mapsizex == " + this.data('mapsize') * 2);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+		
+		makeShot && test.screenshot("./tests/images/:browser/mirror3Extend.png");
+
+		if (external) {
+			return test;
+		} else {
+			test.done();
+		}
+	},
+	'mirrorReverse': function (test, external, makeShot) {
+		if (!external) { test.open('index.html'); }
+
+		test
+			.click('#optionButton')
+			.click('#third')
+			.click('#reverse')
+		
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.selected('#reverse', 'Reverse checked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.notSelected('#extend', 'Extend unchecked')
+
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+
+		makeShot && test.screenshot("./tests/images/:browser/mirror3Reverse.png");
+
+		if (external) {
+			return test;
+		} else {
+			test.done();
+		}
+	},
+	'mirrorExtendReverse': function (test, external, makeShot) {
+		if (!external) { test.open('index.html'); }
+
+		test
+			.click('#optionButton')
+			.click('#third')
+			.click('#reverse')
+			.click('#extend')
+
+			.click('#mirrorButton')
+
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.selected('#reverse', 'Reverse checked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.selected('#extend', 'Extend checked')
+
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize') * 2, "mapsizex == " + this.data('mapsize') * 2);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+
+		makeShot && test.screenshot("./tests/images/:browser/mirror3ExtendReverse.png");
+
+		if (external) {
+			return test;
+		} else {
+			test.done();
+		}
+	}
+};
