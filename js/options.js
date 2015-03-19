@@ -220,6 +220,7 @@ function exportMap() {
 	var author = ''; //document.getElementById("author").value;
 	// export as base64
 	var data = btoa(terrain.exportData(author));
+
 	var mapName = mapNameInput.value;
 	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
 		alert("Invalid filename!");
@@ -241,9 +242,11 @@ function exportMap() {
 	var href = window.URL.createObjectURL(blob);
 	
 	var exportButton = document.getElementById("export");
-	exportButton.setAttribute("download", mapName);
-	exportButton.setAttribute("href", href);
-	exportButton.setAttribute("target", "_blank");
+	var exportLink = document.getElementById("exportLink");
+	exportLink.setAttribute("download", mapName);
+	exportLink.setAttribute("href", href);
+	exportLink.setAttribute("target", "_blank");
+	exportLink.click();
 	toggleOptions(false);
 }
 
