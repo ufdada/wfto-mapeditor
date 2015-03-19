@@ -1,12 +1,25 @@
 module.exports = {
 	'mirror': function (test, external, makeShot) {
+		console.log('mirror1 mirror');
 		if (!external) { test.open('index.html'); }
 		
 		test.click('#optionButton')
 			.click('#first')
 			
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror1.png");
+			.click('#mirrorButton')
+			
+			.assert.enabled('#rotate', 'Rotate enabled')
+			.assert.notSelected('#rotate', 'Rotate unchecked')
+			.assert.disabled('#reverse', 'Reverse disabled')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.notSelected('#extend', 'Extend unchecked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror1.png");
 		
 		if (external) {
 			return test;
@@ -15,15 +28,27 @@ module.exports = {
 		}
 	},
 	'mirrorExtend': function (test, external, makeShot) {
-
+		console.log('mirror1 mirrorExtend');
 		if (!external) { test.open('index.html'); }
 
 		test
 			.click('#optionButton')
 			.click('#first')
 			.click('#extend')
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror1Extend.png");
+			.click('#mirrorButton')
+			
+			.assert.enabled('#rotate', 'Rotate enabled')
+			.assert.notSelected('#rotate', 'Rotate unchecked')
+			.assert.disabled('#reverse', 'Reverse disabled')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.selected('#extend', 'Extend checked')
+
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize') * 2, "mapsizex == " + this.data('mapsize') * 2);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize') * 2, "mapsizey == " + this.data('mapsize') * 2);
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror1Extend.png");
 
 		if (external) {
 			return test;
@@ -32,7 +57,7 @@ module.exports = {
 		}
 	},
 	'mirrorRotate': function (test, external, makeShot) {
-
+		console.log('mirror1 mirrorRotate');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -40,8 +65,20 @@ module.exports = {
 			.click('#first')
 			.click('#rotate')
 			
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror1Rotate.png");
+			.click('#mirrorButton')
+			
+			.assert.enabled('#rotate', 'Rotate enabled')
+			.assert.selected('#rotate', 'Rotate checked')
+			.assert.disabled('#reverse', 'Reverse disabled')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.notSelected('#extend', 'Extend unchecked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror1Rotate.png");
 
 		if (external) {
 			return test;
@@ -50,7 +87,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtendRotate': function (test, external, makeShot) {
-
+		console.log('mirror1 mirrorExtendRotate');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -59,8 +96,20 @@ module.exports = {
 			.click('#rotate')
 			.click('#extend')
 			
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror1ExtendRotate.png");
+			.click('#mirrorButton')
+			
+			.assert.enabled('#rotate', 'Rotate enabled')
+			.assert.selected('#rotate', 'Rotate checked')
+			.assert.disabled('#reverse', 'Reverse disabled')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.selected('#extend', 'Extend checked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize') * 2, "mapsizex == " + this.data('mapsize') * 2);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize') * 2, "mapsizey == " + this.data('mapsize') * 2);
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror1ExtendRotate.png");
 
 		if (external) {
 			return test;

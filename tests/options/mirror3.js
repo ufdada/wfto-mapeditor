@@ -1,5 +1,6 @@
 module.exports = {
 	'mirror': function (test, external, makeShot) {
+		console.log('mirror3 mirror');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -28,6 +29,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtend': function (test, external, makeShot) {
+		console.log('mirror3 mirrorExtend');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -57,6 +59,7 @@ module.exports = {
 		}
 	},
 	'mirrorReverse': function (test, external, makeShot) {
+		console.log('mirror3 mirrorReverse');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -86,6 +89,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtendReverse': function (test, external, makeShot) {
+		console.log('mirror3 mirrorExtendReverse');
 		if (!external) { test.open('index.html'); }
 
 		test

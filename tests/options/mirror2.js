@@ -1,14 +1,26 @@
 module.exports = {
 	'mirror': function (test, external, makeShot) {
-
+		console.log('mirror2 mirror');
 		if (!external) { test.open('index.html'); }
 
 		test
 			.click('#optionButton')
 			.click('#second')
 		
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror2.png");
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.notSelected('#reverse', 'Reverse unchecked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.notSelected('#extend', 'Extend unchecked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror2.png");
 
 		if (external) {
 			return test;
@@ -17,7 +29,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtend': function (test, external, makeShot) {
-
+		console.log('mirror2 mirrorExtend');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -26,8 +38,20 @@ module.exports = {
 			//.assert.notSelected('#extend', 'Extend unchecked')
 			.click('#extend')
 			
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror2Extend.png");
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.notSelected('#reverse', 'Reverse unchecked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.selected('#extend', 'Extend checked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize') * 2, "mapsizey == " + this.data('mapsize') * 2);
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror2Extend.png");
 
 		if (external) {
 			return test;
@@ -36,7 +60,7 @@ module.exports = {
 		}
 	},
 	'mirrorReverse': function (test, external, makeShot) {
-
+		console.log('mirror2 mirrorReverse');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -44,8 +68,20 @@ module.exports = {
 			.click('#second')
 			.click('#reverse')
 		
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror2Reverse.png");
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.selected('#reverse', 'Reverse checked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.notSelected('#extend', 'Extend unchecked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+			});
+			
+		makeShot && test.screenshot("./tests/images/:browser/mirror2Reverse.png");
 
 		if (external) {
 			return test;
@@ -54,7 +90,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtendReverse': function (test, external, makeShot) {
-
+		console.log('mirror2 mirrorExtendReverse');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -63,8 +99,20 @@ module.exports = {
 			.click('#reverse')
 			.click('#extend')
 			
-			.click('#mirrorButton');
-			makeShot && test.screenshot("./tests/images/:browser/mirror2ExtendReverse.png");
+			.click('#mirrorButton')
+			
+			.assert.disabled('#rotate', 'Rotate disabled')
+			.assert.enabled('#reverse', 'Reverse enabled')
+			.assert.selected('#reverse', 'Reverse checked')
+			.assert.enabled('#extend', 'Extend enabled')
+			.assert.selected('#extend', 'Extend checked')
+			
+			.execute(function(){
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsize') * 2, "mapsizey == " + this.data('mapsize') * 2);
+			});
+		
+		makeShot && test.screenshot("./tests/images/:browser/mirror2ExtendReverse.png");
 
 		if (external) {
 			return test;
