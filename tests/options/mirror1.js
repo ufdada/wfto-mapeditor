@@ -1,6 +1,6 @@
 module.exports = {
 	'mirror': function (test, external, makeShot) {
-		console.log('mirror1 mirror');
+		console.log('mirror1 - mirror');
 		if (!external) { test.open('index.html'); }
 		
 		test.click('#optionButton')
@@ -28,7 +28,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtend': function (test, external, makeShot) {
-		console.log('mirror1 mirrorExtend');
+		console.log('mirror1 - mirrorExtend');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -57,7 +57,7 @@ module.exports = {
 		}
 	},
 	'mirrorRotate': function (test, external, makeShot) {
-		console.log('mirror1 mirrorRotate');
+		console.log('mirror1 - mirrorRotate');
 		if (!external) { test.open('index.html'); }
 
 		test
@@ -87,7 +87,7 @@ module.exports = {
 		}
 	},
 	'mirrorExtendRotate': function (test, external, makeShot) {
-		console.log('mirror1 mirrorExtendRotate');
+		console.log('mirror1 - mirrorExtendRotate');
 		if (!external) { test.open('index.html'); }
 
 		test

@@ -4,8 +4,10 @@ var cache = require('../maps/cacheMap');
 var mirror1 = require('../options/mirror1');
 var mirror2 = require('../options/mirror2');
 var mirror3 = require('../options/mirror3');
+var exchange = require('../options/exchange_map');
 
 var new_map = require('../options/new_map');
+// Make screenshots
 var makeShot = false;
 
 module.exports = {
@@ -117,5 +119,11 @@ module.exports = {
 				this.assert.ok(Object.keys(window.terrain.tiles).length == 10, "Object.keys(tiles).length == 10");
 			});
         test.done();
-    }
+    },
+	"Import": function(test) {
+		test.open("index.html");
+			exchange.importMap(test, true, makeShot);
+			exchange.importCSVMap(test, true, makeShot);
+		test.done();
+	}
 };
