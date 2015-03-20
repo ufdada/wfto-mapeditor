@@ -1,19 +1,22 @@
 var fs = require('fs');
-var dir = ".\\tests\\files\\";
+var path = require('path');
+var dir = path.resolve(__dirname,  "../../tests/files/");
 
 module.exports = {
 	'importMap': function (test, external, makeShot, mapname) {
 		if (!external) { test.open("index.html"); }
 		
 		mapname = mapname || "Testimport";
+		
 		console.log("exchange - Import map: " + mapname);
+		var mapfile = path.resolve(dir, mapname + ".wfto");
 		
 		test
-		.click('#optionButton')
-		.setValue('#mapFile', dir + mapname + ".wfto")
-		.click('#import')
-		.assert.val('#mapName', mapname, 'Map name is ' + mapname)
-		.assert.notVisible("#options");
+			.click('#optionButton')
+			.setValue('#mapFile', mapfile)
+			.click('#import')
+			.assert.val('#mapName', mapname, 'Map name is ' + mapname)
+			.assert.notVisible("#options");
 		
 		makeShot && test.screenshot("./tests/images/:browser/" + mapname + "_import.png");
 
@@ -33,15 +36,16 @@ module.exports = {
 		border = border	|| 1;
 		
 		console.log("exchange - Import CSV map: " + mapname);
+		var mapfile = path.resolve(dir, mapname + ".csv");
 		
 		test
-		.click('#optionButton')
-		.setValue('#csv', dir + mapname + ".csv")
-		.setValue('#csvborder', '"' + border + '"')
-		.click('#importcsv')
-		.assert.val('#mapName', mapname, 'Map name is ' + mapname)
-		// TODO Evaluate map size
-		.assert.notVisible("#options");
+			.click('#optionButton')
+			.setValue('#csv', mapfile)
+			.setValue('#csvborder', '"' + border + '"')
+			.click('#importcsv')
+			.assert.val('#mapName', mapname, 'Map name is ' + mapname)
+			// TODO Evaluate map size
+			.assert.notVisible("#options");
 		
 		makeShot && test.screenshot("./tests/images/:browser/" + mapname + "_csvimport.png");
 
