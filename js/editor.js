@@ -272,6 +272,8 @@ function Map(sizex, sizey) {
 			table.appendChild(tr);
 		}
 		mapParent.appendChild(table);
+		
+		map.checkObsoleteRooms();
 	};
 
 	this.destroy = function() {
@@ -780,6 +782,21 @@ function Map(sizex, sizey) {
 					alert("Could not load map.\n\n" + exception.message);
 				}
 			};
+		}
+	};
+	
+	this.checkObsoleteRooms = function() {
+		var tileIds = map.tiles;
+		for (var tileId in tileIds) {
+			var firstId = tileIds[tileId][0];
+			var tile = document.getElementById(firstId);
+			var tileName = tile.getAttribute("class");
+			var size = tiles[tileName].sizex *  tiles[tileName].sizey;
+			
+			if (tileIds[tileId].length < size) {
+				// room isn't complete, destroy it!
+				map.destroyRoom(tileId);
+			}
 		}
 	};
 }
