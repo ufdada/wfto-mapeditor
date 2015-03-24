@@ -16,7 +16,6 @@ module.exports = {
 			exchange.importMap(test, true, makeShot, "ticket1");
 			mirror3.mirror(test, true, makeShot);
 		test.execute(function() {
-			this.assert.ok(window.navigator.userAgent, window.navigator.userAgent);
 			this.assert.ok(Object.keys(window.terrain.tiles).length == 8, "tiles should be 8, was " + Object.keys(window.terrain.tiles).length);
 		});
 		test.done();
