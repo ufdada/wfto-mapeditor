@@ -16,6 +16,7 @@ module.exports = {
 			.assert.notSelected('#extend', 'Extend unchecked')
 
 			.execute(function(){
+				this.assert.ok(window.active == "third", "window.active should be 'third', was " + window.active);
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "mapsizex == " + this.data('mapsizex'));
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
@@ -46,6 +47,7 @@ module.exports = {
 			.assert.selected('#extend', 'Extend checked')
 			
 			.execute(function(){
+				this.assert.ok(window.active == "third", "window.active should be 'third', was " + window.active);
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') * 2, "mapsizex == " + this.data('mapsizex') * 2);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
@@ -76,6 +78,7 @@ module.exports = {
 			.assert.notSelected('#extend', 'Extend unchecked')
 
 			.execute(function(){
+				this.assert.ok(window.active == "third", "window.active should be 'third', was " + window.active);
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "mapsizex == " + this.data('mapsizex'));
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
@@ -107,6 +110,7 @@ module.exports = {
 			.assert.selected('#extend', 'Extend checked')
 
 			.execute(function(){
+				this.assert.ok(window.active == "third", "window.active should be 'third', was " + window.active);
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') * 2, "mapsizex == " + this.data('mapsizex') * 2);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
