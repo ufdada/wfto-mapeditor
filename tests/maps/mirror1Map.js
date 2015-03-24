@@ -1,3 +1,5 @@
+var helper = require('../helper');
+
 module.exports = {
 	 /* draws a rather complex map for testing the mirror 1 feature */
 	 /* Team Brawl by Slichizard */

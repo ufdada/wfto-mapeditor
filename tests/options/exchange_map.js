@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var dir = path.resolve(__dirname,  "../../tests/files/");
+var helper = require('../helper');
 
 module.exports = {
 	'importMap': function (test, external, makeShot, mapname) {
@@ -15,6 +16,7 @@ module.exports = {
 			.click('#optionButton')
 			.setValue('#mapFile', mapfile)
 			.click('#import')
+			.wait(100)
 			.execute(function(){
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
@@ -47,6 +49,7 @@ module.exports = {
 			.setValue('#csv', mapfile)
 			.setValue('#csvborder', '"' + border + '"')
 			.click('#importcsv')
+			.wait(100)
 			.execute(function(){
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);

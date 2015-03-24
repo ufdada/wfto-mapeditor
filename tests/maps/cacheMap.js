@@ -1,3 +1,5 @@
+var helper = require('../helper');
+
 module.exports = {
 	'save': function (test, external) {
 		console.log(">> Save mapdata".purple());

@@ -1,4 +1,17 @@
-﻿window.onload = function(){
+﻿// phantom js workarround
+if (window.navigator.userAgent.indexOf("PhantomJS") != -1) {
+		// Workarround for phantomjs, otherwise confirm/alert messages break tests
+		window.confirm = function(text){ 
+			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+			return true; 
+		};
+		window.alert = function(text){ 
+			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+			return true; 
+		};
+}
+
+window.onload = function(){
 	// localStorage wrapper
 	store = new dataStorage();
 	

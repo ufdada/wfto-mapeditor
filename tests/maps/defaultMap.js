@@ -1,3 +1,5 @@
+var helper = require('../helper');
+
 module.exports = {
 	'drawMap': function (test, external, makeShot) {
 		console.log(">> Draw default map".purple());
