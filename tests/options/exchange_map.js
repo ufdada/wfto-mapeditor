@@ -15,6 +15,10 @@ module.exports = {
 			.click('#optionButton')
 			.setValue('#mapFile', mapfile)
 			.click('#import')
+			.execute(function(){
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
+			})
 			.assert.val('#mapName', mapname, 'Map name is ' + mapname)
 			.assert.notVisible("#options");
 		
@@ -43,6 +47,10 @@ module.exports = {
 			.setValue('#csv', mapfile)
 			.setValue('#csvborder', '"' + border + '"')
 			.click('#importcsv')
+			.execute(function(){
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
+			})
 			.assert.val('#mapName', mapname, 'Map name is ' + mapname)
 			// TODO Evaluate map size
 			.assert.notVisible("#options");

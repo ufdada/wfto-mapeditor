@@ -16,8 +16,8 @@ module.exports = {
 			.assert.notSelected('#extend', 'Extend unchecked')
 			
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "mapsizex == " + this.data('mapsizex'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
 			
 		makeShot && test.screenshot("./tests/images/:browser/mirror2.png");
@@ -47,8 +47,8 @@ module.exports = {
 			.assert.selected('#extend', 'Extend checked')
 			
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsize') * 2, "mapsizey == " + this.data('mapsize') * 2);
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "mapsizex == " + this.data('mapsizex'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') * 2, "mapsizey == " + this.data('mapsizey') * 2);
 			});
 			
 		makeShot && test.screenshot("./tests/images/:browser/mirror2Extend.png");
@@ -77,8 +77,8 @@ module.exports = {
 			.assert.notSelected('#extend', 'Extend unchecked')
 			
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsize'), "mapsizey == " + this.data('mapsize'));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "mapsizex == " + this.data('mapsizex'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
 			
 		makeShot && test.screenshot("./tests/images/:browser/mirror2Reverse.png");
@@ -108,8 +108,8 @@ module.exports = {
 			.assert.selected('#extend', 'Extend checked')
 			
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsize'), "mapsizex == " + this.data('mapsize'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsize') * 2, "mapsizey == " + this.data('mapsize') * 2);
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "mapsizex == " + this.data('mapsizex'));
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') * 2, "mapsizey == " + this.data('mapsizey') * 2);
 			});
 		
 		makeShot && test.screenshot("./tests/images/:browser/mirror2ExtendReverse.png");

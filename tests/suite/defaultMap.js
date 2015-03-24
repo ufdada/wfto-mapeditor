@@ -14,7 +14,8 @@ module.exports = {
     "Mirroring": function(test) {
 		test.open("index.html");
 			test.execute(function() {
-				this.data('mapsize', 20);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 		
 			// Mirror 1
