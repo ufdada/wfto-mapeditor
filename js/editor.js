@@ -793,7 +793,7 @@ function Map(sizex, sizey) {
 			var tileName = tile.getAttribute("class");
 			var size = tiles[tileName].sizex *  tiles[tileName].sizey;
 			
-			if (tileIds[tileId].length < size) {
+			if (tileIds[tileId].length != size) {
 				// room isn't complete, destroy it!
 				map.destroyRoom(tileId);
 			}
