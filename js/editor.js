@@ -132,6 +132,8 @@ function Map(sizex, sizey) {
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
+			
+			style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
 	};
