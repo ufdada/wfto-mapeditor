@@ -129,7 +129,7 @@ module.exports = {
 		test.done();
 	},
 	"Resize": function(test) {
-		test.open("index.html");
+		//test.open("index.html");
 		
 			exchange.importMap(test, true, makeShot);
 			
