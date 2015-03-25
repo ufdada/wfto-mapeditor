@@ -64,6 +64,10 @@ function Map(sizex, sizey) {
 			postSave: "setTileSize"
 		}
 	};
+	this.operation = {
+		before: ["shift", "unshift"],
+		after: ["pop", "push"]
+	};
 
 	var mapParent = document.getElementsByTagName('body')[0];
 	var dropMessage = document.getElementById("dropMessage");
@@ -799,4 +803,44 @@ function Map(sizex, sizey) {
 			}
 		}
 	};
+	
+	this.changeColumn = function(mapData, position, add) {
+		var mapArray = mapData.map;
+		var operation = map.operation[position][add ? 1 : 0];
+		
+		for (var i = 0; i < mapArray.length; i++) {
+			mapArray[i][operation]({ tile: 0 });
+		}
+	}
+
+	this.changeLine = function(mapData, position, add) {
+		var mapArray = mapData.map;
+		var operation = map.operation[position][add ? 1 : 0];
+		
+		var cols = [];
+		for (var i = 0; i < mapArray[0].length; i++) {
+			cols.push({ tile: 0 });
+		}	
+		mapArray[operation](cols);
+	}
+
+	this.changeMap = function(dir, add) {
+		var mapData = map.mapToJson();
+		var position = "after";
+		
+		switch(dir) {
+			case 'top':
+				position = "before";
+			case 'bottom':
+				map.changeLine(mapData, position, add);
+				break;	
+			case 'left':	
+				position = "before";
+			case 'right':
+				map.changeColumn(mapData, position, add);
+				break;
+		}
+		
+		map.importData(JSON.stringify(mapData));
+	}
 }
