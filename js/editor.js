@@ -808,6 +808,11 @@ function Map(sizex, sizey) {
 		var mapArray = mapData.map;
 		var operation = map.operation[position][add ? 1 : 0];
 		
+		// map size should not exceed the defined min/max size
+		if (mapArray[0].length == map.minsize && !add || mapArray[0].length == map.maxsize && add) {
+			return;
+		}
+		
 		for (var i = 0; i < mapArray.length; i++) {
 			mapArray[i][operation]({ tile: 0 });
 		}
@@ -817,10 +822,15 @@ function Map(sizex, sizey) {
 		var mapArray = mapData.map;
 		var operation = map.operation[position][add ? 1 : 0];
 		
+		// map size should not exceed the defined min/max size
+		if (mapArray.length == map.minsize && !add || mapArray.length == map.maxsize && add) {
+			return;
+		}
+		
 		var cols = [];
 		for (var i = 0; i < mapArray[0].length; i++) {
 			cols.push({ tile: 0 });
-		}	
+		}
 		mapArray[operation](cols);
 	};
 
