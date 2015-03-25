@@ -9,6 +9,10 @@ html, body {
 	font-size: 12px;
 }
 
+a {
+	text-decoration: none;
+}
+
 p{
 	margin: 0;
 }
@@ -167,4 +171,19 @@ td:hover {
 #versionInfo {
 	display: none;
 	margin-top: 3px;
+}
+
+.plus {
+	color: green;
+	font-weight: bold;
+}
+
+.minus {
+	color: red;
+	font-weight: bold;
+}
+
+#resizeTable td {
+	border: 1px solid #ccc;
+	font-size: 21px;
 }

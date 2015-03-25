@@ -27,8 +27,9 @@ module.exports = function (grunt) {
 		dalek: {
 			dist: {
 				src: [
-					'./tests/suite/defaultMap.js',
-					'./tests/suite/tickets.js'
+					'./tests/suite/defaultMap.js' /*,
+					'./tests/suite/options.js',
+					'./tests/suite/tickets.js'*/
 				]
 			}
 		}
