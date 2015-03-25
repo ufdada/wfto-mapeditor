@@ -26,7 +26,10 @@ module.exports = function (grunt) {
 		},
 		dalek: {
 			dist: {
-				src: ['./tests/suite/defaultMap.js']
+				src: [
+					'./tests/suite/defaultMap.js',
+					'./tests/suite/tickets.js'
+				]
 			}
 		}
 	});
