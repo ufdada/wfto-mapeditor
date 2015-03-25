@@ -481,12 +481,7 @@ function Map(sizex, sizey) {
 					
 					var id = tile.getAttribute("data-id");
 					var className = tile.getAttribute("class");
-					var tileTypeId = mapData.tiles.indexOf(className);
-					if (tileTypeId == -1) {
-						// save tilename only once and make a reference
-						mapData.tiles.push(className);
-						tileTypeId = mapData.tiles.length - 1;
-					}
+					var tileTypeId = map.getMapTileId(mapData, className);
 					
 					if (id) {
 						// save unique room identifier and make a reference
@@ -719,11 +714,7 @@ function Map(sizex, sizey) {
 					}
 					if (player) {
 						tileName = tileName.replace(playerSearch, "_p" + player);
-						var tileId = mapObject.tiles.indexOf(tileName);
-						if (tileId == -1) {
-							mapObject.tiles.push(tileName);
-							tileId = mapObject.tiles.length - 1;
-						}
+						var tileId = map.getMapTileId(mapObject, tileName);
 						mirrorPart['tile'] = tileId;
 					}
 					// if the player maximum is reached, just copy them. The user has to fix it by himself
@@ -804,9 +795,22 @@ function Map(sizex, sizey) {
 		}
 	};
 	
+	this.getMapTileId = function(mapData, tileName) {
+		var tileTypeId = mapData.tiles.indexOf(tileName);
+		if (tileTypeId == -1) {
+			// save tilename only once and make a reference
+			mapData.tiles.push(tileName);
+			tileTypeId = mapData.tiles.length - 1;
+		}
+		
+		return tileTypeId;
+	};
+	
 	this.changeColumn = function(mapData, position, add) {
 		var mapArray = mapData.map;
 		var operation = map.operation[position][add ? 1 : 0];
+		
+		var tileId = map.getMapTileId(mapData, map.defaultTile);
 		
 		// map size should not exceed the defined min/max size
 		if (mapArray[0].length == map.minsize && !add || mapArray[0].length == map.maxsize && add) {
@@ -814,13 +818,15 @@ function Map(sizex, sizey) {
 		}
 		
 		for (var i = 0; i < mapArray.length; i++) {
-			mapArray[i][operation]({ tile: 0 });
+			mapArray[i][operation]({ tile: tileId });
 		}
 	};
 
 	this.changeLine = function(mapData, position, add) {
 		var mapArray = mapData.map;
 		var operation = map.operation[position][add ? 1 : 0];
+		
+		var tileId = map.getMapTileId(mapData, map.defaultTile);
 		
 		// map size should not exceed the defined min/max size
 		if (mapArray.length == map.minsize && !add || mapArray.length == map.maxsize && add) {
@@ -829,7 +835,7 @@ function Map(sizex, sizey) {
 		
 		var cols = [];
 		for (var i = 0; i < mapArray[0].length; i++) {
-			cols.push({ tile: 0 });
+			cols.push({ tile: tileId });
 		}
 		mapArray[operation](cols);
 	};

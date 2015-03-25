@@ -500,12 +500,7 @@ function importCsv() {
 							calcRooms.push([i - bordersize, j - bordersize]);
 						}
 						
-						var tileTypeId = mapData.tiles.indexOf(tileName);
-						if (tileTypeId === -1) {
-							// save tilename only once and make a reference
-							mapData.tiles.push(tileName);
-							tileTypeId = mapData.tiles.length - 1;
-						}
+						var tileTypeId = terrain.getMapTileId(mapData, tileName);
 						cell["tile"] = tileTypeId;
 						rowData.push(cell);
 					}
