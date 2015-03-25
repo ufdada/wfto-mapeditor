@@ -9,6 +9,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 #### Improvements:
 - Get rid of the position in the mapfile on bigger rooms and calculate it instead (saves filesize)
+- Map gets cleaned from uncompleted rooms
 
 ### Release 1.2
 #### New Features:
