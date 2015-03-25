@@ -17,7 +17,7 @@ module.exports = {
 		console.log(">> Test ticket #12".purple());
 		
 		// TODO: find out why enabling this makes the grunt test fail
-		test.open("index.html");
+		//test.open("index.html");
 			exchange.importMap(test, true, makeShot, "Ticket_12");
 			mirror3.mirror(test, true, makeShot);
 		test.execute(function() {
