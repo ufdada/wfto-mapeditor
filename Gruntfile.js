@@ -28,6 +28,7 @@ module.exports = function (grunt) {
 			dist: {
 				src: [
 					'./tests/suite/defaultMap.js',
+					'./tests/suite/options.js',
 					'./tests/suite/tickets.js'
 				]
 			}
