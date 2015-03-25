@@ -17,12 +17,30 @@
 </div>
 <div id="toolBox">
 	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" />
-	<a href="https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md" target="_blank"><button>?</button></a>
+	<button onclick="window.location.href='https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md'">?</button>
 	<!-- here are the tile buttons -->
 	<div id="info">
 		<p>Size: <span id="mapsize"></span></p>
 	</div>
+	<table id="resizeTable" title="Resize Map">
+		<tr>
+			<td></td>
+			<td><a class="plus" id="topPlus" href="#" onclick="terrain.changeMap('top', true)">+</a> <a class="minus"  id="topMinus" href="#" onclick="terrain.changeMap('top', false)">-</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><a class="plus" id="leftPlus" href="#" onclick="terrain.changeMap('left', true)">+</a> <a class="minus" id="leftMinus" href="#" onclick="terrain.changeMap('left', false)">-</a></td>
+			<td></td>
+			<td><a class="plus" id="rightPlus" href="#" onclick="terrain.changeMap('right', true)">+</a> <a class="minus" id="rightMinus" href="#" onclick="terrain.changeMap('right', false)">-</a></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><a class="plus" id="bottomPlus" href="#" onclick="terrain.changeMap('bottom', true)">+</a> <a class="minus" id="bottomMinus" href="#" onclick="terrain.changeMap('bottom', false)">-</a></td>
+			<td></td>
+		</tr>
+	</table>
 </div>
+
 <div id="options" style="display: none;">
 	<fieldset>
 		<legend>New Map</legend>
@@ -34,20 +52,24 @@
 	</fieldset>
 	<fieldset>
 		<legend>Import Map</legend>
-		<input type="file" id="mapFile" accept="*.wfto"/>
+		<input type="file" id="mapFile" accept=".wfto"/>
 		<input type="button" id="import" value="Import" onclick="importMap()" />
 	</fieldset>
 	<fieldset>
 		<legend>Import Google CSV</legend>
-		<input type="file" id="csv" accept="*.csv" /><br />
+		<input type="file" id="csv" accept=".csv" /><br />
 		<label for="csvborder">Border: </label><input size="3" type="text" id="csvborder" placeholder="border" value="3" /><br />
-		<input type="button" value="Import CSV" onclick="importCsv()" />
+		<input type="button" id="importcsv" value="Import CSV" onclick="importCsv()" />
 	</fieldset>
 	<fieldset>
 		<legend>Export Map</legend>
 		<!-- For now keep it short and simple -->
 		<!-- input type="text" id="author" placeholder="Your Name" / -->
-		<a href="#" id="export" onclick="exportMap()"><button>Export</button></a>
+		<label for="versioning">Versioning: </label><input title="Adds a version number to the name, starting with 001" type="checkbox" onchange="setVersioning(this)" id="versioning" /><br />
+		<p id="versionInfo">Current version: <span id="mapVersion"></span></p>
+		<label for="mapName">Mapname: </label><input type="text" id="mapName" value="Map"/><br />
+		<button id="export" onclick="exportMap()">Export</button>
+		<a href="" id="exportLink" style="display:none"></a>
 	</fieldset>
 	<fieldset id="general">
 		<legend>General Options</legend>
@@ -56,7 +78,7 @@
 	</fieldset>
 	<fieldset>
 		<legend>Mirror Map</legend>
-		<table id="mirrorMap" border="0" cellspacing="1" cellpadding="1">
+		<table id="mirrorMap">
 			<tr>
 				<td id="first">1</td><td id="second">2</td>
 			</tr>
@@ -65,13 +87,15 @@
 			</tr>
 		</table>
 		<div style="display: inline-block">
+			<input id="rotate" type="checkbox" value="rotate" />
+			<label for="rotate">Rotate</label><br />
 			<input id="reverse" type="checkbox" value="reverse" />
 			<label for="reverse">Reverse</label><br />
 			<input id="extend" type="checkbox" value="extend" />
 			<label for="extend">Extend Map</label>
 		</div>
 		<div style="display: inline-block">
-			<a href="#" id="mirrorButton" onclick="mirrorMap()"><button>Mirror map</button></a>
+			<button id="mirrorButton" onclick="mirrorMap()">Mirror map</button>
 		</div>
 	</fieldset>
 

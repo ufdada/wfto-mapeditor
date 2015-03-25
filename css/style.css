@@ -9,6 +9,10 @@ html, body {
 	font-size: 12px;
 }
 
+a {
+	text-decoration: none;
+}
+
 p{
 	margin: 0;
 }
@@ -99,10 +103,13 @@ td:hover {
 }
 
 #mirrorMap {
+    border-spacing: 1;
+    border-collapse: separate;
 	display: inline-block;
 }
 
 #mirrorMap td {
+	width: 15px;
 	padding: 5px;
 	transition: all 0.3s;
 	border: 1px solid black;
@@ -115,6 +122,18 @@ td:hover {
 #mirrorMap td.active {
 	background-color: #ccc;
 	cursor: pointer;
+}
+
+.rotate90 {
+	transform: rotate(90deg);
+}
+
+.rotate180 {
+	transform: rotate(180deg);
+}
+
+.rotate270 {
+	transform: rotate(270deg);
 }
 
 .mirrorVertical {
@@ -147,4 +166,24 @@ td:hover {
 	text-align: center;
 	margin-top: 20%;
 	font-size: 45px;
+}
+
+#versionInfo {
+	display: none;
+	margin-top: 3px;
+}
+
+.plus {
+	color: green;
+	font-weight: bold;
+}
+
+.minus {
+	color: red;
+	font-weight: bold;
+}
+
+#resizeTable td {
+	border: 1px solid #ccc;
+	font-size: 21px;
 }

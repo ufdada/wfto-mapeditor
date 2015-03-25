@@ -1,0 +1,37 @@
+{
+    "asi":           false,
+    "browser":       true,
+    "curly":		 true,
+    "debug":         false,
+    "devel":         true,
+    "eqeqeq":        false, 
+    "es3":        	 true, 
+    "evil":          true,
+	"expr":			 true,
+    "proto":         true,
+    "regexdash":     true,
+    "strict":        false,
+	"scripturl":     true,
+    "sub":           true,
+    "trailing":      true,
+    "undef":         true,
+    "loopfunc":         true,
+    "-W065": true,
+	"-W020": true,
+
+    "predef" : [
+        "exports",
+        "phantom",
+		"require",
+        "window",
+        "module",
+        "terrain",
+        "JSON",
+        "tiles",
+        "dataStorage",
+        "initOptions",
+        "Map",
+        "__dirname",
+        "store"
+    ]
+}

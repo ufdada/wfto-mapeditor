@@ -1,15 +1,25 @@
-﻿function initOptions() {
-	var first = document.getElementById('first');
-	var second = document.getElementById('second');
-	var third = document.getElementById('third');
-	var fourth = document.getElementById('fourth');
-	var reverse = document.getElementById('reverse');
-	var extend = document.getElementById('extend');
+﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g;
+var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "";
 
-	reverse.checked = "";
-	extend.checked = "";
+
+function initOptions() {
+	first = document.getElementById('first'),
+	second = document.getElementById('second'),
+	third = document.getElementById('third'),
+	fourth = document.getElementById('fourth'),
+	reverse = document.getElementById('reverse'),
+	extend = document.getElementById('extend'),
+	versioning = document.getElementById('versioning'),
+	mapNameInput = document.getElementById("mapName");
+	rotate = document.getElementById("rotate");
+
+	resetMirror();
 	
+	versioning.checked = store.getItem("versioning") || false;
+	
+	extend.onchange = resetPreview;
 	reverse.onchange = resetPreview;
+	rotate.onchange = resetPreview;
 
 	first.onmouseover = mirrorTable;
 	second.onmouseover = mirrorTable;
@@ -25,8 +35,6 @@
 	second.onclick = setActive;
 	third.onclick = setActive;
 	fourth.onclick = setActive;
-
-	active = "";
 }
 
 function mirrorMap() {
@@ -46,13 +54,16 @@ function mirrorMap() {
 				terrain.mapsizey *= 2;
 				break;
 			case 'third':
+			/* falls through */
 			default:
 				terrain.mapsizex *= 2;
 				break;
 		}
 	}
 	if (ok) {
-		terrain.mirrorMap(active, !reverse.disabled ? reverse.checked : false);
+		var rev = !reverse.disabled ? reverse.checked : false;
+		var rot = !rotate.disabled ? rotate.checked : false;
+		terrain.mirrorMap(active, rev, rot);
 		toggleOptions(false);
 	}
 }
@@ -70,21 +81,41 @@ function mirrorTable() {
 function mirrorPreview(type) {
 	switch(type) {
 		case 'first':
+			extend.disabled = "";
+			reverse.disabled = "disabled";
+			rotate.disabled = "";
+		
 			first.setAttribute("class", "active");
 			second.innerHTML = '1';
-			second.setAttribute("class", "mirrorHorizontal");
 			third.innerHTML = '1';
-			third.setAttribute("class", "mirrorVertical");
 			fourth.innerHTML = '1';
 			fourth.setAttribute("class", "mirrorBoth");
-			reverse.disabled = "disabled";
+			
+			if (!rotate.checked) {
+				second.setAttribute("class", "mirrorHorizontal");
+				third.setAttribute("class", "mirrorVertical");
+			} else {
+				second.setAttribute("class", "rotate90");
+				third.setAttribute("class", "rotate270");
+				// four keeps the same
+				// fourth.setAttribute("class", "rotate180");
+			}
+			// both sides need to have the same size to work properly
+			if (extend.checked && terrain.mapsizex !== terrain.mapsizey || !extend.checked && (terrain.mapsizex / 2 % 1 !== 0 || terrain.mapsizex / 2 !== terrain.mapsizey / 2)) {
+				rotate.disabled = "disabled";
+			}
 			if (terrain.mapsizex * 2 > terrain.maxsize || terrain.mapsizey * 2 > terrain.maxsize) {
 				extend.disabled = "disabled";
 			}
 			break;
 		case 'second':
+			extend.disabled = "";
+			reverse.disabled = "";
+			rotate.disabled = "disabled";
+		
 			first.setAttribute("class", "active");
 			second.setAttribute("class", "active");
+			
 			if (store.localStorage) {
 				third.innerHTML = '1';
 				fourth.innerHTML = '2';
@@ -112,9 +143,15 @@ function mirrorPreview(type) {
 			}
 			break;
 		case 'third':
+		/* falls through */
 		default:
+			extend.disabled = "";
+			reverse.disabled = "";
+			rotate.disabled = "disabled";
+		
 			first.setAttribute("class", "active");
 			third.setAttribute("class", "active");
+
 			if (reverse.checked) {
 				second.innerHTML = '3';
 				second.setAttribute("class", "mirrorBoth");
@@ -142,8 +179,12 @@ function resetPreview(){
 }
 
 function resetMirror() {
-	reverse.disabled = "";
 	extend.disabled = "";
+	reverse.disabled = "";
+	rotate.disabled = "";
+	extend.disabled = "disabled";
+	reverse.disabled = "disabled";
+	rotate.disabled = "disabled";
 
 	first.removeAttribute("class");
 	second.innerHTML = '2';
@@ -178,9 +219,16 @@ function exportMap() {
 	// Maybe later
 	var author = ''; //document.getElementById("author").value;
 	// export as base64
-	var data = btoa(terrain.export(author));
-	var mapName = "Map.wfto";
+	var data = btoa(terrain.exportData(author));
 
+	var mapName = mapNameInput.value;
+	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
+		alert("Invalid filename!");
+		return;
+	}
+	mapName += versioning.checked ? "_" + terrain.version : "";
+	mapName += ".wfto";
+	
 	// Use the native blob constructor
 	var blob = new Blob([data], {type: "application/octet-stream"});
 	
@@ -194,9 +242,11 @@ function exportMap() {
 	var href = window.URL.createObjectURL(blob);
 	
 	var exportButton = document.getElementById("export");
-	exportButton.setAttribute("download", mapName);
-	exportButton.setAttribute("href", href);
-	exportButton.setAttribute("target", "_blank");
+	var exportLink = document.getElementById("exportLink");
+	exportLink.setAttribute("download", mapName);
+	exportLink.setAttribute("href", href);
+	exportLink.setAttribute("target", "_blank");
+	exportLink.click();
 	toggleOptions(false);
 }
 
@@ -204,15 +254,40 @@ function importMap() {
 	if (window.FileReader) {
 		var files = document.getElementById("mapFile").files;
 		
-		if (files.length == 1) {
+		if (files.length === 1) {
+			if (files[0].name.match(invalidLetterRegex)) {
+				alert("Invalid filename!");
+				return;
+			}
 			
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
 			
-			reader.onload = function(e) {
+			reader.onload = function(evt) {
 				// map geladen
-				terrain.import(atob(this.result));
-			}
+				try {
+					terrain.importData(atob(this.result));
+					var filename = files[0].name;
+					var name = filename.substr(0, filename.lastIndexOf("."));
+					
+					var versionIndex = name.lastIndexOf("_");
+					var version = name.substr(-3) -(-1);
+					
+					if (versionIndex !== -1 && !isNaN(version)) {
+						versioning.checked = true;
+						var newVersion = "00" + version;
+						terrain.version = newVersion.substring(-3);
+						name = name.substr(0, versionIndex);
+					} else {
+						versioning.checked = false;
+					}
+					
+					mapNameInput.value = name;
+				} catch(e) {
+					alert("Please select a valid map file.\n" + e.message);
+					return;
+				}
+			};
 		} else {
 			alert("Please select a valid map file");
 			return;
@@ -226,7 +301,7 @@ function importMap() {
 
 function saveOptions() {
 	// save terrain temporary
-	var map = terrain.export();
+	var map = terrain.exportData();
 	for (var item in terrain.options) {
 		var element = document.getElementById(item);
 		switch(element.nodeName.toLowerCase()) {
@@ -244,7 +319,7 @@ function saveOptions() {
 	}
 	// apply possible changes
 	terrain.generateTileCss();
-	terrain.import(map);
+	terrain.importData(map);
 	
 	toggleOptions(false);
 }
@@ -256,9 +331,9 @@ function resetOptions() {
 		// execute post action
 		terrain[terrain.options[item].postSave](option);
 	}*/
-	var map = terrain.export();
+	var map = terrain.exportData();
 	terrain.resetToDefault();
-	terrain.import(map);
+	terrain.importData(map);
 	toggleOptions(false);
 }
 
@@ -301,6 +376,8 @@ function refreshOptions() {
 		generalOptions.appendChild(document.createElement("br"));
 	}
 	general.insertBefore(generalOptions, saveOptions);
+	
+	setVersioning(document.getElementById("versioning"));
 }
 
 function toggleOptions(show) {
@@ -317,26 +394,36 @@ function importCsv() {
 	var files = document.getElementById("csv").files;
 	var bordersize = parseInt(document.getElementById("csvborder").value) || 3;
 	
-	if (files.length == 1) {
+	if (files.length === 1) {
+		
+		if (files[0].name.match(invalidLetterRegex)) {
+			alert("Invalid filename!");
+			return;
+		}
 		
 		var reader = new FileReader();
 		reader.readAsText(files[0]);
+		
+		var mapName = files[0].name;
+		mapName = mapName.substr(0, mapName.lastIndexOf("."));
+		mapNameInput.value = mapName;
 		
 		reader.onload = function(e) {
 			var calcRooms = [];
 			var usedCores = [];
 			var mapData = {
-				version: "1.2",
+				version: "1.3",
 				author: "",
 				border: 1,
 				tiles: [],
 				tileIds: [],
 				map: []
-			}
+			};
+
 			var rows = this.result.split("\n");
 			if (rows.length > bordersize * bordersize) {
 				for (var i = bordersize; i < rows.length - bordersize; i++) {
-					var rowData = []
+					var rowData = [];
 					var cells = rows[i].split(",");
 					
 					for (var j = bordersize; j < cells.length - bordersize; j++) {
@@ -413,12 +500,7 @@ function importCsv() {
 							calcRooms.push([i - bordersize, j - bordersize]);
 						}
 						
-						var tileTypeId = mapData.tiles.indexOf(tileName);
-						if (tileTypeId == -1) {
-							// save tilename only once and make a reference
-							mapData.tiles.push(tileName);
-							tileTypeId = mapData.tiles.length - 1;
-						}
+						var tileTypeId = terrain.getMapTileId(mapData, tileName);
 						cell["tile"] = tileTypeId;
 						rowData.push(cell);
 					}
@@ -429,23 +511,23 @@ function importCsv() {
 					var y = calcRooms[k][0];
 					var x = calcRooms[k][1];
 					var tileId = mapData.map[y][x]['tile'];
-					var tileName = mapData.tiles[tileId];
+					var tile = mapData.tiles[tileId];
 					// There is no tile left or above it, so lets create a new room
 					if (isNaN(parseInt(mapData.map[y][x]['data-id'])))
 					{
 						// new room
 						var id = new Date().getTime() - parseInt(Math.random() * 3000000).toString();
 						mapData.tileIds.push(id);
-						var roomTile = tiles[tileName];
+						var roomTile = tiles[tile];
 						var coreTile = '';
 						
-						var match = tileName.match(/core_p([1-8])/);
+						var match = tile.match(/core_p([1-8])/);
 						if (match) {
 							var player = parseInt(match[1]);
 							if (usedCores.indexOf(player) != -1 && player < 5) {
 								player = usedCores.length + 1;
-								tileName = tileName.replace(/_p([1-8])/, "_p" + player)
-								mapData.tiles.push(tileName);
+								tile = tile.replace(/_p([1-8])/, "_p" + player);
+								mapData.tiles.push(tile);
 								tileId = mapData.tiles.length - 1;
 							}
 							usedCores.push(player);
@@ -455,20 +537,27 @@ function importCsv() {
 							for (var posx = 0; posx < roomTile.sizex; posx++) {
 								mapData.map[y + posy][x + posx]['tile'] = tileId;
 								mapData.map[y + posy][x + posx]['data-id'] = mapData.tileIds.length - 1;
-								mapData.map[y + posy][x + posx]['data-pos-x'] = posx.toString();
-								mapData.map[y + posy][x + posx]['data-pos-y'] = posy.toString();
 							}
 						}
 					}
 				}
-				terrain.import(JSON.stringify(mapData));
+				terrain.importData(JSON.stringify(mapData));
 			} else {
 				alert("Please select a valid map file");
 				return;
 			}
-		}
+		};
 	} else {
 		alert("Please select a valid map file");
 	}
 	toggleOptions(false);
+}
+
+function setVersioning(element) {
+	store.setItem(element.id, element.checked);
+	var mapVersion = document.getElementById("mapVersion");
+	mapVersion.innerText = terrain.version;
+	
+	mapVersion.parentNode.style.display = element.checked ? "block" : "none";
+	
 }

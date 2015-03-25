@@ -1,7 +1,7 @@
 function dataStorage() {
 	this.hasStorageSupport = function() {
 		try {
-			if (!'localStorage' in window || typeof window['localStorage'] == "undefined") {
+			if (!('localStorage' in window) || typeof window['localStorage'] == "undefined") {
 				return false;
 			} else {
 				return true;
@@ -9,7 +9,7 @@ function dataStorage() {
 		} catch (e) {
 			return false;
 		}
-	}
+	};
 	this.localStorage = this.hasStorageSupport();
 	
     this.setItem = function(name,value,days) {
@@ -17,30 +17,42 @@ function dataStorage() {
 			localStorage.setItem(name, value);
 			return;
 		}
+		var expires = "";
+		
         if (days != -1) {
             var date = new Date();
             date.setTime(date.getTime()+(days*24*60*60*1000));
-            var expires = "; expires="+date.toGMTString();
-        } else {
-            var expires = "";
+            expires = "; expires="+date.toGMTString();
         }
         document.cookie = name+"="+value+expires+"; path=/";
     };
 	
     this.getItem = function(name) {
+		var returnValue = null;
 		if (this.localStorage) {
-			return localStorage.getItem(name);
+			returnValue = localStorage.getItem(name);
 		}
 		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for(var i=0;i < ca.length;i++) {
-			var c = ca[i];
-			while (c.charAt(0)==' ') c = c.substring(1,c.length);
-			if (c.indexOf(nameEQ) == 0) {
-				return c.substring(nameEQ.length,c.length);
+		var cookies = document.cookie.split(';');
+		for(var i=0;i < cookies.length;i++) {
+			var cookie = cookies[i];
+			while (cookie.charAt(0)==' ') {
+				cookie = cookie.substring(1, cookie.length);
+			}
+			if (cookie.indexOf(nameEQ) === 0) {
+				returnValue = cookie.substring(nameEQ.length, cookie.length);
 			}
 		}
-		return null;
+		
+		switch(returnValue) {
+			case "null":
+			case "undefined":
+			case "false":
+			case "true":
+				returnValue = JSON.parse(returnValue);
+				break;
+		}
+		return returnValue;
     };
 	
     this.removeItem = function(name) {
@@ -49,7 +61,7 @@ function dataStorage() {
 			return;
 		}
         this.setItem(name,"",-1);
-    }
+    };
 	
 	this.clear = function() {
 		if (this.localStorage) {
@@ -64,5 +76,5 @@ function dataStorage() {
 			var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
 			this.setItem(name,"",-1);
 		}
-	}
+	};
 }

@@ -1,4 +1,17 @@
-﻿window.onload = function(){
+﻿// phantom js workarround
+if (window.navigator.userAgent.indexOf("PhantomJS") != -1) {
+		// Workarround for phantomjs, otherwise confirm/alert messages break tests
+		window.confirm = function(text){ 
+			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+			return true; 
+		};
+		window.alert = function(text){ 
+			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+			return true; 
+		};
+}
+
+window.onload = function(){
 	// localStorage wrapper
 	store = new dataStorage();
 	
@@ -9,7 +22,7 @@
 		terrain.generateTileCss();
 		terrain.init();
 	});
-}
+};
 
 function Map(sizex, sizey) {
 	var map = this;
@@ -33,6 +46,7 @@ function Map(sizex, sizey) {
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
 	this.dropTimeout = 0;
+	this.version = "001";
 	this.mouseButton = {
 		left: 0,
 		middle: 1,
@@ -49,7 +63,11 @@ function Map(sizex, sizey) {
 			option: "tileSize",
 			postSave: "setTileSize"
 		}
-	}
+	};
+	this.operation = {
+		before: ["shift", "unshift"],
+		after: ["pop", "push"]
+	};
 
 	var mapParent = document.getElementsByTagName('body')[0];
 	var dropMessage = document.getElementById("dropMessage");
@@ -63,7 +81,7 @@ function Map(sizex, sizey) {
 				map[postSave](match[2]);
 			}
 		}
-	}
+	};
 	
 	// TODO: Implement to save dom operations
 	this.setTileMode = function(tileMode) {
@@ -74,7 +92,7 @@ function Map(sizex, sizey) {
 		store.setItem("tileMode", tileMode);
 		map.tileMode = tileMode;
 		//map.generateTileCss();
-	}
+	};
 	
 	// TODO: Implement to save dom operations
 	this.setTileSize = function(tileSize) {
@@ -85,7 +103,7 @@ function Map(sizex, sizey) {
 		store.setItem("tileSize", tileSize);
 		map.tileSize = tileSize;
 		// TODO: implement instant change of tilesize
-	}
+	};
 	
 	this.resetToDefault = function() {
 		for (var item in map.options) {
@@ -93,7 +111,7 @@ function Map(sizex, sizey) {
 			map[option] = map[option + "Default"];
 		}
 		terrain.generateTileCss();
-	}
+	};
 	
 	this.generateTileCss = function() {
 		var style = document.getElementById('tileCss') || document.createElement('style');
@@ -106,17 +124,19 @@ function Map(sizex, sizey) {
 			var css = '';
 			switch (map.tileMode) {
 				case "color":
-					var css = ' { background-color: ' + tiles[item].color + '; }\n';
+					css = ' { background-color: ' + tiles[item].color + '; }\n';
 					break;
 				default:
-					var css = ' { background-image: url("img/' + map.assetDir  + "/" + map.tileMode + "/" + item + '.png"); }\n';
+					css = ' { background-image: url("img/' + map.assetDir  + "/" + map.tileMode + "/" + item + '.png"); }\n';
 					break;
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
+			
+			style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
-	}
+	};
 
 	this.preloadTiles = function(callback) {
 		var images = Object.keys(tiles);
@@ -148,14 +168,14 @@ function Map(sizex, sizey) {
 		for (var i=0; i< images.length; i++){
 			image[i] = new Image();
 			image[i].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
-			image[i].onload=function(){
+			image[i].onload = function(){
 				imageLoaded();
-			}
-			image[i].onerror=function(){
+			};
+			image[i].onerror = function(){
 				imageLoaded();
-			}
+			};
 		}
-	}
+	};
 
 	this.createButtons = function() {
 		var toolBox = document.getElementById("toolBox");
@@ -171,7 +191,7 @@ function Map(sizex, sizey) {
 			button.id = item;
 			button.onclick = function () {
 				map.setCurrentTile(this.id);
-			}
+			};
 			//button.value = item;
 			button.type = "button";
 			button.setAttribute("class", item + " tileButton");
@@ -181,12 +201,13 @@ function Map(sizex, sizey) {
 		}
 		toolBox.insertBefore(buttons, info);
 		toolBox.style.display = "block";
-	}
+	};
 
 	this.init = function(mapObject) {
 		// only one map is allowed at the same time
 		map.destroy();
 		map.createButtons();
+		map.version = "001";
 		
 		mapParent.ondrop = map.dropMap;
 		mapParent.ondragover = map.dragOverMap;
@@ -201,19 +222,21 @@ function Map(sizex, sizey) {
 		
 		map.setHtml("mapsize", map.mapsizex + "x" + map.mapsizey);
 		
-		for (var i = 0; i < map.mapsizey + (map.borderSize * 2); i++) {		
+		// saving the current col/row of a room
+		var importedRooms = {};
+		
+		for (var row = 0; row < map.mapsizey + (map.borderSize * 2); row++) {		
 			var tr = document.createElement("tr");
-			tr.setAttribute('id', 'row_' + i);
+			tr.setAttribute('id', 'row_' + row);
 			tr.setAttribute('style', 'height: ' + map.tileSize + 'px;');
 			
-			for (var k = 0; k < map.mapsizex + (map.borderSize * 2); k++) {
+			for (var col = 0; col < map.mapsizex + (map.borderSize * 2); col++) {
 				var tile = document.createElement("td");
-				tile.setAttribute('id', 'col_' + i + '_' + k);
+				tile.innerHTML = "&nbsp;";
+				tile.setAttribute('id', 'col_' + row + '_' + col);
 				var roomTile = map.defaultTile;
-				var isBorder = map.borderSize > 0 && i <= map.borderSize - 1 || k <= map.borderSize - 1 || i >= map.mapsizey + map.borderSize || k >= map.mapsizex + map.borderSize;
+				var isBorder = map.borderSize > 0 && row <= map.borderSize - 1 || col <= map.borderSize - 1 || row >= map.mapsizey + map.borderSize || col >= map.mapsizex + map.borderSize;
 				var id = null;
-				var row = null;
-				var col = null;
 
 				if (!isBorder) {
 					// we don't want to listen to this events on the border
@@ -227,35 +250,37 @@ function Map(sizex, sizey) {
 				
 				if (isBorder) {
 					// generate border
-					var roomTile = map.borderTile;
+					roomTile = map.borderTile;
 					tile.onmousemove = map.hideInfoBox;
 				} else if (mapObject && mapObject.map && mapObject.tileIds && mapObject.tiles) {
 					// import map
-					var cell = mapObject.map[i - map.borderSize][k - map.borderSize];
+					var cell = mapObject.map[row - map.borderSize][col- map.borderSize];
 					roomTile = mapObject.tiles[cell["tile"]];
-					row = cell["data-pos-y"];
-					col = cell["data-pos-x"];
 					id = !isNaN(cell["data-id"]) && mapObject.tileIds[cell["data-id"]] || null;
 					if (id) {
 						tile.setAttribute("data-id", id);
-						if (row && col) {
-							map.tiles[id] = map.tiles[id] || [];
-							map.tiles[id].push("col_" + i + "_" + k );
-							tile.setAttribute("data-pos-x", col);
-							tile.setAttribute("data-pos-y", row);
+						map.tiles[id] = map.tiles[id] || [];
+						if (map.tiles[id].length === 0) {
+							// mark the start point of a new room
+							importedRooms[id] = { col: col, row: row };
 						}
+						map.tiles[id].push("col_" + row+ "_" + col );
+						tile.setAttribute("data-pos-x", col - importedRooms[id].col);
+						tile.setAttribute("data-pos-y", row - importedRooms[id].row);
 					}
 				} else if (mapObject && (!mapObject.map || !mapObject.tileIds || !mapObject.tiles)) {
 					throw new Error("Invalid map file!");
 				}
 				
-				map.setTile(tile, roomTile, row, col);
+				map.setTile(tile, roomTile);
 				tr.appendChild(tile);
 			}
 			table.appendChild(tr);
 		}
 		mapParent.appendChild(table);
-	}
+		
+		map.checkObsoleteRooms();
+	};
 
 	this.destroy = function() {
 		map.tiles = {};
@@ -270,9 +295,9 @@ function Map(sizex, sizey) {
 		} else {
 			return false;
 		}
-	}
+	};
 
-	this.import = function(mapString) {
+	this.importData = function(mapString) {
 		var mapObject = JSON.parse(mapString);
 		if (!mapObject || !mapObject.map) {
 			throw new Error("Not a valid Map!");
@@ -287,13 +312,13 @@ function Map(sizex, sizey) {
 		} else {
 			throw new Error("Not a valid Map!");
 		}
-	}
+	};
 
-	this.export = function(author) {
+	this.exportData = function(author) {
 		var json = map.mapToJson(author);
 		var str = JSON.stringify(json);
 		return str;
-	}
+	};
 
 	this.enableDrag = function(evt) {
 		if (evt.button == map.mouseButton.left) {
@@ -301,11 +326,11 @@ function Map(sizex, sizey) {
 			map.insertTile(this, false, false);
 		}
 		return false;
-	}
+	};
 
 	this.disableDrag = function() {
 		map.dragEnabled = false;
-	}
+	};
 
 	this.setRoomOnDrag = function(evt) {
 		var infoBox = document.getElementById("infoBox");
@@ -336,15 +361,15 @@ function Map(sizex, sizey) {
 		infoBox.style.display = "block";
 		
 		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
-	}
+	};
 	
 	this.hideInfoBox = function() {
 		map.hideElement("infoBox");
-	}
+	};
 
 	this.resetRoom = function() {
 		map.insertTile(this, false, true);
-	}
+	};
 
 	this.displayRoom = function(evt) {
 		map.insertTile(this, true, false);
@@ -359,7 +384,7 @@ function Map(sizex, sizey) {
 		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
 			map.insertTile(this, false, false);
 		}
-	}
+	};
 
 	this.setRoom = function(evt) {
 		// helper for selenium
@@ -367,7 +392,7 @@ function Map(sizex, sizey) {
 		if (evt.button == map.mouseButton.left) {
 			map.insertTile(this, false, false);
 		}
-	}
+	};
 
 	this.destroyRoom = function(id) {
 		if (!id) {
@@ -382,8 +407,7 @@ function Map(sizex, sizey) {
 			tile.removeAttribute('data-pos-x');
 			tile.removeAttribute('data-pos-y');
 		}
-		
-	}
+	};
 
 	this.insertTile = function(tile, temp, reset) {
 		var roomTile = tiles[map.currentTile];
@@ -399,7 +423,7 @@ function Map(sizex, sizey) {
 				
 				for (var i = 0; i < roomTile.sizey; i++) {
 					for (var k = 0; k < roomTile.sizex; k++) {
-						var tile = document.getElementById("col_" + (startNoY + i) + "_" + (startNoX + k));
+						tile = document.getElementById("col_" + (startNoY + i) + "_" + (startNoX + k));
 						
 						if (!reset) {
 							// Only add the roomTile if really set
@@ -423,25 +447,25 @@ function Map(sizex, sizey) {
 				roomTileTiles.length > 0 ? map.tiles[id] = roomTileTiles : "";
 			}
 		}
-	}
+	};
 
 	this.resetTile = function(tile) {
 		tile.hasAttribute('data-temp') && map.setTile(tile, tile.getAttribute('data-temp'));
 		tile.hasAttribute('data-temp-pos') && map.setTilePosition(tile, tile.getAttribute('data-temp-pos'));
 		tile.removeAttribute('data-temp');
 		tile.removeAttribute('data-temp-pos');
-	}
+	};
 
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
 		var mapData = {
-			version: "1.2",
+			version: "1.3",
 			author: author || "",
 			border: map.borderSize,
 			tiles: [],
 			tileIds: [],
 			map: []
-		}
+		};
 		
 		for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
 
@@ -459,12 +483,7 @@ function Map(sizex, sizey) {
 					
 					var id = tile.getAttribute("data-id");
 					var className = tile.getAttribute("class");
-					var tileTypeId = mapData.tiles.indexOf(className);
-					if (tileTypeId == -1) {
-						// save tilename only once and make a reference
-						mapData.tiles.push(className);
-						tileTypeId = mapData.tiles.length - 1;
-					}
+					var tileTypeId = map.getMapTileId(mapData, className);
 					
 					if (id) {
 						// save unique room identifier and make a reference
@@ -474,8 +493,6 @@ function Map(sizex, sizey) {
 							tileId = mapData.tileIds.length - 1;
 						}
 						col["data-id"] = tileId;
-						col["data-pos-x"] = tile.getAttribute("data-pos-x");
-						col["data-pos-y"] = tile.getAttribute("data-pos-y");
 					}
 				
 					col["tile"] = tileTypeId;
@@ -486,29 +503,31 @@ function Map(sizex, sizey) {
 
 			mapData.map.push(colData);
 		}
-		return mapData;		
-	}
+		return mapData;
+	};
 
 	this.setTilePosition = function(tile, pos) {
 		tile.style.backgroundPosition = pos;
-	}
+	};
 
 	this.getTilePosition = function(tile) {
 		return tile.style.backgroundPosition;
-	}
+	};
 
-	this.setTile = function(tile, currentTile, row, col) {
+	this.setTile = function(tile, currentTile) {
 		var roomTile = tiles[currentTile];
 		if (roomTile) {
 			tile.setAttribute("class", currentTile);
 			tile.style.backgroundSize = parseInt(map.tileSize * roomTile.sizex) + "px " + parseInt(map.tileSize * roomTile.sizey)+ "px ";
-			if (!isNaN(parseInt(row)) && !isNaN(parseInt(col))) {
+			var col = parseInt(tile.getAttribute("data-pos-x"));
+			var row = parseInt(tile.getAttribute("data-pos-y"));
+			if (!isNaN(col) && !isNaN(row)) {
 				map.setTilePosition(tile, parseInt(-col * map.tileSize) + "px " + parseInt(-row * map.tileSize) + "px");
 			}
 		} else {
 			console.error("No tile found for "+ currentTile);
 		}
-	}
+	};
 
 	this.generateRoom = function(tile, row, col, temp) {
 		var roomTile = tiles[map.currentTile];
@@ -518,6 +537,10 @@ function Map(sizex, sizey) {
 		if (temp) {
 			tile.setAttribute('data-temp', tile.getAttribute("class"));
 			tile.setAttribute('data-temp-pos', map.getTilePosition(tile));
+			
+			tile.setAttribute("data-pos-x", col);
+			tile.setAttribute("data-pos-y", row);
+			
 			tile.style.opacity = "0.7";
 		} else {
 			maxsize != 1 && tile.setAttribute("data-pos-x", col);
@@ -525,33 +548,28 @@ function Map(sizex, sizey) {
 			tile.style.opacity = "1";
 		}
 		map.setTile(tile, map.currentTile, row, col);
-	}
+	};
 
 	this.setCurrentTile = function(roomTile) {
 		// helper for selenium
 		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + roomTile + "</td>\n\t<td></td>\n</tr>");
 		map.currentTile = roomTile;
-	}
+	};
 	
 	this.setHtml = function(id, html) {
 		document.getElementById(id).innerHTML = html;		
-	}
+	};
 	
 	this.hideElement = function(id) {
 		document.getElementById(id).style.display = "none";	
-	}
+	};
 
 	/**
 	 * Mirrors a part of the map to get a better
 	 * @param mirrorType determines how the map should be mirrored
 	 *					 It's the sum of the cellvalues in the option menu
-	 * 		---------
-	 * 		| 1 | 2 | 
-	 * 		---------
-	 * 		| 3 | 4 |
-	 *		---------
 	 */
-	this.mirrorMap = function(mirrorType, reverse) {
+	this.mirrorMap = function(mirrorType, reverse, rotate) {
 		var mapObject = map.mapToJson();
 		var cols = mapObject.map[0].length;
 		var rows = mapObject.map.length;
@@ -559,29 +577,45 @@ function Map(sizex, sizey) {
 		switch(mirrorType) {
 			case 'first':
 				// mirror 1 & 3 to 2 & 4
-				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
+				map.mirrorPart(mapObject, cols, rows, rotate ? "rotate" : "vertical");
 				// mirror 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
+				map.mirrorPart(mapObject, cols, rows, "horizontal", rotate ? true : false);
 				break;
 			case 'second': // 1 & 2 to 3 & 4
-				map.mirrorPart(mapObject, 0, parseInt(cols), 0, parseInt(rows / 2), "horizontal", reverse);
+				map.mirrorPart(mapObject, cols, rows, "horizontal", reverse);
 				break;
 			case 'third': // 1 & 3 to 2 & 4
+			/* falls through */
 			default:
-				map.mirrorPart(mapObject, 0, parseInt(cols / 2), 0, parseInt(rows), "vertical", reverse);
+				map.mirrorPart(mapObject, cols, rows, "vertical", reverse);
 				break;
 		}
 		
 		var str = JSON.stringify(mapObject);
-		map.import(str);
-	}
+		map.importData(str);
+	};
 
-	this.mirrorPart = function(mapObject, x1, x2, y1, y2, type, reverse) {
+	this.mirrorPart = function(mapObject, cols, rows, type, reverse) {
 		var uncompleteRooms = {};
 		var copiedRooms = {};
 		var players = [1, 2, 3, 4];
 		var playerSearch = /_p[1-8]/g;
 		var mirrorPlayer = {};
+		var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+		switch (type) {
+			case "vertical":
+				x2 = parseInt(cols / 2);
+				y2 = parseInt(rows);
+				break;
+			case "horizontal":
+				x2 = parseInt(cols);
+				y2 = parseInt(rows / 2);
+				break;
+			case "rotate":
+				x2 = parseInt(cols / 2);
+				y2 = parseInt(rows / 2);
+				break;
+		}
 		
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
@@ -622,24 +656,36 @@ function Map(sizex, sizey) {
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			// clone the mapobject cell
 			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
-			var posy = mirrorPart['data-pos-y'];
-			var newPosy = 0;
-			var posx = mirrorPart['data-pos-x'];
-			var newPosx = 0;
-			var newCol = map.mapsizex - 1 - col;
-			var newHCol = reverse ? (x2 - 1 - col) : col;
-			var newRow = map.mapsizey - 1 - row;
-			var newVRow = reverse ? (y2 - 1 - row) : row;
-			var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
-			var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
+			
+			switch (type) {
+				case "vertical":
+					var newCol = map.mapsizex - 1 - col;
+					var newVRow = reverse ? (y2 - 1 - row) : row;
+					var tileIdVert = mapObject.tileIds[mapObject.map[newVRow][newCol]["data-id"]];
+					break;
+				case "horizontal":
+					var newHCol = reverse ? (x2 - 1 - col) : col;
+					var newRow = map.mapsizey - 1 - row;
+					var tileIdHor = mapObject.tileIds[mapObject.map[newRow][newHCol]["data-id"]];
+					break;
+				case "rotate":
+					var newRCol = y2 * 2 - 1 - row;
+					var newRRow = col;
+					var tileIdRot = mapObject.tileIds[mapObject.map[newRRow][newRCol]["data-id"]];
+					break;
+			}
+			
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
 			var tileName = mapObject.tiles[mirrorPart['tile']] || "";
 			
-			if (type == "horizontal" && tileIdHor && tileIdHor in uncompleteRooms) {
+			if (tileIdHor && tileIdHor in uncompleteRooms) {
 				// an uncomplete room should not get mirrored, we keep the tiles
 				return;
-			} else if (type == "vertical" && tileIdVert && tileIdVert in uncompleteRooms){
+			} else if (tileIdVert && tileIdVert in uncompleteRooms){
 				// the same as above in vertical mirror
+				return;
+			} else if (tileIdRot && tileIdRot in uncompleteRooms){
+				// the same as above in rotation
 				return;
 			} else if (tileIdMir && tileIdMir in uncompleteRooms) {
 				// see above
@@ -669,45 +715,27 @@ function Map(sizex, sizey) {
 						players.splice(0, 1);
 					}
 					if (player) {
-						var tileName = tileName.replace(playerSearch, "_p" + player);
-						var tileId = mapObject.tiles.indexOf(tileName);
-						if (tileId == -1) {
-							mapObject.tiles.push(tileName);
-							tileId = mapObject.tiles.length - 1;
-						}
+						tileName = tileName.replace(playerSearch, "_p" + player);
+						var tileId = map.getMapTileId(mapObject, tileName);
 						mirrorPart['tile'] = tileId;
 					}
 					// if the player maximum is reached, just copy them. The user has to fix it by himself
 				}
 			}
 			
-			if (posx && posy) {
-				// parse it to string, otherwise the import fails
-				newPosx = (tiles[tileName].sizex - posx - 1).toString();
-				newPosy = (tiles[tileName].sizey - posy - 1).toString();
-			}
-			
-			if (type == "horizontal") {
-				// fix tileposition
-				if (reverse && posx){
-					mirrorPart['data-pos-x'] = newPosx;
-				}
-				if (posy) {
-					mirrorPart['data-pos-y'] = newPosy;
-				}
-				mapObject.map[newRow][newHCol] = mirrorPart;
-			} else {
-				// fix tileposition
-				if (reverse && posy){
-					mirrorPart['data-pos-y'] = newPosy;
-				}
-				if (posx) {
-					mirrorPart['data-pos-x'] = newPosx;
-				}
-				mapObject.map[newVRow][newCol] = mirrorPart;
+			switch(type) {
+				case "vertical":
+					mapObject.map[newVRow][newCol] = mirrorPart;
+					break;
+				case "horizontal":
+					mapObject.map[newRow][newHCol] = mirrorPart;
+					break;
+				case "rotate":
+					mapObject.map[newRRow][newRCol] = mirrorPart;
+					break;
 			}
 		});
-	}
+	};
 	
 	this.forEachCell = function(x1, x2, y1, y2, callback) {
 		for (var row = y1; row < y2; row++){
@@ -715,22 +743,22 @@ function Map(sizex, sizey) {
 				callback.call(this, col, row);
 			}
 		}
-	}
+	};
 	
 	this.cancelDrop = function() {
 		dropMessage.style.display = "none";
 		clearTimeout(map.dropTimeout);
-	}
+	};
 
 	this.dragOverMap = function(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
 		
 		clearTimeout(map.dropTimeout);
-		map.dropTimeout = setTimeout(function(){ map.cancelDrop() }, 200);
+		map.dropTimeout = setTimeout(function(){ map.cancelDrop(); }, 200);
 		
 		dropMessage.style.display = "block";
-	}
+	};
 
 	this.dropMap = function(evt) {
 		dropMessage.style.display = "none";
@@ -740,17 +768,99 @@ function Map(sizex, sizey) {
 		var dt = evt.dataTransfer;
 		var files = dt.files;
 
-		if(files && files.length != 0) {
+		if(files && files.length !== 0) {
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
 		
-			reader.onload = function(e) {
+			reader.onload = function(evt) {
 				try {
-					map.import(atob(this.result));
-				} catch(e) {
-					alert("Could not load map.\n\n" + e.message);
+					map.importData(atob(this.result));
+				} catch(exception) {
+					alert("Could not load map.\n\n" + exception.message);
 				}
+			};
+		}
+	};
+	
+	this.checkObsoleteRooms = function() {
+		var tileIds = map.tiles;
+		for (var tileId in tileIds) {
+			var firstId = tileIds[tileId][0];
+			var tile = document.getElementById(firstId);
+			var tileName = tile.getAttribute("class");
+			var size = tiles[tileName].sizex *  tiles[tileName].sizey;
+			
+			if (tileIds[tileId].length != size) {
+				// room isn't complete, destroy it!
+				map.destroyRoom(tileId);
 			}
 		}
-	}
+	};
+	
+	this.getMapTileId = function(mapData, tileName) {
+		var tileTypeId = mapData.tiles.indexOf(tileName);
+		if (tileTypeId == -1) {
+			// save tilename only once and make a reference
+			mapData.tiles.push(tileName);
+			tileTypeId = mapData.tiles.length - 1;
+		}
+		
+		return tileTypeId;
+	};
+	
+	this.changeColumn = function(mapData, position, add) {
+		var mapArray = mapData.map;
+		var operation = map.operation[position][add ? 1 : 0];
+		
+		var tileId = map.getMapTileId(mapData, map.defaultTile);
+		
+		// map size should not exceed the defined min/max size
+		if (mapArray[0].length == map.minsize && !add || mapArray[0].length == map.maxsize && add) {
+			return;
+		}
+		
+		for (var i = 0; i < mapArray.length; i++) {
+			mapArray[i][operation]({ tile: tileId });
+		}
+	};
+
+	this.changeLine = function(mapData, position, add) {
+		var mapArray = mapData.map;
+		var operation = map.operation[position][add ? 1 : 0];
+		
+		var tileId = map.getMapTileId(mapData, map.defaultTile);
+		
+		// map size should not exceed the defined min/max size
+		if (mapArray.length == map.minsize && !add || mapArray.length == map.maxsize && add) {
+			return;
+		}
+		
+		var cols = [];
+		for (var i = 0; i < mapArray[0].length; i++) {
+			cols.push({ tile: tileId });
+		}
+		mapArray[operation](cols);
+	};
+
+	this.changeMap = function(dir, add) {
+		var mapData = map.mapToJson();
+		var position = "after";
+		
+		switch(dir) {
+			case 'top':
+				position = "before";
+				/* falls through */
+			case 'bottom':
+				map.changeLine(mapData, position, add);
+				break;	
+			case 'left':	
+				position = "before";
+				/* falls through */
+			case 'right':
+				map.changeColumn(mapData, position, add);
+				break;
+		}
+		
+		map.importData(JSON.stringify(mapData));
+	};
 }

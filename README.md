@@ -1,12 +1,23 @@
 ﻿# wfto-mapeditor
 This map editor should make it fairly easy to create and share maps for "War for the Overworld"
+[![Build Status](https://travis-ci.org/ufdada/wfto-mapeditor.svg)](https://travis-ci.org/ufdada/wfto-mapeditor)
+
+### Release 1.3
+#### New Features:
+- Name input field for files (with versioning)
+- Rotate Mirror 1 Feature
+- Resizing of current Map
+
+#### Improvements:
+- Get rid of the position in the mapfile on bigger rooms and calculate it instead (saves filesize)
+- Map gets cleaned from uncompleted rooms
 
 ### Release 1.2
 #### New Features:
 - Drag and drop import of mapfiles
 - Google CSV import
 
-### Bugfixes:
+#### Bugfixes:
 - Overall visual improvement of tiles
 - Add missing tiles
 - Replace siegeshrine asset with correct siegeshrine and add defence parts shrine
@@ -30,14 +41,10 @@ This map editor should make it fairly easy to create and share maps for "War for
 - Creating a Path by holding the left mousebutton and moving the mouse (Only works for 1x1 tiles)
 
 ### Upcoming Features/Bugfixes:
-- [ ] Resizing of current Map
-- [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
-- [ ] Get rid of the position in the mapfile on bigger rooms and calculate it instead
-- [ ] Name input field for files (with versioning)
 
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)
 
 Special Thanks to:
-- Marrados: for helping with the assets
+- Marados: for helping with the assets

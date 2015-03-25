@@ -1,4 +1,4 @@
-var tiles = {
+tiles = {
 	'core_p1': {
 		sizex: 5,
 		sizey: 5,
@@ -177,4 +177,4 @@ var tiles = {
 		sizey: 1,
 		color: "black"
 	}
-}
+};
