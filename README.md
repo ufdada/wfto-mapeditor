@@ -5,9 +5,10 @@ This map editor should make it fairly easy to create and share maps for "War for
 ### Release 1.3
 #### New Features:
 - Name input field for files (with versioning)
+- Rotate Mirror 1 Feature
 
 #### Improvements:
-- Get rid of the position in the mapfile on bigger rooms and calculate it instead
+- Get rid of the position in the mapfile on bigger rooms and calculate it instead (saves filesize)
 
 ### Release 1.2
 #### New Features:
@@ -39,7 +40,6 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 ### Upcoming Features/Bugfixes:
 - [ ] Resizing of current Map
-- [ ] Rotate Mirror 1 Feature
 - [ ] Undo/Redo
 
 ### Known Issues:
