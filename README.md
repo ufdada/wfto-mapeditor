@@ -6,6 +6,7 @@ This map editor should make it fairly easy to create and share maps for "War for
 #### New Features:
 - Name input field for files (with versioning)
 - Rotate Mirror 1 Feature
+- Resizing of current Map
 
 #### Improvements:
 - Get rid of the position in the mapfile on bigger rooms and calculate it instead (saves filesize)
@@ -40,7 +41,6 @@ This map editor should make it fairly easy to create and share maps for "War for
 - Creating a Path by holding the left mousebutton and moving the mouse (Only works for 1x1 tiles)
 
 ### Upcoming Features/Bugfixes:
-- [ ] Resizing of current Map
 - [ ] Undo/Redo
 
 ### Known Issues:
