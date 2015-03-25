@@ -811,7 +811,7 @@ function Map(sizex, sizey) {
 		for (var i = 0; i < mapArray.length; i++) {
 			mapArray[i][operation]({ tile: 0 });
 		}
-	}
+	};
 
 	this.changeLine = function(mapData, position, add) {
 		var mapArray = mapData.map;
@@ -822,7 +822,7 @@ function Map(sizex, sizey) {
 			cols.push({ tile: 0 });
 		}	
 		mapArray[operation](cols);
-	}
+	};
 
 	this.changeMap = function(dir, add) {
 		var mapData = map.mapToJson();
@@ -831,16 +831,18 @@ function Map(sizex, sizey) {
 		switch(dir) {
 			case 'top':
 				position = "before";
+				/* falls through */
 			case 'bottom':
 				map.changeLine(mapData, position, add);
 				break;	
 			case 'left':	
 				position = "before";
+				/* falls through */
 			case 'right':
 				map.changeColumn(mapData, position, add);
 				break;
 		}
 		
 		map.importData(JSON.stringify(mapData));
-	}
+	};
 }
