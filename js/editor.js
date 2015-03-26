@@ -158,7 +158,7 @@ function Map(sizex, sizey) {
 			if (loadedImages == 1 && loaded - start > 100) {
 				preloadDiv.style.display = "block";
 			}
-			preloadDiv.firstChild.innerText = preloadMessage.replace(/\$1/g, loadedImages).replace(/\$2/g, images.length);
+			preloadDiv.firstChild.innerHTML = preloadMessage.replace(/\$1/g, loadedImages).replace(/\$2/g, images.length);
 			if (loadedImages == images.length){
 				preloadDiv.style.display = "none";
 				callback.call(this);

@@ -556,7 +556,7 @@ function importCsv() {
 function setVersioning(element) {
 	store.setItem(element.id, element.checked);
 	var mapVersion = document.getElementById("mapVersion");
-	mapVersion.innerText = terrain.version;
+	mapVersion.innerHTML = terrain.version;
 	
 	mapVersion.parentNode.style.display = element.checked ? "block" : "none";
 	
