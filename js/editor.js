@@ -882,22 +882,24 @@ function Map(sizex, sizey) {
 	
 	this.saveUndoHistory = function() {
 		var mapData = map.exportData();
-		if (mapData != map.undoHistory[map.undoHistory.length - 1]) {
-			map.undoHistory.push(mapData);
+		var history = map.undoHistory;
+		if (history.length == 0 || mapData != history[history.length - 1]) {
+			history.push(mapData);
 		}
-		if (map.undoHistory.length > map.maxHistory) {
-			map.undoHistory.shift();
+		if (history.length > map.maxHistory) {
+			history.shift();
 		}
 		map.setHistoryButtons();
 	};
 	
 	this.saveRedoHistory = function() {
 		var mapData = map.exportData();
-		if (mapData != map.redoHistory[0]) {
-			map.redoHistory.unshift(mapData);
+		var history = map.redoHistory;
+		if (history.length == 0 || mapData != [0]) {
+			history.unshift(mapData);
 		}
-		if (map.redoHistory.length > map.maxHistory) {
-			map.redoHistory.pop();
+		if (history.length > map.maxHistory) {
+			history.pop();
 		}
 		map.setHistoryButtons();
 	};
