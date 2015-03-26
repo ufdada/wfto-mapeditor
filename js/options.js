@@ -542,6 +542,7 @@ function importCsv() {
 						}
 					}
 				}
+				terrain.resetRedoHistory();
 				terrain.importData(JSON.stringify(mapData));
 			} else {
 				alert("Please select a valid map file");
