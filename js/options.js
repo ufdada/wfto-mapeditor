@@ -266,6 +266,7 @@ function importMap() {
 			reader.onload = function(evt) {
 				// map geladen
 				try {
+					terrain.resetRedoHistory();
 					terrain.importData(atob(this.result));
 					var filename = files[0].name;
 					var name = filename.substr(0, filename.lastIndexOf("."));
