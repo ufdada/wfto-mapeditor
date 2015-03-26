@@ -70,6 +70,13 @@ module.exports = {
 	"Undomanager": function(test) {
 		console.log(">> Test Undomanager".purple());
 		test.open("index.html");
+		/*
+			setting a tile
+			import map
+			import csv
+			mirror
+			resize map
+		*/
 		test.done();
 	}
 };
