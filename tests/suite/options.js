@@ -66,5 +66,10 @@ module.exports = {
 			});
 			
 		test.done();
+	},
+	"Undomanager": function(test) {
+		console.log(">> Test Undomanager".purple());
+		test.open("index.html");
+		test.done();
 	}
 };
