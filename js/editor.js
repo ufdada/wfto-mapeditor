@@ -580,6 +580,9 @@ function Map(sizex, sizey) {
 	 *					 It's the sum of the cellvalues in the option menu
 	 */
 	this.mirrorMap = function(mirrorType, reverse, rotate) {
+		map.saveUndoHistory();
+		map.resetRedoHistory();
+		
 		var mapObject = map.mapToJson();
 		var cols = mapObject.map[0].length;
 		var rows = mapObject.map.length;
