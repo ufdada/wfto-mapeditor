@@ -45,6 +45,9 @@ function Map(sizex, sizey) {
 	this.tileModeDefault = 'normal';
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ 'color', 'lowres', 'normal' /*, 'highres' not implemented */ ];
+	this.undoHistory = [];
+	this.redoHistory = [];
+	this.maxHistory = 10;
 	this.dropTimeout = 0;
 	this.version = "001";
 	this.mouseButton = {
@@ -245,7 +248,8 @@ function Map(sizex, sizey) {
 					tile.onmousedown = map.enableDrag;
 					tile.onmouseup = map.disableDrag;
 					tile.onmousemove = map.setRoomOnDrag;
-					tile.onclick = map.setRoom;
+					// disable it because it gets overwritten with mousedown
+					// tile.onclick = map.setRoom;
 				}
 				
 				if (isBorder) {
@@ -280,6 +284,7 @@ function Map(sizex, sizey) {
 		mapParent.appendChild(table);
 		
 		map.checkObsoleteRooms();
+		map.setHistoryButtons();
 	};
 
 	this.destroy = function() {
@@ -413,6 +418,11 @@ function Map(sizex, sizey) {
 		var roomTile = tiles[map.currentTile];
 		var tiley = parseInt(tile.id.split("_")[1]) + 1;
 		var tilex = parseInt(tile.id.split("_")[2]) + 1;
+		
+		if (!temp && !reset) {
+			map.saveUndoHistory();
+			map.resetRedoHistory();
+		}
 		
 		if (tilex > parseInt(roomTile.sizex / 2) + map.borderSize && tiley > parseInt(roomTile.sizey / 2) + map.borderSize){
 			if (tilex <= map.mapsizex - parseInt(roomTile.sizex / 2) + map.borderSize && tiley <= map.mapsizey - parseInt(roomTile.sizey / 2) + map.borderSize) {
@@ -570,6 +580,9 @@ function Map(sizex, sizey) {
 	 *					 It's the sum of the cellvalues in the option menu
 	 */
 	this.mirrorMap = function(mirrorType, reverse, rotate) {
+		map.saveUndoHistory();
+		map.resetRedoHistory();
+		
 		var mapObject = map.mapToJson();
 		var cols = mapObject.map[0].length;
 		var rows = mapObject.map.length;
@@ -846,6 +859,9 @@ function Map(sizex, sizey) {
 		var mapData = map.mapToJson();
 		var position = "after";
 		
+		map.resetRedoHistory();
+		map.saveUndoHistory();
+		
 		switch(dir) {
 			case 'top':
 				position = "before";
@@ -862,5 +878,66 @@ function Map(sizex, sizey) {
 		}
 		
 		map.importData(JSON.stringify(mapData));
+	};
+	
+	this.saveUndoHistory = function() {
+		var mapData = map.exportData();
+		var history = map.undoHistory;
+		if (history.length === 0 || mapData != history[history.length - 1]) {
+			history.push(mapData);
+		}
+		if (history.length > map.maxHistory) {
+			history.shift();
+		}
+		map.setHistoryButtons();
+	};
+	
+	this.saveRedoHistory = function() {
+		var mapData = map.exportData();
+		var history = map.redoHistory;
+		if (history.length === 0 || mapData != [0]) {
+			history.unshift(mapData);
+		}
+		if (history.length > map.maxHistory) {
+			history.pop();
+		}
+		map.setHistoryButtons();
+	};
+	
+	this.resetRedoHistory = function() {
+		map.redoHistory = [];
+		map.setHistoryButtons();
+	};
+	
+	this.undo = function() {
+		if (map.undoHistory.length > 0) {
+			map.saveRedoHistory();
+			
+			var mapData = map.undoHistory.pop();
+			map.importData(mapData);
+			return true;
+		} else {
+			return false;
+		}
+	};
+	
+	this.redo = function() {
+		if (map.redoHistory.length > 0) {
+			map.saveUndoHistory();
+			
+			var mapData = map.redoHistory.shift();
+			map.importData(mapData);
+			return true;
+		} else {
+			return false;
+		}
+	};
+	
+	this.setHistoryButtons = function() {
+		var undo = document.getElementById("undo");
+		var redo = document.getElementById("redo");
+		
+		undo.disabled = map.undoHistory.length > 0 ? "" : "disabled";
+		redo.disabled = map.redoHistory.length > 0 ? "" : "disabled";
 	};
 }
