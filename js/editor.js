@@ -931,5 +931,5 @@ function Map(sizex, sizey) {
 		
 		undo.disabled = map.undoHistory.length > 0 ? "" : "disabled";
 		redo.disabled = map.redoHistory.length > 0 ? "" : "disabled";
-	}
+	};
 }
