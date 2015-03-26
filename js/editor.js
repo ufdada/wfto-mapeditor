@@ -284,6 +284,7 @@ function Map(sizex, sizey) {
 		mapParent.appendChild(table);
 		
 		map.checkObsoleteRooms();
+		map.setHistoryButtons();
 	};
 
 	this.destroy = function() {
@@ -881,6 +882,7 @@ function Map(sizex, sizey) {
 		if (map.undoHistory.length > map.maxHistory) {
 			map.undoHistory.shift();
 		}
+		map.setHistoryButtons();
 	};
 	
 	this.saveRedoHistory = function() {
@@ -891,10 +893,12 @@ function Map(sizex, sizey) {
 		if (map.redoHistory.length > map.maxHistory) {
 			map.redoHistory.pop();
 		}
+		map.setHistoryButtons();
 	};
 	
 	this.resetRedoHistory = function() {
 		map.redoHistory = [];
+		map.setHistoryButtons();
 	};
 	
 	this.undo = function() {
@@ -920,4 +924,12 @@ function Map(sizex, sizey) {
 			return false;
 		}
 	};
+	
+	this.setHistoryButtons = function() {
+		var undo = document.getElementById("undo");
+		var redo = document.getElementById("redo");
+		
+		undo.disabled = map.undoHistory.length > 0 ? "" : "disabled";
+		redo.disabled = map.redoHistory.length > 0 ? "" : "disabled";
+	}
 }

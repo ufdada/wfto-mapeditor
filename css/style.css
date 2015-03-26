@@ -187,3 +187,7 @@ td:hover {
 	border: 1px solid #ccc;
 	font-size: 21px;
 }
+
+button:disabled img {
+	opacity: 0.4;
+}
