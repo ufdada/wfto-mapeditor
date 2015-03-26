@@ -44,7 +44,7 @@ function Map(sizex, sizey) {
 	this.buttonColumns = 3;
 	this.tileModeDefault = 'normal';
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
-	this.tileModes = [ /* 'lowres' not implemented ,*/ 'color', 'normal'/*, 'highres' not implemented */ ];
+	this.tileModes = [ 'color', 'lowres', 'normal' /*, 'highres' not implemented */ ];
 	this.dropTimeout = 0;
 	this.version = "001";
 	this.mouseButton = {
