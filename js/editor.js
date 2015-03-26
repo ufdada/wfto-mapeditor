@@ -859,6 +859,9 @@ function Map(sizex, sizey) {
 		var mapData = map.mapToJson();
 		var position = "after";
 		
+		map.resetRedoHistory();
+		map.saveUndoHistory();
+		
 		switch(dir) {
 			case 'top':
 				position = "before";
