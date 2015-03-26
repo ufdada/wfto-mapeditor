@@ -883,7 +883,7 @@ function Map(sizex, sizey) {
 	this.saveUndoHistory = function() {
 		var mapData = map.exportData();
 		var history = map.undoHistory;
-		if (history.length == 0 || mapData != history[history.length - 1]) {
+		if (history.length === 0 || mapData != history[history.length - 1]) {
 			history.push(mapData);
 		}
 		if (history.length > map.maxHistory) {
@@ -895,7 +895,7 @@ function Map(sizex, sizey) {
 	this.saveRedoHistory = function() {
 		var mapData = map.exportData();
 		var history = map.redoHistory;
-		if (history.length == 0 || mapData != [0]) {
+		if (history.length === 0 || mapData != [0]) {
 			history.unshift(mapData);
 		}
 		if (history.length > map.maxHistory) {
