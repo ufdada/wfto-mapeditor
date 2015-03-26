@@ -45,6 +45,9 @@ function Map(sizex, sizey) {
 	this.tileModeDefault = 'normal';
 	this.tileMode = store.getItem("tileMode") || this.tileModeDefault;
 	this.tileModes = [ 'color', 'lowres', 'normal' /*, 'highres' not implemented */ ];
+	this.undoHistory = [];
+	this.redoHistory = [];
+	this.maxHistory = 10;
 	this.dropTimeout = 0;
 	this.version = "001";
 	this.mouseButton = {
@@ -245,7 +248,8 @@ function Map(sizex, sizey) {
 					tile.onmousedown = map.enableDrag;
 					tile.onmouseup = map.disableDrag;
 					tile.onmousemove = map.setRoomOnDrag;
-					tile.onclick = map.setRoom;
+					// disable it because it gets overwritten with mousedown
+					// tile.onclick = map.setRoom;
 				}
 				
 				if (isBorder) {
@@ -413,6 +417,11 @@ function Map(sizex, sizey) {
 		var roomTile = tiles[map.currentTile];
 		var tiley = parseInt(tile.id.split("_")[1]) + 1;
 		var tilex = parseInt(tile.id.split("_")[2]) + 1;
+		
+		if (!temp && !reset) {
+			map.saveUndoHistory();
+			map.resetRedoHistory();
+		}
 		
 		if (tilex > parseInt(roomTile.sizex / 2) + map.borderSize && tiley > parseInt(roomTile.sizey / 2) + map.borderSize){
 			if (tilex <= map.mapsizex - parseInt(roomTile.sizex / 2) + map.borderSize && tiley <= map.mapsizey - parseInt(roomTile.sizey / 2) + map.borderSize) {
@@ -862,5 +871,53 @@ function Map(sizex, sizey) {
 		}
 		
 		map.importData(JSON.stringify(mapData));
+	};
+	
+	this.saveUndoHistory = function() {
+		var mapData = map.exportData();
+		if (mapData != map.undoHistory[map.undoHistory.length - 1]) {
+			map.undoHistory.push(mapData);
+		}
+		if (map.undoHistory.length > map.maxHistory) {
+			map.undoHistory.shift();
+		}
+	};
+	
+	this.saveRedoHistory = function() {
+		var mapData = map.exportData();
+		if (mapData != map.redoHistory[0]) {
+			map.redoHistory.unshift(mapData);
+		}
+		if (map.redoHistory.length > map.maxHistory) {
+			map.redoHistory.pop();
+		}
+	};
+	
+	this.resetRedoHistory = function() {
+		map.redoHistory = [];
+	};
+	
+	this.undo = function() {
+		if (map.undoHistory.length > 0) {
+			map.saveRedoHistory();
+			
+			var mapData = map.undoHistory.pop();
+			map.importData(mapData);
+			return true;
+		} else {
+			return false;
+		}
+	};
+	
+	this.redo = function() {
+		if (map.redoHistory.length > 0) {
+			map.saveUndoHistory();
+			
+			var mapData = map.redoHistory.shift();
+			map.importData(mapData);
+			return true;
+		} else {
+			return false;
+		}
 	};
 }
