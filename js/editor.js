@@ -423,10 +423,15 @@ function Map(sizex, sizey) {
 			map.resetRedoHistory();
 		}
 
-		if (tilex > parseInt(roomTile.sizex / 2) + map.borderSize && tiley > parseInt(roomTile.sizey / 2) + map.borderSize){
-			if (tilex <= map.mapsizex - parseInt(roomTile.sizex / 2) + map.borderSize && tiley <= map.mapsizey - parseInt(roomTile.sizey / 2) + map.borderSize) {
+		// that was used to restrict the room placement (so the user is not able to place rooms outside of the map). this is obsolete now!
+		// if (tilex > parseInt(roomTile.sizex / 2) + map.borderSize && tiley > parseInt(roomTile.sizey / 2) + map.borderSize){
+		//	if (tilex <= map.mapsizex - parseInt(roomTile.sizex / 2) + map.borderSize && tiley <= map.mapsizey - parseInt(roomTile.sizey / 2) + map.borderSize) {
 				var startNoY = parseInt((tiley - roomTile.sizey / 2));
+				startNoY = startNoY > map.borderSize ? startNoY : map.borderSize;
+				startNoY = startNoY < map.mapsizey - roomTile.sizey  + map.borderSize ? startNoY : map.mapsizey - roomTile.sizey + map.borderSize;
 				var startNoX = parseInt((tilex - roomTile.sizex / 2));
+				startNoX = startNoX > map.borderSize ? startNoX : map.borderSize;
+				startNoX = startNoX < map.mapsizex  - roomTile.sizex  + map.borderSize ? startNoX : map.mapsizex - roomTile.sizex + map.borderSize;
 				var roomTileTiles = [];
 				var id = new Date().getTime();
 
@@ -454,8 +459,8 @@ function Map(sizex, sizey) {
 					}
 				}
 				roomTileTiles.length > 0 ? map.tiles[id] = roomTileTiles : "";
-			}
-		}
+		//	}
+		//}
 	};
 
 	this.resetTile = function(tile) {
