@@ -11,7 +11,7 @@ module.exports = {
 	'load': function (test, external) {
 		console.log(">> Load mapdata".purple());
 		test.execute(function() {
-			// reset these checkoxes, since dalek doesn't do that (wether with a second click nor through a reload) 
+			// reset these checkoxes, since dalek doesn't do that (wether with a second click nor through a reload)
 			window.extend.checked = "";
 			window.reverse.checked = "";
 			window.rotate.checked = "";

@@ -2,6 +2,15 @@
 This map editor should make it fairly easy to create and share maps for "War for the Overworld"
 [![Build Status](https://travis-ci.org/ufdada/wfto-mapeditor.svg)](https://travis-ci.org/ufdada/wfto-mapeditor)
 
+### Release 1.4
+#### New Features:
+- Undo / Redo actions
+- Lowres tile mode
+
+#### Bugfixes:
+- Firefox didn't display the preload message correctly
+- Hide infobox when hovering the options
+
 ### Release 1.3
 #### New Features:
 - Name input field for files (with versioning)
@@ -39,9 +48,6 @@ This map editor should make it fairly easy to create and share maps for "War for
 - Big rooms (bigger than 1x1) are getting destroyed if the user draws onto it.
 - Export/Import of created Maps (Extension .wfto)
 - Creating a Path by holding the left mousebutton and moving the mouse (Only works for 1x1 tiles)
-
-### Upcoming Features/Bugfixes:
-- [ ] Undo/Redo
 
 ### Known Issues:
 - Bigger rooms are not shown if the cursor is too close the border (as they are not placeable anyway)

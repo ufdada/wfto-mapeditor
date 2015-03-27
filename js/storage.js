@@ -11,14 +11,14 @@ function dataStorage() {
 		}
 	};
 	this.localStorage = this.hasStorageSupport();
-	
+
     this.setItem = function(name,value,days) {
 		if (this.localStorage) {
 			localStorage.setItem(name, value);
 			return;
 		}
 		var expires = "";
-		
+
         if (days != -1) {
             var date = new Date();
             date.setTime(date.getTime()+(days*24*60*60*1000));
@@ -26,7 +26,7 @@ function dataStorage() {
         }
         document.cookie = name+"="+value+expires+"; path=/";
     };
-	
+
     this.getItem = function(name) {
 		var returnValue = null;
 		if (this.localStorage) {
@@ -43,7 +43,7 @@ function dataStorage() {
 				returnValue = cookie.substring(nameEQ.length, cookie.length);
 			}
 		}
-		
+
 		switch(returnValue) {
 			case "null":
 			case "undefined":
@@ -54,7 +54,7 @@ function dataStorage() {
 		}
 		return returnValue;
     };
-	
+
     this.removeItem = function(name) {
 		if (this.localStorage) {
 			localStorage.removeItem(name);
@@ -62,7 +62,7 @@ function dataStorage() {
 		}
         this.setItem(name,"",-1);
     };
-	
+
 	this.clear = function() {
 		if (this.localStorage) {
 			localStorage.clear();
