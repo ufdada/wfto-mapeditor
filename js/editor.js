@@ -1,20 +1,20 @@
 ﻿// phantom js workarround
 if (window.navigator.userAgent.indexOf("PhantomJS") != -1) {
 		// Workarround for phantomjs, otherwise confirm/alert messages break tests
-		window.confirm = function(text){ 
+		window.confirm = function(text){
 			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
-			return true; 
+			return true;
 		};
-		window.alert = function(text){ 
+		window.alert = function(text){
 			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
-			return true; 
+			return true;
 		};
 }
 
 window.onload = function(){
 	// localStorage wrapper
 	store = new dataStorage();
-	
+
 	terrain = new Map();
 	terrain.getQueryOptions();
 	initOptions();
@@ -85,7 +85,7 @@ function Map(sizex, sizey) {
 			}
 		}
 	};
-	
+
 	// TODO: Implement to save dom operations
 	this.setTileMode = function(tileMode) {
 		if (map.tileModes.indexOf(tileMode) == -1) {
@@ -96,7 +96,7 @@ function Map(sizex, sizey) {
 		map.tileMode = tileMode;
 		//map.generateTileCss();
 	};
-	
+
 	// TODO: Implement to save dom operations
 	this.setTileSize = function(tileSize) {
 		if (map.tileSizes.indexOf(parseInt(tileSize)) == -1) {
@@ -107,7 +107,7 @@ function Map(sizex, sizey) {
 		map.tileSize = tileSize;
 		// TODO: implement instant change of tilesize
 	};
-	
+
 	this.resetToDefault = function() {
 		for (var item in map.options) {
 			var option = map.options[item].option;
@@ -115,7 +115,7 @@ function Map(sizex, sizey) {
 		}
 		terrain.generateTileCss();
 	};
-	
+
 	this.generateTileCss = function() {
 		var style = document.getElementById('tileCss') || document.createElement('style');
 		style.id = 'tileCss';
@@ -135,7 +135,7 @@ function Map(sizex, sizey) {
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
-			
+
 			style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		}
 		document.getElementsByTagName('head')[0].appendChild(style);
@@ -143,7 +143,7 @@ function Map(sizex, sizey) {
 
 	this.preloadTiles = function(callback) {
 		var images = Object.keys(tiles);
-		
+
 		if (!images || !map.preloadImages || map.tileMode == "color") {
 			// browser doesn't support this, so we just skip it
 			callback.call(this);
@@ -153,7 +153,7 @@ function Map(sizex, sizey) {
 		var start = new Date();
 		var preloadDiv = document.getElementById("preload");
 		var preloadMessage = preloadDiv.getAttribute("data-message");
-		
+
 		function imageLoaded(){
 			loadedImages++;
 			var loaded = new Date();
@@ -167,7 +167,7 @@ function Map(sizex, sizey) {
 				callback.call(this);
 			}
 		}
-		
+
 		for (var i=0; i< images.length; i++){
 			image[i] = new Image();
 			image[i].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
@@ -188,7 +188,7 @@ function Map(sizex, sizey) {
 		var buttons = document.createElement("div");
 		buttons.id = "buttons";
 		buttons.style.width = parseInt(map.tileSize * 3/4 * map.buttonColumns) + "px";
-		
+
 		for (var item in tiles) {
 			var button = document.createElement("input");
 			button.id = item;
@@ -211,10 +211,10 @@ function Map(sizex, sizey) {
 		map.destroy();
 		map.createButtons();
 		map.version = "001";
-		
+
 		mapParent.ondrop = map.dropMap;
 		mapParent.ondragover = map.dragOverMap;
-		
+
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
@@ -222,17 +222,17 @@ function Map(sizex, sizey) {
 		table.style.paddingTop = "10px";
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
-		
+
 		map.setHtml("mapsize", map.mapsizex + "x" + map.mapsizey);
-		
+
 		// saving the current col/row of a room
 		var importedRooms = {};
-		
-		for (var row = 0; row < map.mapsizey + (map.borderSize * 2); row++) {		
+
+		for (var row = 0; row < map.mapsizey + (map.borderSize * 2); row++) {
 			var tr = document.createElement("tr");
 			tr.setAttribute('id', 'row_' + row);
 			tr.setAttribute('style', 'height: ' + map.tileSize + 'px;');
-			
+
 			for (var col = 0; col < map.mapsizex + (map.borderSize * 2); col++) {
 				var tile = document.createElement("td");
 				tile.innerHTML = "&nbsp;";
@@ -251,7 +251,7 @@ function Map(sizex, sizey) {
 					// disable it because it gets overwritten with mousedown
 					// tile.onclick = map.setRoom;
 				}
-				
+
 				if (isBorder) {
 					// generate border
 					roomTile = map.borderTile;
@@ -275,14 +275,14 @@ function Map(sizex, sizey) {
 				} else if (mapObject && (!mapObject.map || !mapObject.tileIds || !mapObject.tiles)) {
 					throw new Error("Invalid map file!");
 				}
-				
+
 				map.setTile(tile, roomTile);
 				tr.appendChild(tile);
 			}
 			table.appendChild(tr);
 		}
 		mapParent.appendChild(table);
-		
+
 		map.checkObsoleteRooms();
 		map.setHistoryButtons();
 	};
@@ -292,7 +292,7 @@ function Map(sizex, sizey) {
 		// remove buttons
 		var buttons = document.getElementById("buttons");
 		buttons && buttons.parentNode.removeChild(buttons);
-		
+
 		var table = document.getElementById("map");
 		if (table) {
 			table.parentNode.removeChild(table);
@@ -341,33 +341,33 @@ function Map(sizex, sizey) {
 		var infoBox = document.getElementById("infoBox");
 		var left = evt.pageX + 20;
 		var top = evt.pageY + 20;
-		
+
 		var height = infoBox.clientHeight;
 		var width = infoBox.clientWidth;
 		var windowHeight = window.innerHeight;
 		var windowWidth = window.innerWidth;
 		var pageOffsetX = window.pageXOffset;
 		var pageOffsetY = window.pageYOffset;
-		
+
 		if (top + height > windowHeight + pageOffsetY - 10) {
 			// at the bottom edge
 			infoBox.style.top = top - height - 30 + "px";
 		} else {
 			infoBox.style.top = top + "px";
 		}
-		
+
 		if (left + width > windowWidth + pageOffsetX - 10) {
 			// at the right edge
 			infoBox.style.left = left - width - 30 + "px";
 		} else {
 			infoBox.style.left = left + "px";
 		}
-		
+
 		infoBox.style.display = "block";
-		
+
 		map.setHtml("tile", this.getAttribute("data-temp") || this.className);
 	};
-	
+
 	this.hideInfoBox = function() {
 		map.hideElement("infoBox");
 	};
@@ -378,12 +378,12 @@ function Map(sizex, sizey) {
 
 	this.displayRoom = function(evt) {
 		map.insertTile(this, true, false);
-		
+
 		// Info box
 		map.setHtml("posx", this.cellIndex + 1 - map.borderSize);
 		var posy = this.parentNode.rowIndex != -1 ? this.parentNode.rowIndex : this.parentNode.sectionRowIndex;
 		map.setHtml("posy", posy + 1 - map.borderSize);
-		
+
 		// Drag and Drop
 		var roomTile = tiles[map.currentTile];
 		if (map.dragEnabled && roomTile.sizex * roomTile.sizey == 1) {
@@ -418,30 +418,30 @@ function Map(sizex, sizey) {
 		var roomTile = tiles[map.currentTile];
 		var tiley = parseInt(tile.id.split("_")[1]) + 1;
 		var tilex = parseInt(tile.id.split("_")[2]) + 1;
-		
+
 		if (!temp && !reset) {
 			map.saveUndoHistory();
 			map.resetRedoHistory();
 		}
-		
+
 		if (tilex > parseInt(roomTile.sizex / 2) + map.borderSize && tiley > parseInt(roomTile.sizey / 2) + map.borderSize){
 			if (tilex <= map.mapsizex - parseInt(roomTile.sizex / 2) + map.borderSize && tiley <= map.mapsizey - parseInt(roomTile.sizey / 2) + map.borderSize) {
 				var startNoY = parseInt((tiley - roomTile.sizey / 2));
 				var startNoX = parseInt((tilex - roomTile.sizex / 2));
 				var roomTileTiles = [];
 				var id = new Date().getTime();
-				
+
 				for (var i = 0; i < roomTile.sizey; i++) {
 					for (var k = 0; k < roomTile.sizex; k++) {
 						tile = document.getElementById("col_" + (startNoY + i) + "_" + (startNoX + k));
-						
+
 						if (!reset) {
 							// Only add the roomTile if really set
 							if (!temp) {
 								// destroy the roomTile if one is already set
 								// it's here because not only the middle tile is able to destroy a room
 								map.destroyRoom(tile.getAttribute("data-id"));
-								
+
 								roomTileTiles.push(tile.id);
 								// only set the unique id if the room is bigger than 1x1
 								roomTile.sizey * roomTile.sizex != 1 && tile.setAttribute("data-id", id);
@@ -476,7 +476,7 @@ function Map(sizex, sizey) {
 			tileIds: [],
 			map: []
 		};
-		
+
 		for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
 
 			var tableRow = table.rows[i];
@@ -490,11 +490,11 @@ function Map(sizex, sizey) {
 				if (tile) {
 					// make sure that non temporary tile is currently set
 					map.resetTile(tile);
-					
+
 					var id = tile.getAttribute("data-id");
 					var className = tile.getAttribute("class");
 					var tileTypeId = map.getMapTileId(mapData, className);
-					
+
 					if (id) {
 						// save unique room identifier and make a reference
 						var tileId = mapData.tileIds.indexOf(id);
@@ -504,10 +504,10 @@ function Map(sizex, sizey) {
 						}
 						col["data-id"] = tileId;
 					}
-				
+
 					col["tile"] = tileTypeId;
 				}
-				
+
 				colData.push(col);
 			}
 
@@ -547,10 +547,10 @@ function Map(sizex, sizey) {
 		if (temp) {
 			tile.setAttribute('data-temp', tile.getAttribute("class"));
 			tile.setAttribute('data-temp-pos', map.getTilePosition(tile));
-			
+
 			tile.setAttribute("data-pos-x", col);
 			tile.setAttribute("data-pos-y", row);
-			
+
 			tile.style.opacity = "0.7";
 		} else {
 			maxsize != 1 && tile.setAttribute("data-pos-x", col);
@@ -565,13 +565,13 @@ function Map(sizex, sizey) {
 		// console.log("<tr>\n\t<td>click</td>\n\t<td>id=" + roomTile + "</td>\n\t<td></td>\n</tr>");
 		map.currentTile = roomTile;
 	};
-	
+
 	this.setHtml = function(id, html) {
-		document.getElementById(id).innerHTML = html;		
+		document.getElementById(id).innerHTML = html;
 	};
-	
+
 	this.hideElement = function(id) {
-		document.getElementById(id).style.display = "none";	
+		document.getElementById(id).style.display = "none";
 	};
 
 	/**
@@ -582,11 +582,11 @@ function Map(sizex, sizey) {
 	this.mirrorMap = function(mirrorType, reverse, rotate) {
 		map.saveUndoHistory();
 		map.resetRedoHistory();
-		
+
 		var mapObject = map.mapToJson();
 		var cols = mapObject.map[0].length;
 		var rows = mapObject.map.length;
-		
+
 		switch(mirrorType) {
 			case 'first':
 				// mirror 1 & 3 to 2 & 4
@@ -603,7 +603,7 @@ function Map(sizex, sizey) {
 				map.mirrorPart(mapObject, cols, rows, "vertical", reverse);
 				break;
 		}
-		
+
 		var str = JSON.stringify(mapObject);
 		map.importData(str);
 	};
@@ -629,20 +629,20 @@ function Map(sizex, sizey) {
 				y2 = parseInt(rows / 2);
 				break;
 		}
-		
+
 		// find uncomplete rooms (going through the mirror part)
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			var cell = mapObject.map[row][col];
 			var tile = mapObject.tiles[cell["tile"]] || "";
 			var ptile = tile.search(playerSearch);
-			
+
 			if (ptile != -1) {
 				// We got player tiles, remove these from the potential list
 				var pnum = tile.substr(ptile + 2);
 				var pindex = players.indexOf(parseInt(pnum));
 				pindex != -1 && players.splice(pindex, 1);
 			}
-			
+
 			var tileId = mapObject.tileIds[cell["data-id"]];
 			if (!tileId) {
 				return;
@@ -651,7 +651,7 @@ function Map(sizex, sizey) {
 			if (!room) {
 				// it's not in the list
 				var sizex = tiles[tile].sizex;
-				var sizey = tiles[tile].sizey;	
+				var sizey = tiles[tile].sizey;
 				uncompleteRooms[tileId] = {
 					"size": sizex * sizey,
 					"count": 1
@@ -664,12 +664,12 @@ function Map(sizex, sizey) {
 				}
 			}
 		});
-		
+
 		// mirror the part
 		map.forEachCell(x1, x2, y1, y2, function(col, row) {
 			// clone the mapobject cell
 			var mirrorPart = JSON.parse(JSON.stringify(mapObject.map[row][col]));
-			
+
 			switch (type) {
 				case "vertical":
 					var newCol = map.mapsizex - 1 - col;
@@ -687,10 +687,10 @@ function Map(sizex, sizey) {
 					var tileIdRot = mapObject.tileIds[mapObject.map[newRRow][newRCol]["data-id"]];
 					break;
 			}
-			
+
 			var tileIdMir = mapObject.tileIds[mirrorPart["data-id"]];
 			var tileName = mapObject.tiles[mirrorPart['tile']] || "";
-			
+
 			if (tileIdHor && tileIdHor in uncompleteRooms) {
 				// an uncomplete room should not get mirrored, we keep the tiles
 				return;
@@ -716,7 +716,7 @@ function Map(sizex, sizey) {
 					var dataId = mapObject.tileIds.indexOf(newId.toString());
 					mirrorPart["data-id"] = dataId;
 				}
-				
+
 				// is it a player tile?
 				if (tileName.search(playerSearch) != -1) {
 					// lets replace all player tiles
@@ -735,7 +735,7 @@ function Map(sizex, sizey) {
 					// if the player maximum is reached, just copy them. The user has to fix it by himself
 				}
 			}
-			
+
 			switch(type) {
 				case "vertical":
 					mapObject.map[newVRow][newCol] = mirrorPart;
@@ -749,7 +749,7 @@ function Map(sizex, sizey) {
 			}
 		});
 	};
-	
+
 	this.forEachCell = function(x1, x2, y1, y2, callback) {
 		for (var row = y1; row < y2; row++){
 			for (var col = x1; col < x2; col++){
@@ -757,7 +757,7 @@ function Map(sizex, sizey) {
 			}
 		}
 	};
-	
+
 	this.cancelDrop = function() {
 		dropMessage.style.display = "none";
 		clearTimeout(map.dropTimeout);
@@ -766,25 +766,25 @@ function Map(sizex, sizey) {
 	this.dragOverMap = function(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
-		
+
 		clearTimeout(map.dropTimeout);
 		map.dropTimeout = setTimeout(function(){ map.cancelDrop(); }, 200);
-		
+
 		dropMessage.style.display = "block";
 	};
 
 	this.dropMap = function(evt) {
 		dropMessage.style.display = "none";
-		
+
 		evt.preventDefault();
-		
+
 		var dt = evt.dataTransfer;
 		var files = dt.files;
 
 		if(files && files.length !== 0) {
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
-		
+
 			reader.onload = function(evt) {
 				try {
 					map.importData(atob(this.result));
@@ -794,7 +794,7 @@ function Map(sizex, sizey) {
 			};
 		}
 	};
-	
+
 	this.checkObsoleteRooms = function() {
 		var tileIds = map.tiles;
 		for (var tileId in tileIds) {
@@ -802,14 +802,14 @@ function Map(sizex, sizey) {
 			var tile = document.getElementById(firstId);
 			var tileName = tile.getAttribute("class");
 			var size = tiles[tileName].sizex *  tiles[tileName].sizey;
-			
+
 			if (tileIds[tileId].length != size) {
 				// room isn't complete, destroy it!
 				map.destroyRoom(tileId);
 			}
 		}
 	};
-	
+
 	this.getMapTileId = function(mapData, tileName) {
 		var tileTypeId = mapData.tiles.indexOf(tileName);
 		if (tileTypeId == -1) {
@@ -817,21 +817,21 @@ function Map(sizex, sizey) {
 			mapData.tiles.push(tileName);
 			tileTypeId = mapData.tiles.length - 1;
 		}
-		
+
 		return tileTypeId;
 	};
-	
+
 	this.changeColumn = function(mapData, position, add) {
 		var mapArray = mapData.map;
 		var operation = map.operation[position][add ? 1 : 0];
-		
+
 		var tileId = map.getMapTileId(mapData, map.defaultTile);
-		
+
 		// map size should not exceed the defined min/max size
 		if (mapArray[0].length == map.minsize && !add || mapArray[0].length == map.maxsize && add) {
 			return;
 		}
-		
+
 		for (var i = 0; i < mapArray.length; i++) {
 			mapArray[i][operation]({ tile: tileId });
 		}
@@ -840,14 +840,14 @@ function Map(sizex, sizey) {
 	this.changeLine = function(mapData, position, add) {
 		var mapArray = mapData.map;
 		var operation = map.operation[position][add ? 1 : 0];
-		
+
 		var tileId = map.getMapTileId(mapData, map.defaultTile);
-		
+
 		// map size should not exceed the defined min/max size
 		if (mapArray.length == map.minsize && !add || mapArray.length == map.maxsize && add) {
 			return;
 		}
-		
+
 		var cols = [];
 		for (var i = 0; i < mapArray[0].length; i++) {
 			cols.push({ tile: tileId });
@@ -858,28 +858,28 @@ function Map(sizex, sizey) {
 	this.changeMap = function(dir, add) {
 		var mapData = map.mapToJson();
 		var position = "after";
-		
+
 		map.resetRedoHistory();
 		map.saveUndoHistory();
-		
+
 		switch(dir) {
 			case 'top':
 				position = "before";
 				/* falls through */
 			case 'bottom':
 				map.changeLine(mapData, position, add);
-				break;	
-			case 'left':	
+				break;
+			case 'left':
 				position = "before";
 				/* falls through */
 			case 'right':
 				map.changeColumn(mapData, position, add);
 				break;
 		}
-		
+
 		map.importData(JSON.stringify(mapData));
 	};
-	
+
 	this.saveUndoHistory = function() {
 		var mapData = map.exportData();
 		var history = map.undoHistory;
@@ -891,7 +891,7 @@ function Map(sizex, sizey) {
 		}
 		map.setHistoryButtons();
 	};
-	
+
 	this.saveRedoHistory = function() {
 		var mapData = map.exportData();
 		var history = map.redoHistory;
@@ -903,16 +903,16 @@ function Map(sizex, sizey) {
 		}
 		map.setHistoryButtons();
 	};
-	
+
 	this.resetRedoHistory = function() {
 		map.redoHistory = [];
 		map.setHistoryButtons();
 	};
-	
+
 	this.undo = function() {
 		if (map.undoHistory.length > 0) {
 			map.saveRedoHistory();
-			
+
 			var mapData = map.undoHistory.pop();
 			map.importData(mapData);
 			return true;
@@ -920,11 +920,11 @@ function Map(sizex, sizey) {
 			return false;
 		}
 	};
-	
+
 	this.redo = function() {
 		if (map.redoHistory.length > 0) {
 			map.saveUndoHistory();
-			
+
 			var mapData = map.redoHistory.shift();
 			map.importData(mapData);
 			return true;
@@ -932,11 +932,11 @@ function Map(sizex, sizey) {
 			return false;
 		}
 	};
-	
+
 	this.setHistoryButtons = function() {
 		var undo = document.getElementById("undo");
 		var redo = document.getElementById("redo");
-		
+
 		undo.disabled = map.undoHistory.length > 0 ? "" : "disabled";
 		redo.disabled = map.redoHistory.length > 0 ? "" : "disabled";
 	};

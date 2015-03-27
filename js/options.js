@@ -14,9 +14,9 @@ function initOptions() {
 	rotate = document.getElementById("rotate");
 
 	resetMirror();
-	
+
 	versioning.checked = store.getItem("versioning") || false;
-	
+
 	extend.onchange = resetPreview;
 	reverse.onchange = resetPreview;
 	rotate.onchange = resetPreview;
@@ -84,13 +84,13 @@ function mirrorPreview(type) {
 			extend.disabled = "";
 			reverse.disabled = "disabled";
 			rotate.disabled = "";
-		
+
 			first.setAttribute("class", "active");
 			second.innerHTML = '1';
 			third.innerHTML = '1';
 			fourth.innerHTML = '1';
 			fourth.setAttribute("class", "mirrorBoth");
-			
+
 			if (!rotate.checked) {
 				second.setAttribute("class", "mirrorHorizontal");
 				third.setAttribute("class", "mirrorVertical");
@@ -112,10 +112,10 @@ function mirrorPreview(type) {
 			extend.disabled = "";
 			reverse.disabled = "";
 			rotate.disabled = "disabled";
-		
+
 			first.setAttribute("class", "active");
 			second.setAttribute("class", "active");
-			
+
 			if (store.localStorage) {
 				third.innerHTML = '1';
 				fourth.innerHTML = '2';
@@ -148,7 +148,7 @@ function mirrorPreview(type) {
 			extend.disabled = "";
 			reverse.disabled = "";
 			rotate.disabled = "disabled";
-		
+
 			first.setAttribute("class", "active");
 			third.setAttribute("class", "active");
 
@@ -172,7 +172,7 @@ function mirrorPreview(type) {
 
 function resetPreview(){
 	resetMirror();
-	
+
 	if (active) {
 		mirrorPreview(active);
 	}
@@ -193,7 +193,7 @@ function resetMirror() {
 	third.removeAttribute("class");
 	fourth.innerHTML = '4';
 	fourth.removeAttribute("class");
-	
+
 	third.parentNode.removeAttribute("class");
 }
 
@@ -228,19 +228,19 @@ function exportMap() {
 	}
 	mapName += versioning.checked ? "_" + terrain.version : "";
 	mapName += ".wfto";
-	
+
 	// Use the native blob constructor
 	var blob = new Blob([data], {type: "application/octet-stream"});
-	
+
 	if (window.navigator.msSaveOrOpenBlob) {
 		// IE
 		window.navigator.msSaveOrOpenBlob(blob, mapName);
 		return;
 	}
-	
+
 	//Chrome
 	var href = window.URL.createObjectURL(blob);
-	
+
 	var exportButton = document.getElementById("export");
 	var exportLink = document.getElementById("exportLink");
 	exportLink.setAttribute("download", mapName);
@@ -253,16 +253,16 @@ function exportMap() {
 function importMap() {
 	if (window.FileReader) {
 		var files = document.getElementById("mapFile").files;
-		
+
 		if (files.length === 1) {
 			if (files[0].name.match(invalidLetterRegex)) {
 				alert("Invalid filename!");
 				return;
 			}
-			
+
 			var reader = new FileReader();
 			reader.readAsText(files[0]);
-			
+
 			reader.onload = function(evt) {
 				// map geladen
 				try {
@@ -270,10 +270,10 @@ function importMap() {
 					terrain.importData(atob(this.result));
 					var filename = files[0].name;
 					var name = filename.substr(0, filename.lastIndexOf("."));
-					
+
 					var versionIndex = name.lastIndexOf("_");
 					var version = name.substr(-3) -(-1);
-					
+
 					if (versionIndex !== -1 && !isNaN(version)) {
 						versioning.checked = true;
 						var newVersion = "00" + version;
@@ -282,7 +282,7 @@ function importMap() {
 					} else {
 						versioning.checked = false;
 					}
-					
+
 					mapNameInput.value = name;
 				} catch(e) {
 					alert("Please select a valid map file.\n" + e.message);
@@ -321,7 +321,7 @@ function saveOptions() {
 	// apply possible changes
 	terrain.generateTileCss();
 	terrain.importData(map);
-	
+
 	toggleOptions(false);
 }
 
@@ -359,12 +359,12 @@ function refreshOptions() {
 					var option = document.createElement("option");
 					option.innerHTML = terrain[item][i];
 					option.value = terrain[item][i];
-					
+
 					// Set default to the label to mark the default value
 					if(terrain[item][i] == terrain[optionvalue + "Default"]) {
 						option.innerHTML = option.innerHTML + " (default)";
 					}
-					
+
 					// Select the current value
 					if (terrain[item][i] == terrain[optionvalue]) {
 						option.selected = "selected";
@@ -377,14 +377,14 @@ function refreshOptions() {
 		generalOptions.appendChild(document.createElement("br"));
 	}
 	general.insertBefore(generalOptions, saveOptions);
-	
+
 	setVersioning(document.getElementById("versioning"));
 }
 
 function toggleOptions(show) {
 	var options = document.getElementById("options");
 	options.style.display = show ? "block" : "none";
-	
+
 	if (show) {
 		refreshOptions();
 		document.getElementById("width").focus();
@@ -394,21 +394,21 @@ function toggleOptions(show) {
 function importCsv() {
 	var files = document.getElementById("csv").files;
 	var bordersize = parseInt(document.getElementById("csvborder").value) || 3;
-	
+
 	if (files.length === 1) {
-		
+
 		if (files[0].name.match(invalidLetterRegex)) {
 			alert("Invalid filename!");
 			return;
 		}
-		
+
 		var reader = new FileReader();
 		reader.readAsText(files[0]);
-		
+
 		var mapName = files[0].name;
 		mapName = mapName.substr(0, mapName.lastIndexOf("."));
 		mapNameInput.value = mapName;
-		
+
 		reader.onload = function(e) {
 			var calcRooms = [];
 			var usedCores = [];
@@ -426,7 +426,7 @@ function importCsv() {
 				for (var i = bordersize; i < rows.length - bordersize; i++) {
 					var rowData = [];
 					var cells = rows[i].split(",");
-					
+
 					for (var j = bordersize; j < cells.length - bordersize; j++) {
 						var tileName = "";
 						var cell = {};
@@ -495,19 +495,19 @@ function importCsv() {
 								console.error("Tile " + cells[j] + " could not be converted!");
 								tileName = "earth";
 						}
-						
+
 						var tileConfig = tiles[tileName];
 						if (tileConfig && tileConfig.sizex * tileConfig.sizey > 1) {
 							calcRooms.push([i - bordersize, j - bordersize]);
 						}
-						
+
 						var tileTypeId = terrain.getMapTileId(mapData, tileName);
 						cell["tile"] = tileTypeId;
 						rowData.push(cell);
 					}
 					mapData.map.push(rowData);
 				}
-				
+
 				for (var k = 0; k < calcRooms.length; k++) {
 					var y = calcRooms[k][0];
 					var x = calcRooms[k][1];
@@ -521,7 +521,7 @@ function importCsv() {
 						mapData.tileIds.push(id);
 						var roomTile = tiles[tile];
 						var coreTile = '';
-						
+
 						var match = tile.match(/core_p([1-8])/);
 						if (match) {
 							var player = parseInt(match[1]);
@@ -533,7 +533,7 @@ function importCsv() {
 							}
 							usedCores.push(player);
 						}
-						
+
 						for (var posy = 0; posy < roomTile.sizey; posy++) {
 							for (var posx = 0; posx < roomTile.sizex; posx++) {
 								mapData.map[y + posy][x + posx]['tile'] = tileId;
@@ -559,7 +559,7 @@ function setVersioning(element) {
 	store.setItem(element.id, element.checked);
 	var mapVersion = document.getElementById("mapVersion");
 	mapVersion.innerHTML = terrain.version;
-	
+
 	mapVersion.parentNode.style.display = element.checked ? "block" : "none";
-	
+
 }

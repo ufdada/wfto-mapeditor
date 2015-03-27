@@ -15,7 +15,7 @@ var makeShot = false;
 module.exports = {
 	"Ticket #12 - Overwrite Rooms": function(test) {
 		console.log(">> Test ticket #12".purple());
-		
+
 		// TODO: find out why enabling this makes the grunt test fail
 		test.open("index.html");
 			exchange.importMap(test, true, makeShot, "Ticket_12");

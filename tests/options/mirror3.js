@@ -6,9 +6,9 @@ module.exports = {
 		test
 			.click('#optionButton')
 			.click('#third')
-		
+
 			.click('#mirrorButton')
-			
+
 			.assert.disabled('#rotate', 'Rotate disabled')
 			.assert.enabled('#reverse', 'Reverse enabled')
 			.assert.notSelected('#reverse', 'Reverse unchecked')
@@ -37,21 +37,21 @@ module.exports = {
 			.click('#optionButton')
 			.click('#third')
 			.click('#extend')
-			
+
 			.click('#mirrorButton')
-			
+
 			.assert.disabled('#rotate', 'Rotate disabled')
 			.assert.enabled('#reverse', 'Reverse enabled')
 			.assert.notSelected('#reverse', 'Reverse unchecked')
 			.assert.enabled('#extend', 'Extend enabled')
 			.assert.selected('#extend', 'Extend checked')
-			
+
 			.execute(function(){
 				this.assert.ok(window.active == "third", "window.active should be 'third', was " + window.active);
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') * 2, "mapsizex == " + this.data('mapsizex') * 2);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "mapsizey == " + this.data('mapsizey'));
 			});
-		
+
 		makeShot && test.screenshot("./tests/images/:browser/mirror3Extend.png");
 
 		if (external) {
@@ -68,9 +68,9 @@ module.exports = {
 			.click('#optionButton')
 			.click('#third')
 			.click('#reverse')
-		
+
 			.click('#mirrorButton')
-			
+
 			.assert.disabled('#rotate', 'Rotate disabled')
 			.assert.enabled('#reverse', 'Reverse enabled')
 			.assert.selected('#reverse', 'Reverse checked')

@@ -2,13 +2,13 @@ module.exports = function (grunt) {
 	"use strict";
 
 	grunt.initConfig({
-		pkg: grunt.file.readJSON('package.json'), 
+		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
 			all: [
 				"js/**/*.js",
 				"tests/**/*.js",
 				"*.json"
-			], 
+			],
 			options: {
 				jshintrc: '.jshintrc'
 			}
@@ -20,8 +20,8 @@ module.exports = function (grunt) {
 				"./tests/convert.html"
 			],
 			ignoreList: [
-				'\.wfto',
-				'\.csv'
+				'.wfto',
+				'.csv'
 			]
 		},
 		dalek: {

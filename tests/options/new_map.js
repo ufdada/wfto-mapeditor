@@ -1,10 +1,10 @@
 module.exports = {
-	'generate': function (test, external, width, height) {		
+	'generate': function (test, external, width, height) {
 		width = width || '20';
 		height = height || '20';
-		
+
 		if (!external) { test.open("index.html"); }
-		
+
 		test
 		.click('#optionButton')
 		.setValue('#width', width)

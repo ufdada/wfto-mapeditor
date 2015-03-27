@@ -4,7 +4,7 @@ module.exports = {
 	'drawMap': function (test, external, makeShot) {
 		console.log(">> Draw default map".purple());
 		if (!external) { test.open('index.html'); }
-		
+
 		test
 			.waitForElement('#core_p1')
 			.click('#core_p1')
@@ -72,7 +72,7 @@ module.exports = {
 			.click('#col_15_15')
 			.click('#col_16_15');
 			makeShot && test.screenshot("./tests/images/:browser/defaultMap.png");
-		
+
 		if (external) {
 			return test;
 		} else {
