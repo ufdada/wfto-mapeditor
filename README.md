@@ -2,6 +2,8 @@
 This map editor should make it fairly easy to create and share maps for "War for the Overworld"
 [![Build Status](https://travis-ci.org/ufdada/wfto-mapeditor.svg)](https://travis-ci.org/ufdada/wfto-mapeditor)
 
+Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
+
 ### Release 1.4
 #### New Features:
 - Undo / Redo actions
