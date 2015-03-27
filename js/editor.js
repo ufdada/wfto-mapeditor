@@ -47,7 +47,7 @@ function Map(sizex, sizey) {
 	this.tileModes = [ 'color', 'lowres', 'normal' /*, 'highres' not implemented */ ];
 	this.undoHistory = [];
 	this.redoHistory = [];
-	this.maxHistory = 10;
+	this.maxHistory = 30;
 	this.dropTimeout = 0;
 	this.version = "001";
 	this.mouseButton = {
