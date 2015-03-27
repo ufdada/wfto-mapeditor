@@ -51,5 +51,5 @@ Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
 - Export/Import of created Maps (Extension .wfto)
 - Creating a Path by holding the left mousebutton and moving the mouse (Only works for 1x1 tiles)
 
-Special Thanks to:
-- Marados: for helping with the assets
+### Special Thanks to:
+- **Marados**: for helping with the assets
