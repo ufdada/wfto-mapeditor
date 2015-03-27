@@ -420,7 +420,6 @@ function Map(sizex, sizey) {
 		var tilex = parseInt(tile.id.split("_")[2]) + 1;
 
 		if (!temp && !reset) {
-			map.saveUndoHistory();
 			map.resetRedoHistory();
 		}
 
@@ -580,7 +579,6 @@ function Map(sizex, sizey) {
 	 *					 It's the sum of the cellvalues in the option menu
 	 */
 	this.mirrorMap = function(mirrorType, reverse, rotate) {
-		map.saveUndoHistory();
 		map.resetRedoHistory();
 
 		var mapObject = map.mapToJson();
@@ -906,6 +904,7 @@ function Map(sizex, sizey) {
 
 	this.resetRedoHistory = function() {
 		map.redoHistory = [];
+		map.saveUndoHistory();
 		map.setHistoryButtons();
 	};
 
