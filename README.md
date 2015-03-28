@@ -4,6 +4,15 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
 
+### Release 1.5
+#### New Features:
+- Import Google CSV files via Drag and Drop
+
+#### Bugfixes:
+- Bigger rooms are now shown/placeable near the border
+- Keep scrollposition on resizing the map
+- several style-specific improvements
+
 ### Release 1.4
 #### New Features:
 - Undo / Redo actions
