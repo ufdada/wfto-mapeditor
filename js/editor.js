@@ -881,6 +881,8 @@ function Map(sizex, sizey) {
 		}
 
 		map.importData(JSON.stringify(mapData));
+
+		return false;
 	};
 
 	this.saveUndoHistory = function() {
