@@ -769,6 +769,7 @@ function Map(sizex, sizey) {
 	this.dragOverMap = function(evt) {
 		evt.stopPropagation();
 		evt.preventDefault();
+		evt.dataTransfer.dropEffect = "copy";
 
 		clearTimeout(map.dropTimeout);
 		map.dropTimeout = setTimeout(function(){ map.cancelDrop(); }, 200);
