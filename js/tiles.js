@@ -59,12 +59,10 @@ tiles = {
 		sizey: 1,
 		color: "#fcba78"
 	},
-	/*
-	exclude them for now
-	'herogate': {
+	'inhibitorshrine': {
 		sizex: 3,
 		sizey: 3,
-		color: "#efefef"
+		color: "#fa78fa"
 	},
 	'claimed_earth_empire': {
 		sizex: 1,
@@ -76,7 +74,6 @@ tiles = {
 		sizey: 1,
 		color: "#ddd"
 	},
-	*/
 	'earth': {
 		sizex: 1,
 		sizey: 1,
@@ -141,6 +138,11 @@ tiles = {
 		sizex: 3,
 		sizey: 3,
 		color: "blueviolet"
+	},
+	'herogate': {
+		sizex: 3,
+		sizey: 3,
+		color: "#efefef"
 	},
 	'goldshrine': {
 		sizex: 3,
