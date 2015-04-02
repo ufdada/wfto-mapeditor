@@ -1,4 +1,4 @@
-﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ]/g;
+﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ\(\)]/g;
 var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "";
 
 
@@ -226,7 +226,10 @@ function exportMap() {
 		alert("Invalid filename!");
 		return;
 	}
-	mapName += versioning.checked ? "_" + terrain.version : "";
+	if (versioning.checked) {
+		mapName +=  "_" + terrain.version;
+		terrain.updateVersion();
+	}
 	mapName += ".wfto";
 
 	// Use the native blob constructor
@@ -269,22 +272,7 @@ function importMap() {
 					terrain.resetRedoHistory();
 
 					terrain.importData(atob(this.result));
-					var filename = files[0].name;
-					var name = filename.substr(0, filename.lastIndexOf("."));
-
-					var versionIndex = name.lastIndexOf("_");
-					var version = name.substr(-3) -(-1);
-
-					if (versionIndex !== -1 && !isNaN(version)) {
-						versioning.checked = true;
-						var newVersion = "00" + version;
-						terrain.version = newVersion.substring(-3);
-						name = name.substr(0, versionIndex);
-					} else {
-						versioning.checked = false;
-					}
-
-					mapNameInput.value = name;
+					terrain.setFilename(files[0].name);
 				} catch(e) {
 					alert("Please select a valid map file.\n" + e.message);
 					return;
@@ -405,12 +393,9 @@ function importCsv() {
 		var reader = new FileReader();
 		reader.readAsText(files[0]);
 
-		var mapName = files[0].name;
-		mapName = mapName.substr(0, mapName.lastIndexOf("."));
-		mapNameInput.value = mapName;
-
 		reader.onload = function(e) {
 			terrain.importCsvData(this.result);
+			terrain.setFilename(files[0].name, true);
 		};
 	} else {
 		alert("Please select a valid map file");

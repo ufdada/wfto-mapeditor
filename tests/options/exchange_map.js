@@ -21,7 +21,7 @@ module.exports = {
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			})
-			.assert.val('#mapName', mapname, 'Map name is ' + mapname)
+			.assert.val('#mapName', helper.getFilename(mapname + ".wfto"), 'Map name is ' + helper.getFilename(mapname + ".wfto"))
 			.assert.notVisible("#options");
 
 		makeShot && test.screenshot("./tests/images/:browser/" + mapname + "_import.png");
@@ -54,7 +54,7 @@ module.exports = {
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			})
-			.assert.val('#mapName', mapname, 'Map name is ' + mapname)
+			.assert.val('#mapName', helper.getFilename(mapname + ".csv"), 'Map name is ' + helper.getFilename(mapname + ".csv"))
 			// TODO Evaluate map size
 			.assert.notVisible("#options");
 

@@ -50,6 +50,7 @@ function Map(sizex, sizey) {
 	this.maxHistory = 30;
 	this.dropTimeout = 0;
 	this.version = "001";
+	this.copiedFilenameRegex = /\s\([0-9]{1,}\)\./g;
 	this.mouseButton = {
 		left: 0,
 		middle: 1,
@@ -787,14 +788,17 @@ function Map(sizex, sizey) {
 
 		if(files && files.length !== 0) {
 			var reader = new FileReader();
-			reader.readAsText(files[0]);
+			var file = files[0];
+			reader.readAsText(file);
 
 			reader.onload = function(evt) {
 				try {
 					map.importData(atob(this.result));
+					map.setFilename(file.name, false);
 				} catch(e) {
 					try {
 						map.importCsvData(this.result);
+						map.setFilename(file.name, true);
 					} catch(exception) {
 						alert("Could not load map.\n\n" + exception.message);
 					}
@@ -1092,5 +1096,41 @@ function Map(sizex, sizey) {
 			alert("Please select a valid map file");
 			return;
 		}
+	};
+
+	this.fixFilename = function(filename) {
+		filename = filename.replace(map.copiedFilenameRegex, ".");
+		return filename;
+	};
+
+	this.setFilename = function(filename, noVersion) {
+		var mapName = map.fixFilename(filename);
+		mapName = mapName.substr(0, mapName.lastIndexOf("."));
+		var versioning = document.getElementById('versioning');
+		var mapNameInput = document.getElementById("mapName");
+
+		if (!noVersion) {
+			var versionIndex = mapName.lastIndexOf("_");
+			var version = parseInt(mapName.substr(-3));
+
+			if (versionIndex !== -1 && !isNaN(version)) {
+				versioning.checked = true;
+				map.updateVersion(version);
+				mapName = mapName.substr(0, versionIndex);
+			} else {
+				versioning.checked = false;
+			}
+		}
+
+		mapNameInput.value = mapName;
+	};
+
+	this.updateVersion = function(version) {
+		var oldVersion = version || map.version;
+		var newVersion = "00" + (parseInt(oldVersion) + 1);
+		newVersion = newVersion.substring(-3);
+		map.version = newVersion;
+
+		return newVersion;
 	};
 }

@@ -49,5 +49,23 @@ module.exports = {
 		});
 		
 		test.done();
+	},
+	"Ticket #23 - Map that has been download multiple times can't be imported": function(test) {
+		console.log(">> Test ticket #23".purple());
+
+		test.open("index.html");
+		// wfto file without versioning
+			exchange.importMap(test, true, makeShot, "Ticket_23 (6)");
+		test.execute(function() {
+			this.assert.ok(Object.keys(window.terrain.tiles).length == 1, "tiles should be 1, was " + Object.keys(window.terrain.tiles).length);
+			this.assert.ok(window.terrain.version === "001", "Version should be 001, it is " + window.terrain.version);
+		});
+		// wfto file with versioning
+			exchange.importMap(test, true, makeShot, "Ticket_23_003 (3)");
+		test.execute(function() {
+			this.assert.ok(Object.keys(window.terrain.tiles).length == 1, "tiles should be 1, was " + Object.keys(window.terrain.tiles).length);
+			this.assert.ok(window.terrain.version === "004", "Version should be 004, it is " + window.terrain.version);
+		});
+		test.done();
 	}
 };
