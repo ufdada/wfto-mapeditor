@@ -10,7 +10,9 @@ var makeShot = false;
 module.exports = {
 	"Resize": function(test) {
 		console.log(">> Test Resizing".purple());
-		test.open("index.html");
+		test
+			.open("index.html")
+			.waitForElement('#core_p1');
 
 			exchange.importMap(test, true, makeShot);
 
@@ -70,8 +72,9 @@ module.exports = {
 	},
 	"Undomanager part 1": function(test) {
 		console.log(">> Test Undomanager".purple());
-		test.open("index.html");
 		test
+			.open("index.html")
+			.waitForElement('#core_p1')
 			.execute(function(){
 				this.data("undoHistory", window.terrain.undoHistory);
 				this.data("redoHistory", window.terrain.redoHistory);
@@ -112,13 +115,16 @@ module.exports = {
 		test.done();
 	},
 	"Undomanager part 2": function(test) {
-		/*test
+		test
+			.waitForElement('#core_p1')
 			.click('#claimed_earth_p1')
 			.click('#col_6_1')
 			.click('#col_6_2')
 			.execute(function(){
 				this.data("undoHistory", window.terrain.undoHistory);
 				this.data("redoHistory", window.terrain.redoHistory);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 				this.data("mapData", window.terrain.exportData());
 			});
 			// Resize map

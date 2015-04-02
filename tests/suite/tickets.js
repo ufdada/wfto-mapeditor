@@ -17,9 +17,12 @@ module.exports = {
 		console.log(">> Test ticket #12".purple());
 
 		// TODO: find out why enabling this makes the grunt test fail
-		test.open("index.html");
-			exchange.importMap(test, true, makeShot, "Ticket_12");
-			mirror3.mirror(test, true, makeShot);
+		test
+			.open("index.html")
+			.waitForElement('#core_p1');
+			
+		exchange.importMap(test, true, makeShot, "Ticket_12");
+		mirror3.mirror(test, true, makeShot);
 		test.execute(function() {
 			this.assert.ok(Object.keys(window.terrain.tiles).length == 8, "tiles should be 8, was " + Object.keys(window.terrain.tiles).length);
 		});
@@ -30,8 +33,9 @@ module.exports = {
 		console.log(">> Test ticket #22".purple());
 
 		// TODO: find out why enabling this makes the grunt test fail
-		test.open("index.html");
 		test
+			.open("index.html")
+			.waitForElement('#core_p1')
 			.click("#core_p1")
 			.click("#col_1_1")
 			.click("#col_20_1")
@@ -53,15 +57,17 @@ module.exports = {
 	"Ticket #23 - Map that has been download multiple times can't be imported": function(test) {
 		console.log(">> Test ticket #23".purple());
 
-		test.open("index.html");
+		test
+			.open("index.html")
+			.waitForElement('#core_p1');
 		// wfto file without versioning
-			exchange.importMap(test, true, makeShot, "Ticket_23 (6)");
+		exchange.importMap(test, true, makeShot, "Ticket_23 (6)");
 		test.execute(function() {
 			this.assert.ok(Object.keys(window.terrain.tiles).length == 1, "tiles should be 1, was " + Object.keys(window.terrain.tiles).length);
 			this.assert.ok(window.terrain.version === "001", "Version should be 001, it is " + window.terrain.version);
 		});
 		// wfto file with versioning
-			exchange.importMap(test, true, makeShot, "Ticket_23_003 (3)");
+		exchange.importMap(test, true, makeShot, "Ticket_23_003 (3)");
 		test.execute(function() {
 			this.assert.ok(Object.keys(window.terrain.tiles).length == 1, "tiles should be 1, was " + Object.keys(window.terrain.tiles).length);
 			this.assert.ok(window.terrain.version === "004", "Version should be 004, it is " + window.terrain.version);

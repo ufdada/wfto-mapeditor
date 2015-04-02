@@ -17,6 +17,8 @@ module.exports = {
 			window.rotate.checked = "";
 			// reimport the map
 			window.terrain.importData(this.data("mapData"));
+			this.data('mapsizex', window.terrain.mapsizex);
+			this.data('mapsizey', window.terrain.mapsizey);
 		});
 		return test;
 	}

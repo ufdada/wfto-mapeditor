@@ -6,8 +6,10 @@ module.exports = {
 			.click("#topPlus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') + 1, "Mapwidth should be " + (this.data('mapsizey') + 1));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') + 1, "Mapheight should be " + (this.data('mapsizey') + 1) + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/topPlus.png");
@@ -25,8 +27,10 @@ module.exports = {
 			.click("#topMinus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') - 1, "Mapwidth should be " + (this.data('mapsizey') - 1));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') - 1, "Mapheight should be " + (this.data('mapsizey') - 1) + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/topMinus.png");
@@ -44,8 +48,10 @@ module.exports = {
 			.click("#leftPlus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') + 1, "Mapwidth should be " + (this.data('mapsizex') + 1));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapwidth should be " + this.data('mapsizey'));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') + 1, "Mapwidth should be " + (this.data('mapsizex') + 1) + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/leftPlus.png");
@@ -63,8 +69,10 @@ module.exports = {
 			.click("#leftMinus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') - 1, "Mapwidth should be " + (this.data('mapsizex') - 1));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapwidth should be " + this.data('mapsizey'));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') - 1, "Mapwidth should be " + (this.data('mapsizex') - 1) + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/leftMinus.png");
@@ -82,8 +90,10 @@ module.exports = {
 			.click("#rightPlus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') + 1, "Mapwidth should be " + (this.data('mapsizex')  + 1));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapwidth should be " + this.data('mapsizey'));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') + 1, "Mapwidth should be " + (this.data('mapsizex') + 1) + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/rightPlus.png");
@@ -101,8 +111,10 @@ module.exports = {
 			.click("#rightMinus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') - 1, "Mapwidth should be " + (this.data('mapsizex') - 1));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapwidth should be " +this.data('mapsizey'));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') - 1, "Mapwidth should be " + (this.data('mapsizex') - 1) + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/rightMinus.png");
@@ -120,8 +132,10 @@ module.exports = {
 			.click("#bottomPlus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') + 1, "Mapwidth should be " + (this.data('mapsizey') + 1));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') + 1, "Mapheight should be " + (this.data('mapsizey') + 1) + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/bottomPlus.png");
@@ -139,8 +153,10 @@ module.exports = {
 			.click("#bottomMinus")
 
 			.execute(function(){
-				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex'));
-				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') - 1, "Mapwidth should be " + (this.data('mapsizey') - 1));
+				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
+				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') - 1, "Mapheight should be " + (this.data('mapsizey') - 1) + ", was " + window.terrain.mapsizey);
+				this.data('mapsizex', window.terrain.mapsizex);
+				this.data('mapsizey', window.terrain.mapsizey);
 			});
 
 		makeShot && test.screenshot("./tests/images/:browser/bottomMinus.png");
