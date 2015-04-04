@@ -1178,7 +1178,7 @@ function Map(sizex, sizey) {
 				try {
 					images[tile.getAttribute("class")] = context.getImageData(tile.getAttribute("data-pos-x") * map.tileSize, tile.getAttribute("data-pos-y") * map.tileSize, map.tileSize, map.tileSize);
 				} catch(e) {
-					
+					console.log(e);
 				}
 			}
 		}
