@@ -1,4 +1,5 @@
 function dataStorage() {
+	this.remainingSpace = 5000000;
 	this.hasStorageSupport = function() {
 		try {
 			if (!('localStorage' in window) || typeof window['localStorage'] == "undefined") {
@@ -11,9 +12,16 @@ function dataStorage() {
 		}
 	};
 	this.localStorage = this.hasStorageSupport();
+	if (this.localStorage) {
+		for (var key in localStorage) {
+			item = localStorage.getItem(key);
+			this.remainingSpace -= key.length + item.length;
+		}
+	}
 
     this.setItem = function(name,value,days) {
 		if (this.localStorage) {
+			this.remainingSpace -= name in localStorage ? 0 : name.length + value.toString().length;
 			localStorage.setItem(name, value);
 			return;
 		}
@@ -57,6 +65,7 @@ function dataStorage() {
 
     this.removeItem = function(name) {
 		if (this.localStorage) {
+			this.remainingSpace += name in localStorage ? name.length + this.getItem(name).length : 0;
 			localStorage.removeItem(name);
 			return;
 		}
@@ -66,6 +75,7 @@ function dataStorage() {
 	this.clear = function() {
 		if (this.localStorage) {
 			localStorage.clear();
+			this.remainingSpace = 5000000;
 			return;
 		}
 		var cookies = document.cookie.split(";");
