@@ -202,7 +202,9 @@ function newMap(sizex, sizey) {
 	sizey = parseInt(document.getElementById("height").value);
 	if (!isNaN(sizex) && !isNaN(sizey)) {
 		if (sizex >= terrain.minsize && sizey >= terrain.minsize && sizex <= terrain.maxsize && sizey <= terrain.maxsize) {
+			var images = terrain.images;
 			terrain = new Map(sizex, sizey);
+			terrain.images = images;
 			terrain.init();
 		} else {
 			alert("A valid map has to at least " + terrain.minsize + " by " + terrain.minsize + " and " + terrain.maxsize + " by " + terrain.maxsize + " max");
