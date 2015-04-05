@@ -138,9 +138,8 @@ function Map(sizex, sizey) {
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
-
-			style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		}
+		style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		document.getElementsByTagName('head')[0].appendChild(style);
 	};
 
@@ -221,8 +220,10 @@ function Map(sizex, sizey) {
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
-		table.style.marginLeft = parseInt(map.tileSize * map.buttonColumns) + 30 + "px";
-		table.style.paddingTop = "10px";
+
+		var css = document.getElementById("tileCss");
+		css.innerHTML += "#map { padding-top: 10px; margin-left: "+parseInt(map.tileSize * map.buttonColumns)+"px}";
+
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
 
@@ -1155,13 +1156,14 @@ function Map(sizex, sizey) {
 		return newVersion;
 	};
 	
-	this.generateCanvas = function() {
-		var canvas = document.getElementById("previewCanvas");
+	this.generateImageData = function() {
+		// var canvas = document.getElementById("previewCanvas");
+		var canvas = document.createElement("canvas");
 		canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
 		canvas.height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
 		var context = canvas.getContext("2d");
 		var noPreload = Object.keys(map.images).length == 0;
-		var images = {};
+		var tileSize = map.tileSize;
 		
 		for(var rows = 0; rows < map.mapsizey + map.borderSize * 2; rows++) {
 			for(var cols = 0; cols < map.mapsizex + map.borderSize * 2; cols++) {
@@ -1174,15 +1176,34 @@ function Map(sizex, sizey) {
 				} else {
 					image = map.images[tile.getAttribute("class")];
 				}
-				context.drawImage(image, tile.getAttribute("data-pos-x") * map.tileSize, tile.getAttribute("data-pos-y") * map.tileSize, map.tileSize, map.tileSize, cols * map.tileSize, rows * map.tileSize, map.tileSize, map.tileSize);
-				console.log(context.getImageData(tile.getAttribute("data-pos-x") * map.tileSize, tile.getAttribute("data-pos-y") * map.tileSize, map.tileSize, map.tileSize));
-				try {
-					images[tile.getAttribute("class")] = context.getImageData(tile.getAttribute("data-pos-x") * map.tileSize, tile.getAttribute("data-pos-y") * map.tileSize, map.tileSize, map.tileSize);
-				} catch(e) {
-					console.log(e);
-				}
+				//setTimeout(function(tile, tileSize, image, cols, rows) {
+					context.drawImage(image, tile.getAttribute("data-pos-x") * tileSize, tile.getAttribute("data-pos-y") * tileSize, tileSize, tileSize, cols * tileSize, rows * tileSize, tileSize, tileSize); 
+				//}, 300, tile, map.tileSize, image, cols, rows);
 			}
 		}
-		console.log(images);
+		
+		return canvas.toDataURL();
+	};
+	
+	this.generateSVG = function(){
+		var canvas = document.getElementById("previewCanvas");
+		var ctx = canvas.getContext("2d");
+		var width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
+		var height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
+		
+		var data =
+			"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " + width + " " + height + "' width='250' height='250'>" +
+				"<style>" +
+				document.getElementById("tileCss").innerHTML +
+				"</style>" +
+				"<foreignObject width='100%' height='100%'>" +
+				"<div xmlns='http://www.w3.org/1999/xhtml' style='font-size:40px'>" +
+				document.getElementById("map").outerHTML
+					.replace(/&nbsp;/g, "31")
+					.replace(/id=\"([^\"]+)\"/g,"id=\"svg$1\"") +
+				"</div>" +
+				"</foreignObject>" +
+			"</svg>";	
+		document.getElementById("preview").innerHTML = data;
 	};
 }
