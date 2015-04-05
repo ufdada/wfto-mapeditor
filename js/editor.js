@@ -1162,7 +1162,7 @@ function Map(sizex, sizey) {
 		canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
 		canvas.height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
 		var context = canvas.getContext("2d");
-		var noPreload = Object.keys(map.images).length == 0;
+		var noPreload = Object.keys(map.images).length === 0;
 		var tileSize = map.tileSize;
 		
 		for(var rows = 0; rows < map.mapsizey + map.borderSize * 2; rows++) {
@@ -1171,7 +1171,7 @@ function Map(sizex, sizey) {
 				var image = null;
 				if (noPreload) {
 					var url = window.getComputedStyle(tile, false).backgroundImage.replace(/url\("?([^\)]+)"?\)/, "$1");
-					var image = document.createElement("img");
+					image = document.createElement("img");
 					image.src = url;
 				} else {
 					image = map.images[tile.getAttribute("class")];
