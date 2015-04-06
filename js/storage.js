@@ -1,5 +1,6 @@
 function dataStorage() {
-	this.remainingSpace = 5000000;
+	this.maxSpace = 5000000;
+	this.remainingSpace = 0;
 	this.hasStorageSupport = function() {
 		try {
 			if (!('localStorage' in window) || typeof window['localStorage'] == "undefined") {
@@ -11,20 +12,23 @@ function dataStorage() {
 			return false;
 		}
 	};
-	this.localStorage = this.hasStorageSupport();
-	if (this.localStorage) {
-		for (var key in localStorage) {
-			var item = localStorage.getItem(key);
-			if (item) {
-				this.remainingSpace -= key.length + item.length;
+
+	this.calculateSpace = function() {
+		if (this.localStorage) {
+			this.remainingSpace = this.maxSpace;
+			for (var key in localStorage) {
+				var item = localStorage.getItem(key);
+				if (item) {
+					this.remainingSpace -= key.length + item.length;
+				}
 			}
 		}
-	}
+	};
 
     this.setItem = function(name,value,days) {
 		if (this.localStorage) {
-			this.remainingSpace -= name in localStorage ? 0 : name.length + value.toString().length;
 			localStorage.setItem(name, value);
+			this.calculateSpace();
 			return;
 		}
 		var expires = "";
@@ -67,8 +71,8 @@ function dataStorage() {
 
     this.removeItem = function(name) {
 		if (this.localStorage) {
-			this.remainingSpace += name in localStorage ? name.length + this.getItem(name).length : 0;
 			localStorage.removeItem(name);
+			this.calculateSpace();
 			return;
 		}
         this.setItem(name,"",-1);
@@ -77,7 +81,7 @@ function dataStorage() {
 	this.clear = function() {
 		if (this.localStorage) {
 			localStorage.clear();
-			this.remainingSpace = 5000000;
+			this.calculateSpace();
 			return;
 		}
 		var cookies = document.cookie.split(";");
@@ -89,4 +93,7 @@ function dataStorage() {
 			this.setItem(name,"",-1);
 		}
 	};
+
+	this.localStorage = this.hasStorageSupport();
+	this.calculateSpace();
 }
