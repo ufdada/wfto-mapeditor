@@ -15,7 +15,9 @@ function dataStorage() {
 	if (this.localStorage) {
 		for (var key in localStorage) {
 			var item = localStorage.getItem(key);
-			this.remainingSpace -= key.length + item.length;
+			if (item) {
+				this.remainingSpace -= key.length + item.length;
+			}
 		}
 	}
 
