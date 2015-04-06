@@ -1,8 +1,10 @@
 ﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ\(\)]/g;
-var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "";
+var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "", height = null; width = null;
 
 
 function initOptions() {
+	width = document.getElementById('width'),
+	height = document.getElementById('height'),
 	first = document.getElementById('first'),
 	second = document.getElementById('second'),
 	third = document.getElementById('third'),
@@ -14,6 +16,9 @@ function initOptions() {
 	rotate = document.getElementById("rotate");
 
 	resetMirror();
+	
+	width.value = terrain.mapsizex;
+	height.value = terrain.mapsizey;
 
 	versioning.checked = store.getItem("versioning") || false;
 
@@ -253,7 +258,7 @@ function exportMap() {
 	exportLink.setAttribute("target", "_blank");
 	exportLink.click();
 	
-	terrain.deleteDraft();
+	//terrain.deleteDraft();
 	
 	toggleOptions(false);
 }
@@ -369,7 +374,7 @@ function resetOptions() {
 	var map = terrain.exportData();
 	terrain.resetToDefault();
 	terrain.importData(map);
-	terrain.saveDraft(map);
+	//terrain.saveDraft(map);
 	toggleOptions(false);
 }
 

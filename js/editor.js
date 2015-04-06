@@ -319,7 +319,8 @@ function Map(sizex, sizey) {
 			map.mapsizex = cols;
 			map.mapsizey = rows;
 			map.init(mapObject);
-			map.deleteDraft();
+			map.saveDraft(mapString);
+			//map.deleteDraft();
 		} else {
 			throw new Error("Not a valid Map!");
 		}
@@ -593,9 +594,10 @@ function Map(sizex, sizey) {
 			maxsize != 1 && tile.setAttribute("data-pos-x", col);
 			maxsize != 1 && tile.setAttribute("data-pos-y", row);
 			tile.style.opacity = "1";
-			map.saveDraft();
 		}
 		map.setTile(tile, map.currentTile);
+		
+		!temp && map.saveDraft();
 	};
 
 	this.setCurrentTile = function(roomTile) {
@@ -643,7 +645,7 @@ function Map(sizex, sizey) {
 
 		var mapData = JSON.stringify(mapObject);
 		map.importData(mapData);
-		map.saveDraft(mapData);
+		//map.saveDraft(mapData);
 	};
 
 	this.mirrorPart = function(mapObject, cols, rows, type, reverse) {
@@ -925,7 +927,7 @@ function Map(sizex, sizey) {
 
 		var mapData = JSON.stringify(mapObject);
 		map.importData(mapData);
-		map.saveDraft(mapData);
+		//map.saveDraft(mapData);
 
 		return false;
 	};
@@ -966,7 +968,7 @@ function Map(sizex, sizey) {
 
 			var mapData = map.undoHistory.pop();
 			map.importData(mapData);
-			map.saveDraft(mapData);
+			//map.saveDraft(mapData);
 			return true;
 		} else {
 			return false;
@@ -979,7 +981,7 @@ function Map(sizex, sizey) {
 
 			var mapData = map.redoHistory.shift();
 			map.importData(mapData);
-			map.saveDraft(mapData);
+			//map.saveDraft(mapData);
 			return true;
 		} else {
 			return false;
