@@ -5,14 +5,17 @@ module.exports = {
 
 		if (!external) { test.open("index.html"); }
 
+		console.log(20);
+		
 		test
 		.click('#optionButton')
 		.setValue('#width', width)
 		.setValue('#height', height)
 		.click('input[type="submit"]')
 		.execute(function(){
-			this.assert.ok(window.terrain.mapsizex == width.value, "Mapwidth is " + width.value);
-			this.assert.ok(window.terrain.mapsizey == height.value, "Mapwidth is " + height.value);
+			this.assert.ok(window.terrain.mapsizex == width.value, "Mapwidth should be " + width.value + ", was " + window.terrain.mapsizex);
+			this.assert.ok(window.terrain.mapsizey == height.value, "Mapwidth should be " + height.value + ", was " + window.terrain.mapsizey);
+			this.assert.ok(window.store.getItem("draft") == null, "No draft should be saved");
 		});
 
 		if (external) {

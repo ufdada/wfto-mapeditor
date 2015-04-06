@@ -206,6 +206,7 @@ function newMap(sizex, sizey) {
 			terrain = new Map(sizex, sizey);
 			terrain.images = images;
 			terrain.init();
+			terrain.deleteDraft();
 		} else {
 			alert("A valid map has to at least " + terrain.minsize + " by " + terrain.minsize + " and " + terrain.maxsize + " by " + terrain.maxsize + " max");
 			return;
@@ -251,6 +252,9 @@ function exportMap() {
 	exportLink.setAttribute("href", href);
 	exportLink.setAttribute("target", "_blank");
 	exportLink.click();
+	
+	terrain.deleteDraft();
+	
 	toggleOptions(false);
 }
 
@@ -365,6 +369,7 @@ function resetOptions() {
 	var map = terrain.exportData();
 	terrain.resetToDefault();
 	terrain.importData(map);
+	terrain.saveDraft(map);
 	toggleOptions(false);
 }
 
