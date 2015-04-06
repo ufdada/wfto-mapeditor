@@ -4,8 +4,6 @@ module.exports = {
 		height = height || '20';
 
 		if (!external) { test.open("index.html"); }
-
-		console.log(20);
 		
 		test
 		.click('#optionButton')
