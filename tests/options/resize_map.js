@@ -8,7 +8,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') + 1, "Mapheight should be " + (this.data('mapsizey') + 1) + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -30,7 +30,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') - 1, "Mapheight should be " + (this.data('mapsizey') - 1) + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -52,7 +52,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') + 1, "Mapwidth should be " + (this.data('mapsizex') + 1) + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -74,7 +74,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') - 1, "Mapwidth should be " + (this.data('mapsizex') - 1) + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -96,7 +96,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') + 1, "Mapwidth should be " + (this.data('mapsizex') + 1) + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -118,7 +118,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex') - 1, "Mapwidth should be " + (this.data('mapsizex') - 1) + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey'), "Mapheight should be " + this.data('mapsizey') + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -140,7 +140,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') + 1, "Mapheight should be " + (this.data('mapsizey') + 1) + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});
@@ -162,7 +162,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.mapsizex == this.data('mapsizex'), "Mapwidth should be " + this.data('mapsizex') + ", was " + window.terrain.mapsizex);
 				this.assert.ok(window.terrain.mapsizey == this.data('mapsizey') - 1, "Mapheight should be " + (this.data('mapsizey') - 1) + ", was " + window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft"), "Draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
 			});

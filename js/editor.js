@@ -319,7 +319,7 @@ function Map(sizex, sizey) {
 			map.mapsizex = cols;
 			map.mapsizey = rows;
 			map.init(mapObject);
-			map.saveDraft(mapString);
+			map.saveDraft();
 			//map.deleteDraft();
 		} else {
 			throw new Error("Not a valid Map!");
