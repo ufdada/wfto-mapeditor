@@ -9,7 +9,7 @@
 	terrain.preloadTiles(function(images){
 		terrain.images = images;
 		terrain.generateTileCss();
-		var draft = store.getItem("draft")
+		var draft = store.getItem("draft");
 		if (draft && !terrain.isPhantom) {
 			// var restoreDraft = confirm("There is a mapfile saved as draft, do you want to restore it?");
 			// if (restoreDraft) {

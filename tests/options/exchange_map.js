@@ -20,7 +20,7 @@ module.exports = {
 			.execute(function(){
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft") == null, "No draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === null, "No draft should be saved");
 			})
 			.assert.val('#mapName', helper.getFilename(mapname + ".wfto"), 'Map name is ' + helper.getFilename(mapname + ".wfto"))
 			.assert.notVisible("#options");
@@ -54,7 +54,7 @@ module.exports = {
 			.execute(function(){
 				this.data('mapsizex', window.terrain.mapsizex);
 				this.data('mapsizey', window.terrain.mapsizey);
-				this.assert.ok(window.store.getItem("draft") == null, "No draft should be saved");
+				this.assert.ok(window.store.getItem("draft") === null, "No draft should be saved");
 			})
 			.assert.val('#mapName', helper.getFilename(mapname + ".csv"), 'Map name is ' + helper.getFilename(mapname + ".csv"))
 			// TODO Evaluate map size
