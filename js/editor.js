@@ -1176,6 +1176,7 @@ function Map(sizex, sizey) {
 					image.src = url;
 				} else {
 					image = map.images[tile.getAttribute("class")];
+					image.crossOrigin="anonymous";
 				}
 				//setTimeout(function(tile, tileSize, image, cols, rows) {
 					context.drawImage(image, tile.getAttribute("data-pos-x") * tileSize, tile.getAttribute("data-pos-y") * tileSize, tileSize, tileSize, cols * tileSize, rows * tileSize, tileSize, tileSize); 
@@ -1186,6 +1187,7 @@ function Map(sizex, sizey) {
 			return canvas.toDataURL();
 		} catch (e) {
 			alert("Image could not be generated. " + e.message);
+			console.error(e.stack);
 			return null;
 		}
 	};
