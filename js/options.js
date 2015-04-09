@@ -266,7 +266,7 @@ function exportImage() {
 	}
 	mapName += ".png";
 	var data = terrain.generateImageData();
-	if (data != null) {
+	if (data !== null) {
 		var byteString = atob(data.replace(/^data:.*,/, ''));
 		// console.log(byteString);
 		var buffer = new ArrayBuffer(byteString.length);
