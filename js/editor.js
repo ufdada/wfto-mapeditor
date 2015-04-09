@@ -145,13 +145,14 @@ function Map(sizex, sizey) {
 
 	this.preloadTiles = function(callback) {
 		var images = Object.keys(tiles);
+		var image = {}, loadedImages=0;
 
 		if (!images || !map.preloadImages || map.tileMode == "color") {
 			// browser doesn't support this, so we just skip it
-			callback.call(this, []);
+			callback.call(this, image);
 			return;
 		}
-		var image = {}, loadedImages=0;
+
 		var start = new Date();
 		var preloadDiv = document.getElementById("preload");
 		var preloadMessage = preloadDiv.getAttribute("data-message");
