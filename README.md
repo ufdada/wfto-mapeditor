@@ -13,7 +13,7 @@ Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
 #### Improvements:
 - Readme-link opens it in a new tab or window
 - Enabled empire tiles
-- Corrected importing when a mapfile was downloaded several tiles (it had a "(<number>)" in it's name)
+- Corrected importing when a mapfile was downloaded several tiles (it had a `(<number>)` in it's name)
 - Set filename when importing via Drag and Drop
 - Update version on exporting (should make a new filename)
 
