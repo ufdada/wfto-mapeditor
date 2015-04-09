@@ -266,30 +266,32 @@ function exportImage() {
 	}
 	mapName += ".png";
 	var data = terrain.generateImageData();
-	var byteString = atob(data.replace(/^data:.*,/, ''));
-	// console.log(byteString);
-	var buffer = new ArrayBuffer(byteString.length);
-	var intArray = new Uint8Array(buffer);
-	for (var i = 0; i < byteString.length; i++) {
-		intArray[i] = byteString.charCodeAt(i);
-	}
-	
-	var blob = new Blob([buffer], {type: "image/png"});
-	
-	if (window.navigator.msSaveOrOpenBlob) {
-		// IE
-		window.navigator.msSaveOrOpenBlob(blob, mapName);
-		return;
-	}
+	if (data != null) {
+		var byteString = atob(data.replace(/^data:.*,/, ''));
+		// console.log(byteString);
+		var buffer = new ArrayBuffer(byteString.length);
+		var intArray = new Uint8Array(buffer);
+		for (var i = 0; i < byteString.length; i++) {
+			intArray[i] = byteString.charCodeAt(i);
+		}
+		
+		var blob = new Blob([buffer], {type: "image/png"});
+		
+		if (window.navigator.msSaveOrOpenBlob) {
+			// IE
+			window.navigator.msSaveOrOpenBlob(blob, mapName);
+			return;
+		}
 
-	//Chrome
-	var href = window.URL.createObjectURL(blob);
-	var exportLink = document.getElementById("exportLink");
-	exportLink.setAttribute("download", mapName);
-	exportLink.setAttribute("href", href);
-	exportLink.setAttribute("target", "_blank");
-	exportLink.click();
-	toggleOptions(false);
+		//Chrome
+		var href = window.URL.createObjectURL(blob);
+		var exportLink = document.getElementById("exportLink");
+		exportLink.setAttribute("download", mapName);
+		exportLink.setAttribute("href", href);
+		exportLink.setAttribute("target", "_blank");
+		exportLink.click();
+		toggleOptions(false);
+	}
 }
 
 function importMap() {

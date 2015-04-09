@@ -1182,8 +1182,12 @@ function Map(sizex, sizey) {
 				//}, 300, tile, map.tileSize, image, cols, rows);
 			}
 		}
-		
-		return canvas.toDataURL();
+		try {
+			return canvas.toDataURL();
+		} catch (e) {
+			alert("Image could not be generated. " + e.message);
+			return null;
+		}
 	};
 	
 	this.generateSVG = function(){
