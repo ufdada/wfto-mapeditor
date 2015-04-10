@@ -173,6 +173,7 @@ function Map(sizex, sizey) {
 
 		for (var i=0; i< images.length; i++){
 			image[images[i]] = new Image();
+			image[images[i]].crossOrigin = "";
 			image[images[i]].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
 			image[images[i]].onload = function(){
 				imageLoaded();
@@ -1158,32 +1159,32 @@ function Map(sizex, sizey) {
 	};
 	
 	this.generateImageData = function() {
-		// var canvas = document.getElementById("previewCanvas");
-		var canvas = document.createElement("canvas");
-		canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
-		canvas.height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
-		var context = canvas.getContext("2d");
-		var noPreload = Object.keys(map.images).length === 0;
-		var tileSize = map.tileSize;
-		
-		for(var rows = 0; rows < map.mapsizey + map.borderSize * 2; rows++) {
-			for(var cols = 0; cols < map.mapsizex + map.borderSize * 2; cols++) {
-				var tile = document.getElementById("col_" + rows + "_" + cols);
-				var image = null;
-				if (noPreload) {
-					var url = window.getComputedStyle(tile, false).backgroundImage.replace(/url\("?([^\)]+)"?\)/, "$1");
-					image = document.createElement("img");
-					image.src = url;
-				} else {
-					image = map.images[tile.getAttribute("class")];
-					image.crossOrigin="anonymous";
-				}
-				//setTimeout(function(tile, tileSize, image, cols, rows) {
-					context.drawImage(image, tile.getAttribute("data-pos-x") * tileSize, tile.getAttribute("data-pos-y") * tileSize, tileSize, tileSize, cols * tileSize, rows * tileSize, tileSize, tileSize); 
-				//}, 300, tile, map.tileSize, image, cols, rows);
-			}
-		}
 		try {
+			var canvas = document.createElement("canvas");
+			canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
+			canvas.height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
+			var context = canvas.getContext("2d");
+			var noPreload = Object.keys(map.images).length === 0;
+			var tileSize = map.tileSize;
+
+			for(var rows = 0; rows < map.mapsizey + map.borderSize * 2; rows++) {
+				for(var cols = 0; cols < map.mapsizex + map.borderSize * 2; cols++) {
+					var tile = document.getElementById("col_" + rows + "_" + cols);
+					var image = null;
+					if (noPreload) {
+						var url = window.getComputedStyle(tile, false).backgroundImage.replace(/url\("?([^\)]+)"?\)/, "$1");
+						image = document.createElement("img");
+						image.crossOrigin = "";
+						image.src = url;
+					} else {
+						image = map.images[tile.getAttribute("class")];
+					}
+					//setTimeout(function(tile, tileSize, image, cols, rows) {
+						context.drawImage(image, tile.getAttribute("data-pos-x") * tileSize, tile.getAttribute("data-pos-y") * tileSize, tileSize, tileSize, cols * tileSize, rows * tileSize, tileSize, tileSize); 
+					//}, 300, tile, map.tileSize, image, cols, rows);
+				}
+			}
+
 			return canvas.toDataURL();
 		} catch (e) {
 			alert("Image could not be generated. " + e.message);
