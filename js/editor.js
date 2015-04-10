@@ -18,7 +18,8 @@ window.onload = function(){
 	terrain = new Map();
 	terrain.getQueryOptions();
 	initOptions();
-	terrain.preloadTiles(function(){
+	terrain.preloadTiles(function(images){
+		terrain.images = images;
 		terrain.generateTileCss();
 		terrain.init();
 	});
@@ -26,6 +27,7 @@ window.onload = function(){
 
 function Map(sizex, sizey) {
 	var map = this;
+	this.images = [];
 	this.defaultTile = 'earth';
 	this.borderTile = 'impenetrable';
 	this.borderSize = 1;
@@ -136,21 +138,21 @@ function Map(sizex, sizey) {
 			}
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
-
-			style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		}
+		style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
 		document.getElementsByTagName('head')[0].appendChild(style);
 	};
 
 	this.preloadTiles = function(callback) {
 		var images = Object.keys(tiles);
+		var image = {}, loadedImages=0;
 
 		if (!images || !map.preloadImages || map.tileMode == "color") {
 			// browser doesn't support this, so we just skip it
-			callback.call(this);
+			callback.call(this, image);
 			return;
 		}
-		var image = [], loadedImages=0;
+
 		var start = new Date();
 		var preloadDiv = document.getElementById("preload");
 		var preloadMessage = preloadDiv.getAttribute("data-message");
@@ -165,17 +167,18 @@ function Map(sizex, sizey) {
 			preloadDiv.firstChild.innerHTML = preloadMessage.replace(/\$1/g, loadedImages).replace(/\$2/g, images.length);
 			if (loadedImages == images.length){
 				preloadDiv.style.display = "none";
-				callback.call(this);
+				callback.call(this, image);
 			}
 		}
 
 		for (var i=0; i< images.length; i++){
-			image[i] = new Image();
-			image[i].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
-			image[i].onload = function(){
+			image[images[i]] = new Image();
+			image[images[i]].crossOrigin = "";
+			image[images[i]].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
+			image[images[i]].onload = function(){
 				imageLoaded();
 			};
-			image[i].onerror = function(){
+			image[images[i]].onerror = function(){
 				imageLoaded();
 			};
 		}
@@ -219,8 +222,10 @@ function Map(sizex, sizey) {
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
-		table.style.marginLeft = parseInt(map.tileSize * map.buttonColumns) + 30 + "px";
-		table.style.paddingTop = "10px";
+
+		var css = document.getElementById("tileCss");
+		css.innerHTML += "#map { padding-top: 10px; margin-left: "+parseInt(map.tileSize * map.buttonColumns)+"px}";
+
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
 
@@ -465,10 +470,17 @@ function Map(sizex, sizey) {
 	};
 
 	this.resetTile = function(tile) {
+		var posx = tile.getAttribute('data-temp-pos-x');
+		var posy = tile.getAttribute('data-temp-pos-y');
+		if (posx && posy) {
+			map.setTilePosition(tile, parseInt(-posx * map.tileSize) + "px " + parseInt(-posy * map.tileSize) + "px");
+			tile.setAttribute("data-pos-x", posx);
+			tile.setAttribute("data-pos-y", posy);
+		}
 		tile.hasAttribute('data-temp') && map.setTile(tile, tile.getAttribute('data-temp'));
-		tile.hasAttribute('data-temp-pos') && map.setTilePosition(tile, tile.getAttribute('data-temp-pos'));
 		tile.removeAttribute('data-temp');
-		tile.removeAttribute('data-temp-pos');
+		tile.removeAttribute('data-temp-pos-x');
+		tile.removeAttribute('data-temp-pos-y');
 	};
 
 	this.mapToJson = function(author){
@@ -534,10 +546,15 @@ function Map(sizex, sizey) {
 		if (roomTile) {
 			tile.setAttribute("class", currentTile);
 			tile.style.backgroundSize = parseInt(map.tileSize * roomTile.sizex) + "px " + parseInt(map.tileSize * roomTile.sizey)+ "px ";
-			var col = parseInt(tile.getAttribute("data-pos-x"));
-			var row = parseInt(tile.getAttribute("data-pos-y"));
-			if (!isNaN(col) && !isNaN(row)) {
-				map.setTilePosition(tile, parseInt(-col * map.tileSize) + "px " + parseInt(-row * map.tileSize) + "px");
+			if (roomTile.sizex * roomTile.sizey > 1) {
+				var col = parseInt(tile.getAttribute("data-pos-x"));
+				var row = parseInt(tile.getAttribute("data-pos-y"));
+				if (!isNaN(col) && !isNaN(row)) {
+					map.setTilePosition(tile, parseInt(-col * map.tileSize) + "px " + parseInt(-row * map.tileSize) + "px");
+				} 
+			} else {
+				tile.removeAttribute("data-pos-x");
+				tile.removeAttribute("data-pos-y");
 			}
 		} else {
 			console.error("No tile found for "+ currentTile);
@@ -548,10 +565,17 @@ function Map(sizex, sizey) {
 		var roomTile = tiles[map.currentTile];
 		var maxsize = roomTile.sizey * roomTile.sizex;
 		tile.removeAttribute('data-temp');
-		tile.removeAttribute('data-temp-pos');
+		tile.removeAttribute('data-temp-pos-x');
+		tile.removeAttribute('data-temp-pos-y');
 		if (temp) {
 			tile.setAttribute('data-temp', tile.getAttribute("class"));
-			tile.setAttribute('data-temp-pos', map.getTilePosition(tile));
+			var posx = tile.getAttribute("data-pos-x");
+			var posy = tile.getAttribute("data-pos-y");
+			
+			if (posx && posy) {
+				tile.setAttribute('data-temp-pos-x', posx);
+				tile.setAttribute('data-temp-pos-y', posy);
+			}
 
 			tile.setAttribute("data-pos-x", col);
 			tile.setAttribute("data-pos-y", row);
@@ -562,7 +586,7 @@ function Map(sizex, sizey) {
 			maxsize != 1 && tile.setAttribute("data-pos-y", row);
 			tile.style.opacity = "1";
 		}
-		map.setTile(tile, map.currentTile, row, col);
+		map.setTile(tile, map.currentTile);
 	};
 
 	this.setCurrentTile = function(roomTile) {
@@ -1132,5 +1156,62 @@ function Map(sizex, sizey) {
 		map.version = newVersion;
 
 		return newVersion;
+	};
+	
+	this.generateImageData = function() {
+		try {
+			var canvas = document.createElement("canvas");
+			canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
+			canvas.height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
+			var context = canvas.getContext("2d");
+			var noPreload = Object.keys(map.images).length === 0;
+			var tileSize = map.tileSize;
+
+			for(var rows = 0; rows < map.mapsizey + map.borderSize * 2; rows++) {
+				for(var cols = 0; cols < map.mapsizex + map.borderSize * 2; cols++) {
+					var tile = document.getElementById("col_" + rows + "_" + cols);
+					var image = null;
+					if (noPreload) {
+						var url = window.getComputedStyle(tile, false).backgroundImage.replace(/url\("?([^\)]+)"?\)/, "$1");
+						image = document.createElement("img");
+						image.crossOrigin = "";
+						image.src = url;
+					} else {
+						image = map.images[tile.getAttribute("class")];
+					}
+					//setTimeout(function(tile, tileSize, image, cols, rows) {
+						context.drawImage(image, tile.getAttribute("data-pos-x") * tileSize, tile.getAttribute("data-pos-y") * tileSize, tileSize, tileSize, cols * tileSize, rows * tileSize, tileSize, tileSize); 
+					//}, 300, tile, map.tileSize, image, cols, rows);
+				}
+			}
+
+			return canvas.toDataURL();
+		} catch (e) {
+			alert("Image could not be generated. " + e.message);
+			console.error(e.stack);
+			return null;
+		}
+	};
+	
+	this.generateSVG = function(){
+		var canvas = document.getElementById("previewCanvas");
+		var ctx = canvas.getContext("2d");
+		var width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
+		var height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
+		
+		var data =
+			"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " + width + " " + height + "' width='250' height='250'>" +
+				"<style>" +
+				document.getElementById("tileCss").innerHTML +
+				"</style>" +
+				"<foreignObject width='100%' height='100%'>" +
+				"<div xmlns='http://www.w3.org/1999/xhtml' style='font-size:40px'>" +
+				document.getElementById("map").outerHTML
+					.replace(/&nbsp;/g, "31")
+					.replace(/id=\"([^\"]+)\"/g,"id=\"svg$1\"") +
+				"</div>" +
+				"</foreignObject>" +
+			"</svg>";	
+		document.getElementById("preview").innerHTML = data;
 	};
 }

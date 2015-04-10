@@ -69,7 +69,8 @@
 		<label for="versioning">Versioning: </label><input title="Adds a version number to the name, starting with 001" type="checkbox" onchange="setVersioning(this)" id="versioning" /><br />
 		<p id="versionInfo">Current version: <span id="mapVersion"></span></p>
 		<label for="mapName">Mapname: </label><input type="text" id="mapName" value="Map"/><br />
-		<button id="export" onclick="exportMap()">Export</button>
+		<button id="export" onclick="exportMap()">Export as File</button> 
+		<button id="exportImage" onclick="exportImage()">Export as Image</button>
 		<a href="" id="exportLink" style="display:none"></a>
 	</fieldset>
 	<fieldset id="general">
@@ -102,5 +103,7 @@
 
 	<input style="float: right" type="button" value="Close" onclick="toggleOptions(false)" />
 </div>
+<!-- <canvas id="previewCanvas"></canvas>
+<div id="preview"></div> -->
 </body>
 </html>

@@ -202,7 +202,9 @@ function newMap(sizex, sizey) {
 	sizey = parseInt(document.getElementById("height").value);
 	if (!isNaN(sizex) && !isNaN(sizey)) {
 		if (sizex >= terrain.minsize && sizey >= terrain.minsize && sizex <= terrain.maxsize && sizey <= terrain.maxsize) {
+			var images = terrain.images;
 			terrain = new Map(sizex, sizey);
+			terrain.images = images;
 			terrain.init();
 		} else {
 			alert("A valid map has to at least " + terrain.minsize + " by " + terrain.minsize + " and " + terrain.maxsize + " by " + terrain.maxsize + " max");
@@ -244,13 +246,52 @@ function exportMap() {
 	//Chrome
 	var href = window.URL.createObjectURL(blob);
 
-	var exportButton = document.getElementById("export");
 	var exportLink = document.getElementById("exportLink");
 	exportLink.setAttribute("download", mapName);
 	exportLink.setAttribute("href", href);
 	exportLink.setAttribute("target", "_blank");
 	exportLink.click();
 	toggleOptions(false);
+}
+
+function exportImage() {
+	var mapName = mapNameInput.value;
+	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
+		alert("Invalid filename!");
+		return;
+	}
+	if (versioning.checked) {
+		mapName +=  "_" + terrain.version;
+		//terrain.updateVersion();
+	}
+	mapName += ".png";
+	var data = terrain.generateImageData();
+	if (data !== null) {
+		var byteString = atob(data.replace(/^data:.*,/, ''));
+		// console.log(byteString);
+		var buffer = new ArrayBuffer(byteString.length);
+		var intArray = new Uint8Array(buffer);
+		for (var i = 0; i < byteString.length; i++) {
+			intArray[i] = byteString.charCodeAt(i);
+		}
+		
+		var blob = new Blob([buffer], {type: "image/png"});
+		
+		if (window.navigator.msSaveOrOpenBlob) {
+			// IE
+			window.navigator.msSaveOrOpenBlob(blob, mapName);
+			return;
+		}
+
+		//Chrome
+		var href = window.URL.createObjectURL(blob);
+		var exportLink = document.getElementById("exportLink");
+		exportLink.setAttribute("download", mapName);
+		exportLink.setAttribute("href", href);
+		exportLink.setAttribute("target", "_blank");
+		exportLink.click();
+		toggleOptions(false);
+	}
 }
 
 function importMap() {
