@@ -172,7 +172,6 @@ function Map(sizex, sizey) {
 
 		for (var i=0; i< images.length; i++){
 			image[images[i]] = new Image();
-			image[images[i]].crossOrigin = "";
 			image[images[i]].src = "img/" + map.assetDir + "/" + map.tileMode + "/" + images[i] + '.png';
 			image[images[i]].onload = function(){
 				imageLoaded();
@@ -1219,7 +1218,6 @@ function Map(sizex, sizey) {
 					if (noPreload) {
 						var url = window.getComputedStyle(tile, false).backgroundImage.replace(/url\("?([^\)]+)"?\)/, "$1");
 						image = document.createElement("img");
-						image.crossOrigin = "";
 						image.src = url;
 					} else {
 						image = map.images[tile.getAttribute("class")];
