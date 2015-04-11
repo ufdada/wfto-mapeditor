@@ -1,5 +1,5 @@
 ﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ\(\)]/g;
-var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "", height = null, width = null;
+var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "", height = null, width = null, imageFormat = null;
 
 
 function initOptions() {
@@ -14,6 +14,7 @@ function initOptions() {
 	versioning = document.getElementById('versioning'),
 	mapNameInput = document.getElementById("mapName");
 	rotate = document.getElementById("rotate");
+	imageFormat = document.getElementById("imageFormat");
 
 	resetMirror();
 	
@@ -265,6 +266,27 @@ function exportMap() {
 
 function exportImage() {
 	var mapName = mapNameInput.value;
+	var image = {};
+	
+	switch (imageFormat.value) {
+		case "jpeg": 
+			image = {
+				type:  "image/jpeg",
+				extension: "jpg",
+				option: 0.85
+			};
+			break;
+		case "png":
+		/* falls through */
+		default:
+			image = {
+				type:  "image/png",
+				extension: "png",
+				option: null
+			};
+			break;
+	}
+	
 	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
 		alert("Invalid filename!");
 		return;
@@ -273,8 +295,8 @@ function exportImage() {
 		mapName +=  "_" + terrain.version;
 		//terrain.updateVersion();
 	}
-	mapName += ".png";
-	var data = terrain.generateImageData();
+	mapName += "." + image.extension;
+	var data = terrain.generateImageData(image.type, image.option);
 	if (data !== null) {
 		var byteString = atob(data.replace(/^data:.*,/, ''));
 		// console.log(byteString);
@@ -284,7 +306,7 @@ function exportImage() {
 			intArray[i] = byteString.charCodeAt(i);
 		}
 		
-		var blob = new Blob([buffer], {type: "image/png"});
+		var blob = new Blob([buffer], {type: image.type});
 		
 		if (window.navigator.msSaveOrOpenBlob) {
 			// IE

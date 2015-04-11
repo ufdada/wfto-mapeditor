@@ -73,6 +73,10 @@ td:hover {
 	margin: 2px;
 }
 
+#options select{
+	margin: 2px;
+}
+
 #infoBox {
 	display: none;
 	position: absolute;

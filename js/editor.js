@@ -1202,7 +1202,7 @@ function Map(sizex, sizey) {
 		return newVersion;
 	};
 	
-	this.generateImageData = function() {
+	this.generateImageData = function(imagetype, imageoption) {
 		try {
 			var canvas = document.createElement("canvas");
 			canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
@@ -1228,7 +1228,7 @@ function Map(sizex, sizey) {
 				}
 			}
 
-			return canvas.toDataURL();
+			return canvas.toDataURL(imagetype, imageoption);
 		} catch (e) {
 			alert("Image could not be generated. " + e.message);
 			console.error(e.stack);
