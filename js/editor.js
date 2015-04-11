@@ -1,26 +1,24 @@
-﻿// phantom js workarround
-if (window.navigator.userAgent.indexOf("PhantomJS") != -1) {
-		// Workarround for phantomjs, otherwise confirm/alert messages break tests
-		window.confirm = function(text){
-			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
-			return true;
-		};
-		window.alert = function(text){
-			//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
-			return true;
-		};
-}
-
-window.onload = function(){
+﻿window.onload = function(){
 	// localStorage wrapper
 	store = new dataStorage();
 
 	terrain = new Map();
+	terrain.phantomJs();
 	terrain.getQueryOptions();
 	initOptions();
 	terrain.preloadTiles(function(images){
 		terrain.images = images;
 		terrain.generateTileCss();
+		var draft = store.getItem("draft");
+		if (draft && !terrain.isPhantom) {
+			// var restoreDraft = confirm("There is a mapfile saved as draft, do you want to restore it?");
+			// if (restoreDraft) {
+				terrain.importData(draft);
+				return;
+			// } else {
+				// terrain.deleteDraft();
+			// }
+		}
 		terrain.init();
 	});
 };
@@ -53,6 +51,7 @@ function Map(sizex, sizey) {
 	this.dropTimeout = 0;
 	this.version = "001";
 	this.copiedFilenameRegex = /\s\([0-9]{1,}\)\./g;
+	this.isPhantom = false;
 	this.mouseButton = {
 		left: 0,
 		middle: 1,
@@ -320,6 +319,8 @@ function Map(sizex, sizey) {
 			map.mapsizex = cols;
 			map.mapsizey = rows;
 			map.init(mapObject);
+			map.saveDraft();
+			//map.deleteDraft();
 		} else {
 			throw new Error("Not a valid Map!");
 		}
@@ -327,8 +328,12 @@ function Map(sizex, sizey) {
 
 	this.exportData = function(author) {
 		var json = map.mapToJson(author);
-		var str = JSON.stringify(json);
-		return str;
+		if (json) {
+			var str = JSON.stringify(json);
+			return str;
+		} else {
+			return null;
+		}
 	};
 
 	this.enableDrag = function(evt) {
@@ -494,43 +499,47 @@ function Map(sizex, sizey) {
 			map: []
 		};
 
-		for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
+		if (table) {
+			for (var i = map.borderSize; i < map.mapsizey + map.borderSize; i++) {
 
-			var tableRow = table.rows[i];
-			var colData = [];
+				var tableRow = table.rows[i];
+				var colData = [];
 
-			for (var j = map.borderSize; j < map.mapsizex + map.borderSize; j++) {
-				var col = {};
-				var tile = tableRow && tableRow.cells[j] || null;
-				// if the counter exeeds the count, we just add empty cells
-				// handy for the extend feature
-				if (tile) {
-					// make sure that non temporary tile is currently set
-					map.resetTile(tile);
+				for (var j = map.borderSize; j < map.mapsizex + map.borderSize; j++) {
+					var col = {};
+					var tile = tableRow && tableRow.cells[j] || null;
+					// if the counter exeeds the count, we just add empty cells
+					// handy for the extend feature
+					if (tile) {
+						// make sure that non temporary tile is currently set
+						map.resetTile(tile);
 
-					var id = tile.getAttribute("data-id");
-					var className = tile.getAttribute("class");
-					var tileTypeId = map.getMapTileId(mapData, className);
+						var id = tile.getAttribute("data-id");
+						var className = tile.getAttribute("class");
+						var tileTypeId = map.getMapTileId(mapData, className);
 
-					if (id) {
-						// save unique room identifier and make a reference
-						var tileId = mapData.tileIds.indexOf(id);
-						if (tileId == -1) {
-							mapData.tileIds.push(id);
-							tileId = mapData.tileIds.length - 1;
+						if (id) {
+							// save unique room identifier and make a reference
+							var tileId = mapData.tileIds.indexOf(id);
+							if (tileId == -1) {
+								mapData.tileIds.push(id);
+								tileId = mapData.tileIds.length - 1;
+							}
+							col["data-id"] = tileId;
 						}
-						col["data-id"] = tileId;
+
+						col["tile"] = tileTypeId;
 					}
 
-					col["tile"] = tileTypeId;
+					colData.push(col);
 				}
 
-				colData.push(col);
+				mapData.map.push(colData);
 			}
-
-			mapData.map.push(colData);
+			return mapData;
+		} else {
+			return null;
 		}
-		return mapData;
 	};
 
 	this.setTilePosition = function(tile, pos) {
@@ -587,6 +596,8 @@ function Map(sizex, sizey) {
 			tile.style.opacity = "1";
 		}
 		map.setTile(tile, map.currentTile);
+		
+		!temp && map.saveDraft();
 	};
 
 	this.setCurrentTile = function(roomTile) {
@@ -632,8 +643,9 @@ function Map(sizex, sizey) {
 				break;
 		}
 
-		var str = JSON.stringify(mapObject);
-		map.importData(str);
+		var mapData = JSON.stringify(mapObject);
+		map.importData(mapData);
+		//map.saveDraft(mapData);
 	};
 
 	this.mirrorPart = function(mapObject, cols, rows, type, reverse) {
@@ -892,7 +904,7 @@ function Map(sizex, sizey) {
 	};
 
 	this.changeMap = function(dir, add) {
-		var mapData = map.mapToJson();
+		var mapObject = map.mapToJson();
 		var position = "after";
 
 		map.resetRedoHistory();
@@ -903,17 +915,19 @@ function Map(sizex, sizey) {
 				position = "before";
 				/* falls through */
 			case 'bottom':
-				map.changeLine(mapData, position, add);
+				map.changeLine(mapObject, position, add);
 				break;
 			case 'left':
 				position = "before";
 				/* falls through */
 			case 'right':
-				map.changeColumn(mapData, position, add);
+				map.changeColumn(mapObject, position, add);
 				break;
 		}
 
-		map.importData(JSON.stringify(mapData));
+		var mapData = JSON.stringify(mapObject);
+		map.importData(mapData);
+		//map.saveDraft(mapData);
 
 		return false;
 	};
@@ -954,6 +968,7 @@ function Map(sizex, sizey) {
 
 			var mapData = map.undoHistory.pop();
 			map.importData(mapData);
+			//map.saveDraft(mapData);
 			return true;
 		} else {
 			return false;
@@ -966,6 +981,7 @@ function Map(sizex, sizey) {
 
 			var mapData = map.redoHistory.shift();
 			map.importData(mapData);
+			//map.saveDraft(mapData);
 			return true;
 		} else {
 			return false;
@@ -1147,6 +1163,35 @@ function Map(sizex, sizey) {
 		}
 
 		mapNameInput.value = mapName;
+	};
+	
+	this.saveDraft = function(mapData) {
+		mapData = mapData || map.exportData();
+		
+		if (store.localStorage && mapData && mapData.length < store.remainingSpace / 2) {
+			store.removeItem("draft");
+			store.setItem("draft", mapData);
+		}
+	};
+	
+	this.deleteDraft = function() {
+		store.removeItem("draft");
+	};
+	
+	this.phantomJs = function() {
+		// phantom js workarround
+		if (window.navigator.userAgent.indexOf("PhantomJS") != -1) {
+			// Workarround for phantomjs, otherwise confirm/alert messages break tests
+			window.confirm = function(text){
+				//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+				return true;
+			};
+			window.alert = function(text){
+				//'This recalculates the whole map and may remove some of your changes. Are you sure you want to continue?'
+				return true;
+			};
+			map.isPhantom = true;
+		}
 	};
 
 	this.updateVersion = function(version) {
