@@ -1205,14 +1205,16 @@ function Map(sizex, sizey) {
 	this.generateImageData = function(imagetype, imageoption) {
 		try {
 			var canvas = document.createElement("canvas");
-			canvas.width = map.tileSize * map.mapsizex + map.tileSize * (map.borderSize * 2);
-			canvas.height = map.tileSize * map.mapsizey + map.tileSize * (map.borderSize * 2);
+			var completeWidth = map.mapsizex + map.borderSize * 2;
+			var completeHeight = map.mapsizey + map.borderSize * 2;
+			var tileSize = map.tileSize;
+			canvas.width = tileSize * completeWidth;
+			canvas.height =tileSize * completeHeight;
 			var context = canvas.getContext("2d");
 			var noPreload = Object.keys(map.images).length === 0;
-			var tileSize = map.tileSize;
 
-			for(var rows = 0; rows < map.mapsizey + map.borderSize * 2; rows++) {
-				for(var cols = 0; cols < map.mapsizex + map.borderSize * 2; cols++) {
+			for(var rows = 0; rows < completeHeight; rows++) {
+				for(var cols = 0; cols < completeWidth; cols++) {
 					var tile = document.getElementById("col_" + rows + "_" + cols);
 					var image = null;
 					if (noPreload) {
@@ -1222,8 +1224,10 @@ function Map(sizex, sizey) {
 					} else {
 						image = map.images[tile.getAttribute("class")];
 					}
+					var tilesizeImageX = image.width / tiles[tile.getAttribute("class")].sizex;
+					var tilesizeImageY = image.height / tiles[tile.getAttribute("class")].sizey;
 					//setTimeout(function(tile, tileSize, image, cols, rows) {
-						context.drawImage(image, tile.getAttribute("data-pos-x") * tileSize, tile.getAttribute("data-pos-y") * tileSize, tileSize, tileSize, cols * tileSize, rows * tileSize, tileSize, tileSize); 
+						context.drawImage(image, tile.getAttribute("data-pos-x") * tilesizeImageX, tile.getAttribute("data-pos-y") * tilesizeImageY, tilesizeImageX, tilesizeImageY, cols * tileSize, rows * tileSize, tileSize, tileSize); 
 					//}, 300, tile, map.tileSize, image, cols, rows);
 				}
 			}
