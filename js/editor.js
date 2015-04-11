@@ -1216,19 +1216,20 @@ function Map(sizex, sizey) {
 			for(var rows = 0; rows < completeHeight; rows++) {
 				for(var cols = 0; cols < completeWidth; cols++) {
 					var tile = document.getElementById("col_" + rows + "_" + cols);
+					var tileName = tile.getAttribute("class");
+					var tileConfig = tiles[tileName];
 					var image = null;
-					if (noPreload) {
-						var url = window.getComputedStyle(tile, false).backgroundImage.replace(/url\("?([^\)]+)"?\)/, "$1");
-						image = document.createElement("img");
-						image.src = url;
+					if (noPreload) {						
+						context.fillStyle = tileConfig.color;
+						context.fillRect(cols * tileSize, rows * tileSize, tileSize, tileSize);
 					} else {
-						image = map.images[tile.getAttribute("class")];
-					}
-					var tilesizeImageX = image.width / tiles[tile.getAttribute("class")].sizex;
-					var tilesizeImageY = image.height / tiles[tile.getAttribute("class")].sizey;
-					//setTimeout(function(tile, tileSize, image, cols, rows) {
+						image = map.images[tileName];
+						var tilesizeImageX = image.width / tileConfig.sizex;
+						var tilesizeImageY = image.height / tileConfig.sizey;
+						//setTimeout(function(tile, tileSize, image, cols, rows) {
 						context.drawImage(image, tile.getAttribute("data-pos-x") * tilesizeImageX, tile.getAttribute("data-pos-y") * tilesizeImageY, tilesizeImageX, tilesizeImageY, cols * tileSize, rows * tileSize, tileSize, tileSize); 
-					//}, 300, tile, map.tileSize, image, cols, rows);
+						//}, 300, tile, map.tileSize, image, cols, rows);
+					}
 				}
 			}
 
