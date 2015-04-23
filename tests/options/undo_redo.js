@@ -14,6 +14,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.undoHistory.length == this.data("undoHistory").length - 1, "undoHistory.length should be " + (this.data("undoHistory").length - 1) + ", was " + window.terrain.undoHistory.length);
 				this.assert.ok(window.terrain.redoHistory.length == this.data("redoHistory").length + 1, "redoHistory.length should be " + (this.data("redoHistory").length + 1) + ", was " + window.terrain.redoHistory.length);
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 			})
 			.assert.enabled("#redo", "Redo should be enabled!")
 			.assert.enabled("#undo", "Undo should be enabled!");
@@ -41,6 +42,7 @@ module.exports = {
 			.execute(function(){
 				this.assert.ok(window.terrain.undoHistory.length == this.data("undoHistory").length + 1, "undoHistory.length should be " + (this.data("undoHistory").length + 1) + ", was " + window.terrain.undoHistory.length);
 				this.assert.ok(window.terrain.redoHistory.length == this.data("redoHistory").length - 1, "redoHistory.length should be " + (this.data("redoHistory").length - 1) + ", was " + window.terrain.redoHistory.length);
+				this.assert.ok(window.store.getItem("draft") === window.terrain.exportData(), "Draft should be saved");
 				this.data("mapData", window.terrain.exportData());
 			});
 

@@ -1,8 +1,10 @@
 ﻿var invalidLetterRegex = /[^A-Za-z0-9\.\-\_\söüäÖÜÄ\(\)]/g;
-var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "";
+var first = null, second = null, third = null, fourth = null, reverse =  null, extend =  null, versioning =  null, mapNameInput =  null, rotate = null, active = "", height = null, width = null, imageFormat = null;
 
 
 function initOptions() {
+	width = document.getElementById('width'),
+	height = document.getElementById('height'),
 	first = document.getElementById('first'),
 	second = document.getElementById('second'),
 	third = document.getElementById('third'),
@@ -12,8 +14,12 @@ function initOptions() {
 	versioning = document.getElementById('versioning'),
 	mapNameInput = document.getElementById("mapName");
 	rotate = document.getElementById("rotate");
+	imageFormat = document.getElementById("imageFormat");
 
 	resetMirror();
+	
+	width.value = terrain.mapsizex;
+	height.value = terrain.mapsizey;
 
 	versioning.checked = store.getItem("versioning") || false;
 
@@ -202,8 +208,11 @@ function newMap(sizex, sizey) {
 	sizey = parseInt(document.getElementById("height").value);
 	if (!isNaN(sizex) && !isNaN(sizey)) {
 		if (sizex >= terrain.minsize && sizey >= terrain.minsize && sizex <= terrain.maxsize && sizey <= terrain.maxsize) {
+			var images = terrain.images;
 			terrain = new Map(sizex, sizey);
+			terrain.images = images;
 			terrain.init();
+			terrain.deleteDraft();
 		} else {
 			alert("A valid map has to at least " + terrain.minsize + " by " + terrain.minsize + " and " + terrain.maxsize + " by " + terrain.maxsize + " max");
 			return;
@@ -244,13 +253,76 @@ function exportMap() {
 	//Chrome
 	var href = window.URL.createObjectURL(blob);
 
-	var exportButton = document.getElementById("export");
 	var exportLink = document.getElementById("exportLink");
 	exportLink.setAttribute("download", mapName);
 	exportLink.setAttribute("href", href);
 	exportLink.setAttribute("target", "_blank");
 	exportLink.click();
+	
+	//terrain.deleteDraft();
+	
 	toggleOptions(false);
+}
+
+function exportImage() {
+	var mapName = mapNameInput.value;
+	var image = {};
+	
+	switch (imageFormat.value) {
+		case "jpeg": 
+			image = {
+				type:  "image/jpeg",
+				extension: "jpg",
+				option: 0.85
+			};
+			break;
+		case "png":
+		/* falls through */
+		default:
+			image = {
+				type:  "image/png",
+				extension: "png",
+				option: null
+			};
+			break;
+	}
+	
+	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
+		alert("Invalid filename!");
+		return;
+	}
+	if (versioning.checked) {
+		mapName +=  "_" + terrain.version;
+		//terrain.updateVersion();
+	}
+	mapName += "." + image.extension;
+	var data = terrain.generateImageData(image.type, image.option);
+	if (data !== null) {
+		var byteString = atob(data.replace(/^data:.*,/, ''));
+		// console.log(byteString);
+		var buffer = new ArrayBuffer(byteString.length);
+		var intArray = new Uint8Array(buffer);
+		for (var i = 0; i < byteString.length; i++) {
+			intArray[i] = byteString.charCodeAt(i);
+		}
+		
+		var blob = new Blob([buffer], {type: image.type});
+		
+		if (window.navigator.msSaveOrOpenBlob) {
+			// IE
+			window.navigator.msSaveOrOpenBlob(blob, mapName);
+			return;
+		}
+
+		//Chrome
+		var href = window.URL.createObjectURL(blob);
+		var exportLink = document.getElementById("exportLink");
+		exportLink.setAttribute("download", mapName);
+		exportLink.setAttribute("href", href);
+		exportLink.setAttribute("target", "_blank");
+		exportLink.click();
+		toggleOptions(false);
+	}
 }
 
 function importMap() {
@@ -324,6 +396,7 @@ function resetOptions() {
 	var map = terrain.exportData();
 	terrain.resetToDefault();
 	terrain.importData(map);
+	//terrain.saveDraft(map);
 	toggleOptions(false);
 }
 

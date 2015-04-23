@@ -4,6 +4,19 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
 
+### Release 1.6
+#### New Features:
+- Export map as image file
+- Saving and restoring a map draft (continuously).
+  This should prevent lost maps when browser crashes
+
+#### Improvements:
+- Readme-link opens it in a new tab or window
+- Enabled empire tiles
+- Corrected importing when a mapfile was downloaded several tiles (it had a `(<number>)` in it's name)
+- Set filename when importing via Drag and Drop
+- Update version on exporting (should make a new filename)
+
 ### Release 1.5
 #### New Features:
 - Import Google CSV files via Drag and Drop

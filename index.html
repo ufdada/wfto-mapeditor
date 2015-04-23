@@ -17,7 +17,7 @@
 </div>
 <div id="toolBox">
 	<input type="button" id="optionButton" value="Options" onclick="toggleOptions(true)" />
-	<button onclick="window.location.href='https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md'">?</button>
+	<button onclick="window.open('https://github.com/ufdada/wfto-mapeditor/blob/gh-pages/README.md', '_blank')">?</button>
 	<button id="undo" onclick="terrain.undo()"><img src="./img/gui/undo.png" alt="Undo" title="Undo"/></button> <button id="redo" onclick="terrain.redo()"><img src="./img/gui/redo.png" alt="Redo" title="Redo"/></button>
 	<!-- here are the tile buttons -->
 	<div id="info">
@@ -46,8 +46,8 @@
 	<fieldset>
 		<legend>New Map</legend>
 		<form onsubmit="newMap();return false;">
-			<input type="text" id="width" placeholder="Width" />*
-			<input type="text" id="height" placeholder="Height" />*
+			Width: <input type="text" id="width" />* <br />
+			Height: <input type="text" id="height" />*
 			<input type="submit" value="Generate" />
 		</form>
 	</fieldset>
@@ -69,7 +69,13 @@
 		<label for="versioning">Versioning: </label><input title="Adds a version number to the name, starting with 001" type="checkbox" onchange="setVersioning(this)" id="versioning" /><br />
 		<p id="versionInfo">Current version: <span id="mapVersion"></span></p>
 		<label for="mapName">Mapname: </label><input type="text" id="mapName" value="Map"/><br />
-		<button id="export" onclick="exportMap()">Export</button>
+		<button id="export" onclick="exportMap()">Export as File</button><br />
+		<label for="imageFormat">Imagetype: </label>
+		<select id="imageFormat">
+			<option value="jpeg" selected="selected">JPEG</option>
+			<option value="png">PNG</option>
+		</select><br />
+		<button id="exportImage" onclick="exportImage()">Export as Image</button>
 		<a href="" id="exportLink" style="display:none"></a>
 	</fieldset>
 	<fieldset id="general">
@@ -102,5 +108,7 @@
 
 	<input style="float: right" type="button" value="Close" onclick="toggleOptions(false)" />
 </div>
+<!-- <canvas id="previewCanvas"></canvas>
+<div id="preview"></div> -->
 </body>
 </html>

@@ -73,6 +73,10 @@ td:hover {
 	margin: 2px;
 }
 
+#options select{
+	margin: 2px;
+}
+
 #infoBox {
 	display: none;
 	position: absolute;
@@ -191,4 +195,20 @@ td:hover {
 
 button:disabled img {
 	opacity: 0.4;
+}
+
+#previewCanvas {
+	box-shadow: 0px 0px 5px white;
+	width: 250px;
+	height: 250px;
+	position: fixed;
+	right: 20px;
+	top: 20px;
+}
+
+#preview {
+	box-shadow: 0px 0px 5px white;
+	position: absolute;
+	right: 20px;
+	top: 20px;
 }
