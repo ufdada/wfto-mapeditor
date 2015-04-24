@@ -120,6 +120,7 @@ function Map(sizex, sizey) {
 
 	this.generateTileCss = function() {
 		var style = document.getElementById('tileCss') || document.createElement('style');
+		var tileSize = map.tileSizeDefault;
 		style.id = 'tileCss';
 		style.type = 'text/css';
 		style.innerHTML = '';
@@ -138,7 +139,7 @@ function Map(sizex, sizey) {
 			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
 			style.innerHTML += '.' + item + css;
 		}
-		style.innerHTML += '#resizeTable td { font-size: ' + (map.tileSize / 3) + 'px }\n';
+		style.innerHTML += '#resizeTable td { font-size: ' + (tileSize / 3) + 'px }\n';
 		document.getElementsByTagName('head')[0].appendChild(style);
 	};
 
@@ -183,13 +184,14 @@ function Map(sizex, sizey) {
 	};
 
 	this.createButtons = function() {
+		var tileSize = map.tileSizeDefault;
 		var toolBox = document.getElementById("toolBox");
-		toolBox.setAttribute("class", "toolBox" + map.tileSize);
+		toolBox.setAttribute("class", "toolBox" + tileSize);
 		toolBox.onmousemove = map.hideInfoBox;
 		var info = document.getElementById("info");
 		var buttons = document.createElement("div");
 		buttons.id = "buttons";
-		buttons.style.width = parseInt(map.tileSize * 3/4 * map.buttonColumns) + "px";
+		buttons.style.width = parseInt(tileSize * 3/4 * map.buttonColumns) + "px";
 
 		for (var item in tiles) {
 			var button = document.createElement("input");
@@ -201,7 +203,7 @@ function Map(sizex, sizey) {
 			button.type = "button";
 			button.setAttribute("class", item + " tileButton");
 			button.setAttribute("title", item);
-			button.setAttribute("style", "background-size: " + parseInt(map.tileSize * 3/4) + "px; width: " + parseInt(map.tileSize * 3/4) + "px; height: " + parseInt(map.tileSize * 3/4) + "px");
+			button.setAttribute("style", "background-size: " + parseInt(tileSize * 3/4) + "px; width: " + parseInt(tileSize * 3/4) + "px; height: " + parseInt(tileSize * 3/4) + "px");
 			buttons.appendChild(button);
 		}
 		toolBox.insertBefore(buttons, info);
@@ -213,6 +215,7 @@ function Map(sizex, sizey) {
 		map.destroy();
 		map.createButtons();
 		map.version = "001";
+		var tileSize = map.tileSizeDefault;
 
 		mapParent.ondrop = map.dropMap;
 		mapParent.ondragover = map.dragOverMap;
@@ -222,7 +225,7 @@ function Map(sizex, sizey) {
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
 
 		var css = document.getElementById("tileCss");
-		css.innerHTML += "#map { padding-top: 10px; margin-left: "+parseInt(map.tileSize * map.buttonColumns)+"px}";
+		css.innerHTML += "#map { padding-top: 10px; margin-left: "+parseInt(tileSize * map.buttonColumns)+"px}";
 
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
