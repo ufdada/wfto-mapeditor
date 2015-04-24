@@ -1,5 +1,5 @@
 ﻿# wfto-mapeditor
-This map editor should make it fairly easy to create and share maps for "War for the Overworld"
+This map editor should make it fairly easy to create and share maps for "War for the Overworld". At this very moment it's not possible to import them into wfto, this feature might come as soon as the map file structure for wfto is final.
 [![Build Status](https://travis-ci.org/ufdada/wfto-mapeditor.svg)](https://travis-ci.org/ufdada/wfto-mapeditor)
 
 Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
