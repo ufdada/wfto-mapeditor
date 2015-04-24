@@ -9,6 +9,11 @@
 	terrain.preloadTiles(function(images){
 		terrain.images = images;
 		terrain.generateTileCss();
+
+		window.onresize = function () {
+			terrain.scaleGUI();
+		};
+
 		var draft = store.getItem("draft");
 		if (draft && !terrain.isPhantom) {
 			// var restoreDraft = confirm("There is a mapfile saved as draft, do you want to restore it?");
@@ -120,10 +125,9 @@ function Map(sizex, sizey) {
 
 	this.generateTileCss = function() {
 		var style = document.getElementById('tileCss') || document.createElement('style');
-		var tileSize = map.tileSizeDefault;
 		style.id = 'tileCss';
 		style.type = 'text/css';
-		style.innerHTML = '';
+		var styleHtml = '';
 		for (var item in tiles) {
 			var posx = tiles[item].sizex;
 			var posy = tiles[item].sizey;
@@ -136,11 +140,13 @@ function Map(sizex, sizey) {
 					css = ' { background-image: url("img/' + map.assetDir  + "/" + map.tileMode + "/" + item + '.png"); }\n';
 					break;
 			}
-			style.innerHTML += '/* ' + posx + ' x ' + posy + ' */\n';
-			style.innerHTML += '.' + item + css;
+			styleHtml += '/* ' + posx + ' x ' + posy + ' */\n';
+			styleHtml += '.' + item + css;
 		}
-		style.innerHTML += '#resizeTable td { font-size: ' + (tileSize / 3) + 'px }\n';
+		style.innerHTML = styleHtml;
 		document.getElementsByTagName('head')[0].appendChild(style);
+		
+		map.scaleGUI();
 	};
 
 	this.preloadTiles = function(callback) {
@@ -184,14 +190,11 @@ function Map(sizex, sizey) {
 	};
 
 	this.createButtons = function() {
-		var tileSize = map.tileSizeDefault;
 		var toolBox = document.getElementById("toolBox");
-		toolBox.setAttribute("class", "toolBox" + tileSize);
 		toolBox.onmousemove = map.hideInfoBox;
 		var info = document.getElementById("info");
 		var buttons = document.createElement("div");
 		buttons.id = "buttons";
-		buttons.style.width = parseInt(tileSize * 3/4 * map.buttonColumns) + "px";
 
 		for (var item in tiles) {
 			var button = document.createElement("input");
@@ -203,7 +206,6 @@ function Map(sizex, sizey) {
 			button.type = "button";
 			button.setAttribute("class", item + " tileButton");
 			button.setAttribute("title", item);
-			button.setAttribute("style", "background-size: " + parseInt(tileSize * 3/4) + "px; width: " + parseInt(tileSize * 3/4) + "px; height: " + parseInt(tileSize * 3/4) + "px");
 			buttons.appendChild(button);
 		}
 		toolBox.insertBefore(buttons, info);
@@ -215,7 +217,6 @@ function Map(sizex, sizey) {
 		map.destroy();
 		map.createButtons();
 		map.version = "001";
-		var tileSize = map.tileSizeDefault;
 
 		mapParent.ondrop = map.dropMap;
 		mapParent.ondragover = map.dragOverMap;
@@ -223,9 +224,6 @@ function Map(sizex, sizey) {
 		var table = document.createElement("table");
 		table.setAttribute('id', 'map');
 		table.style.width = (map.mapsizex + (map.borderSize * 2)) * map.tileSize + "px";
-
-		var css = document.getElementById("tileCss");
-		css.innerHTML += "#map { padding-top: 10px; margin-left: "+parseInt(tileSize * map.buttonColumns)+"px}";
 
 		table.setAttribute('cellpadding', '0');
 		table.setAttribute('cellspacing', '0');
@@ -1264,5 +1262,27 @@ function Map(sizex, sizey) {
 				"</foreignObject>" +
 			"</svg>";	
 		document.getElementById("preview").innerHTML = data;
+	};
+
+	this.scaleGUI = function() {
+		var style = document.getElementById('toolBoxCss') || document.createElement('style');
+		var toolBox = document.getElementById("toolBox");
+		var scale = window.devicePixelRatio || 1;
+		var tileSize = map.tileSizeDefault / scale;
+		
+		style.id = 'toolBoxCss';
+		style.type = 'text/css';
+		toolBox.setAttribute("class", "toolBox" + tileSize);
+		
+		var styleHtml = '';
+		styleHtml += '#resizeTable td { font-size: ' + parseInt(tileSize / 3) + 'px; }\n';
+		styleHtml += '#toolBox,  #toolBox input, #toolBox button { font-size: ' + parseInt(tileSize / 6) + 'px !important; }\n';
+		styleHtml += '#toolBox img { width: ' + parseInt(tileSize / 4) + 'px !important; }\n';
+		styleHtml += '.tileButton { background-size: ' + parseInt(tileSize * 3/4) + 'px !important; width: ' + parseInt(tileSize * 3/4) + 'px !important; height: ' + parseInt(tileSize * 3/4) + 'px !important; border: ' + 1 / scale + 'px solid white; }\n';
+		styleHtml += '#map { padding-top: 10px; margin-left: '+parseInt(tileSize * map.buttonColumns)+'px; }\n';
+		styleHtml += '#buttons { width:' + parseInt(tileSize * 3/4 * map.buttonColumns) + 'px  !important }\n';
+		
+		style.innerHTML = styleHtml;
+		document.getElementsByTagName('head')[0].appendChild(style);
 	};
 }
