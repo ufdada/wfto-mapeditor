@@ -31,8 +31,12 @@ td:hover {
 	display: none;
 	float: left;
 	position: fixed;
-	margin: 10px;
+	width: 175px;
 	z-index: 20;
+	top: 10px;
+	left: 10px;
+	bottom: 10px;
+	overflow-x: hidden;
 }
 
 #toolBox p {
@@ -51,7 +55,7 @@ td:hover {
 	border-radius: 6px;
 }
 
-#optionButton {
+#optionButton, #redo, #undo {
 	margin-bottom: 10px;
 }
 
