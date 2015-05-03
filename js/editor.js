@@ -1278,6 +1278,7 @@ function Map(sizex, sizey) {
 		styleHtml += '#resizeTable td { font-size: ' + parseInt(tileSize / 3) + 'px; }\n';
 		styleHtml += '#toolBox,  #toolBox input, #toolBox button { font-size: ' + parseInt(tileSize / 6) + 'px !important; }\n';
 		styleHtml += '#toolBox img { width: ' + parseInt(tileSize / 4) + 'px !important; }\n';
+		styleHtml += '#toolBox { width: ' + parseInt(175 / scale) + 'px !important; }\n';
 		styleHtml += '.tileButton { background-size: ' + parseInt(tileSize * 3/4) + 'px !important; width: ' + parseInt(tileSize * 3/4) + 'px !important; height: ' + parseInt(tileSize * 3/4) + 'px !important; border: ' + 1 / scale + 'px solid white; }\n';
 		styleHtml += '#map { padding-top: 10px; margin-left: '+parseInt(tileSize * map.buttonColumns)+'px; }\n';
 		styleHtml += '#buttons { width:' + parseInt(tileSize * 3/4 * map.buttonColumns) + 'px  !important }\n';

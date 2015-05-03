@@ -31,7 +31,6 @@ td:hover {
 	display: none;
 	float: left;
 	position: fixed;
-	width: 175px;
 	z-index: 20;
 	top: 10px;
 	left: 10px;
