@@ -1276,7 +1276,8 @@ function Map(sizex, sizey) {
 		
 		var styleHtml = '';
 		styleHtml += '#resizeTable td { font-size: ' + parseInt(tileSize / 3) + 'px; }\n';
-		styleHtml += '#toolBox,  #toolBox input, #toolBox button { font-size: ' + parseInt(tileSize / 6) + 'px !important; }\n';
+		styleHtml += '#toolBox,  #toolBox input, #toolBox button { font-size: ' + parseInt(tileSize / 6) + 'px !important;  padding: ' + parseInt(1 / scale)  + 'px ' + parseInt(6 / scale)  + 'px; }\n';
+		styleHtml += '#toolBox button, #toolBox .optionButton { margin-bottom: ' + 10 / scale  + 'px; }\n';
 		styleHtml += '#toolBox img { width: ' + parseInt(tileSize / 4) + 'px !important; }\n';
 		styleHtml += '#toolBox { width: ' + parseInt(175 / scale) + 'px !important; }\n';
 		styleHtml += '.tileButton { background-size: ' + parseInt(tileSize * 3/4) + 'px !important; width: ' + parseInt(tileSize * 3/4) + 'px !important; height: ' + parseInt(tileSize * 3/4) + 'px !important; border: ' + 1 / scale + 'px solid white; }\n';
