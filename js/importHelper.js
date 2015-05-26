@@ -1,5 +1,5 @@
-var tileTable = {
-	defaultValue: 'earth',
+tileTable = {
+	defaultTile: 'earth',
 	map: {
 		'gold': [
 			'go',
@@ -8,6 +8,10 @@ var tileTable = {
 		'dirt': [
 			'di',
 			'8'
+		],
+		'earth': [
+			'',
+			'2'
 		],
 		'chasm': [
 			'ch',
@@ -29,6 +33,18 @@ var tileTable = {
 			'co',
 			'79'
 		],
+		'core_p2': [
+			'co',
+			'79'
+		],
+		'core_p3': [
+			'co',
+			'79'
+		],
+		'core_p4': [
+			'co',
+			'79'
+		],
 		'impenetrable': [
 			'im',
 			'1'
@@ -46,9 +62,10 @@ var tileTable = {
 			'14'
 		],
 		'wood_bridge': [
-			'wb',
-			''
+			'nb',
+			'13'
 		],
+		// TODO Should be natural_bridge, needs tile!
 		'natural_bridge': [
 			'nb',
 			'13'
@@ -84,15 +101,78 @@ var tileTable = {
 		'perceptionshrine': [
 			'sp',
 			'122'
+		],
+		// Additional tiles beyond the google csv ones
+		'claimed_earth_empire': [
+			'cee',
+			'10'
+		],
+		'claimed_floor_empire': [
+			'cfe',
+			'9'
+		],
+		'claimed_earth_p1': [
+			'cep',
+			'29'
+		],
+		'claimed_floor_p1': [
+			'cfp',
+			'28'
+		],
+		'claimed_earth_p2': [
+			'cep',
+			'29'
+		],
+		'claimed_floor_p2': [
+			'cfp',
+			'28'
+		],
+		'claimed_earth_p3': [
+			'cep',
+			'29'
+		],
+		'claimed_floor_p3': [
+			'cfp',
+			'28'
+		],
+		'claimed_earth_p4': [
+			'cep',
+			'29'
+		],
+		'claimed_floor_p4': [
+			'cfp',
+			'28'
+		],
+		'herogate': [
+			'hg',
+			'74'
+		],
+		// Beyond the terrain id table of marados
+		'inhibitorshrine': [
+			'si',
+			'134'
 		]
 	},
 	
 	getGoogleCsvValue: function ( value ) {
-		return this.map[ value ][0];
+		return this.getMapValue(value)[0];
 	},
 	
 	getWFTOCsvValue: function ( value ) {
-		return this.map[ value ][1];
+		return this.getMapValue(value)[1];
+	},
+	
+	getMapValue: function ( value ) {
+		return this.map[ value ] || this.map[ this.defaultTile ];
+	},
+	
+	getEditorTilename: function ( value ) {
+		var tilename = this.getKeyByValue( value );
+		if ( !tilename ) {
+			console.error("Tile " + value + " could not be converted! Falling back to default tile.");
+			tilename = this.defaultTile;
+		}
+		return tilename;
 	},
 	
 	getKeyByValue: function( value, map ) {
@@ -110,4 +190,4 @@ var tileTable = {
 			}
 		}
 	}
-}
+};

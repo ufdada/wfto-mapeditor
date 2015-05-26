@@ -224,12 +224,19 @@ function newMap(sizex, sizey) {
 	toggleOptions(false);
 }
 
-function exportMap() {
-	// Maybe later
-	var author = ''; //document.getElementById("author").value;
-	// export as base64
-	var data = btoa(terrain.exportData(author));
-
+function exportMap( type ) {
+	var data = '';
+	var extension = ".wfto";
+	if (type == "file") {
+		// Maybe later
+		var author = ''; //document.getElementById("author").value;
+		// export as base64
+		data = btoa(terrain.exportData(author));
+	} else {
+		data = exportCsv( type );
+		extension = ".csv";
+	}
+	
 	var mapName = mapNameInput.value;
 	if (mapName.length < 1 || mapName.match(invalidLetterRegex)) {
 		alert("Invalid filename!");
@@ -239,7 +246,7 @@ function exportMap() {
 		mapName +=  "_" + terrain.version;
 		terrain.updateVersion();
 	}
-	mapName += ".wfto";
+	mapName += extension;
 
 	// Use the native blob constructor
 	var blob = new Blob([data], {type: "application/octet-stream"});
@@ -476,11 +483,20 @@ function importCsv() {
 	toggleOptions(false);
 }
 
-function setVersioning(element) {
+function setVersioning( element ) {
 	store.setItem(element.id, element.checked);
 	var mapVersion = document.getElementById("mapVersion");
 	mapVersion.innerHTML = terrain.version;
 
 	mapVersion.parentNode.style.display = element.checked ? "block" : "none";
 
+}
+
+function exportCsv( type ) {
+	var json = terrain.mapToCsvJson( type );
+	var content = '';
+	for (var i = 0; i < json.length; i++) {
+		content += json[i].join(',') + '\r\n';
+	}
+	return content;
 }
