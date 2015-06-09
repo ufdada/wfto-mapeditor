@@ -1283,7 +1283,11 @@ function Map(sizex, sizey) {
 		styleHtml += '.tileButton { background-size: ' + parseInt(tileSize * 3/4) + 'px !important; width: ' + parseInt(tileSize * 3/4) + 'px !important; height: ' + parseInt(tileSize * 3/4) + 'px !important; border: ' + 1 / scale + 'px solid white; }\n';
 		styleHtml += '#map { padding-top: 10px; margin-left: '+parseInt(tileSize * map.buttonColumns)+'px; }\n';
 		styleHtml += '#buttons { width:' + parseInt(tileSize * 3/4 * map.buttonColumns) + 'px  !important }\n';
-		
+		styleHtml += '#options { padding: ' + ( 10 / scale ) + 'px; width: ' + ( 500 / scale ) + 'px; left: calc(50% - ' + ( 250 / scale ) + 'px) !important; top: ' + ( 100 / scale ) + 'px; font-size: ' + parseInt( 12 / scale ) + 'px }\n';
+		styleHtml += '#options input, #options button, #options select {font-size: ' + parseInt(12 / scale) + 'px !important;  padding: ' + parseInt(1 / scale)  + 'px ' + parseInt(6 / scale)  + 'px; }\n';
+		styleHtml += '#options #mirrorMap { border-spacing: ' + (1 / scale) + 'px !important; }\n';
+		styleHtml += '#options #mirrorMap td { padding: ' + parseInt(5 / scale) + 'px !important; width: ' + parseInt(15 / scale) + 'px; }\n';
+
 		style.innerHTML = styleHtml;
 		document.getElementsByTagName('head')[0].appendChild(style);
 	};
