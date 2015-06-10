@@ -350,8 +350,8 @@ function Map(sizex, sizey) {
 
 	this.setRoomOnDrag = function(evt) {
 		var infoBox = document.getElementById("infoBox");
-		var left = evt.pageX + 20;
-		var top = evt.pageY + 20;
+		var left = evt.pageX + (20 / window.devicePixelRatio);
+		var top = evt.pageY + (20 / window.devicePixelRatio);
 
 		var height = infoBox.clientHeight;
 		var width = infoBox.clientWidth;
@@ -362,14 +362,14 @@ function Map(sizex, sizey) {
 
 		if (top + height > windowHeight + pageOffsetY - 10) {
 			// at the bottom edge
-			infoBox.style.top = top - height - 30 + "px";
+			infoBox.style.top = top - height - (30 / window.devicePixelRatio) + "px";
 		} else {
 			infoBox.style.top = top + "px";
 		}
 
 		if (left + width > windowWidth + pageOffsetX - 10) {
 			// at the right edge
-			infoBox.style.left = left - width - 30 + "px";
+			infoBox.style.left = left - width - (30 / window.devicePixelRatio) + "px";
 		} else {
 			infoBox.style.left = left + "px";
 		}
@@ -1287,6 +1287,7 @@ function Map(sizex, sizey) {
 		styleHtml += '#options input, #options button, #options select {font-size: ' + parseInt(12 / scale) + 'px !important;  padding: ' + parseInt(1 / scale)  + 'px ' + parseInt(6 / scale)  + 'px; }\n';
 		styleHtml += '#options #mirrorMap { border-spacing: ' + (1 / scale) + 'px !important; }\n';
 		styleHtml += '#options #mirrorMap td { padding: ' + parseInt(5 / scale) + 'px !important; width: ' + parseInt(15 / scale) + 'px; }\n';
+		styleHtml += '#infoBox { font-size: ' + parseInt(12 / scale) + 'px !important; border-radius: ' + parseInt(4 / scale) + 'px; padding: ' + parseInt(5 / scale) + 'px; margin-bottom: ' + parseInt(10 / scale) + 'px }\n';
 
 		style.innerHTML = styleHtml;
 		document.getElementsByTagName('head')[0].appendChild(style);
