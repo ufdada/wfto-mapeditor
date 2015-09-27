@@ -120,7 +120,7 @@ function Map(sizex, sizey) {
 			var option = map.options[item].option;
 			map[option] = map[option + "Default"];
 		}
-		terrain.generateTileCss();
+		map.generateTileCss();
 	};
 
 	this.generateTileCss = function() {
@@ -541,6 +541,39 @@ function Map(sizex, sizey) {
 				mapData.map.push(colData);
 			}
 			return mapData;
+		} else {
+			return null;
+		}
+	};
+	
+	this.mapToCsvJson = function(type){
+		var table = document.getElementById("map");
+		var csv = [];
+
+		if (table) {
+			for (var i = 0; i < map.mapsizey + map.borderSize * 2; i++) {
+
+				var tableRow = table.rows[i];
+				var colData = [];
+
+				for (var j = 0; j < map.mapsizex + map.borderSize * 2; j++) {
+					var tileName = '';
+					var tile = tableRow && tableRow.cells[j] || null;
+					// if the counter exeeds the count, we just add empty cells
+					// handy for the extend feature
+					if (tile) {
+						// make sure that non temporary tile is currently set
+						map.resetTile(tile);
+						
+						tileName = tileTable[ type == "gcsv" ? "getGoogleCsvValue" : "getWFTOCsvValue" ](tile.getAttribute("class"));
+					}
+
+					colData.push(tileName);
+				}
+
+				csv.push(colData);
+			}
+			return csv;
 		} else {
 			return null;
 		}
@@ -1020,80 +1053,15 @@ function Map(sizex, sizey) {
 				var cells = rows[i].split(",");
 
 				for (var j = bordersize; j < cells.length - bordersize; j++) {
-					var tileName = "";
 					var cell = {};
-					switch(cells[j].substring(0,2)) {
-						case 'go':
-							tileName = "gold";
-							break;
-						case 'di':
-							tileName = "dirt";
-							break;
-						case 'ch':
-							tileName = "chasm";
-							break;
-						case 'wa':
-							tileName = "water";
-							break;
-						case 'ga':
-							tileName = "gateway";
-							break;
-						case 'la':
-							tileName = "lava";
-							break;
-						case 'co':
-							tileName = "core_p1";
-							break;
-						case 'im':
-							tileName = "impenetrable";
-							break;
-						case 'br':
-							tileName = "brimstone";
-							break;
-						case 'se':
-							tileName = "sacred_earth";
-							break;
-						case 'nb':
-							tileName = "stone_bridge";
-							break;
-						case 'pf':
-							tileName = "permafrost";
-							break;
-						case 'sa':
-							tileName = "sand";
-							break;
-						case 'sh':
-							tileName = "archiveshrine";
-							break;
-						case 'sg':
-							tileName = "goldshrine";
-							break;
-						case 'ss':
-							tileName = "siegeshrine";
-							break;
-						case 'sd':
-							tileName = "defencepartshrine";
-							break;
-						case 'sm':
-							tileName = "manashrine";
-							break;
-						case 'sp':
-							tileName = "perceptionshrine";
-							break;
-						case '':
-							tileName = "earth";
-							break;
-						default:
-							console.error("Tile " + cells[j] + " could not be converted!");
-							tileName = "earth";
-					}
-
+					var tileName = tileTable.getEditorTilename(cells[j].substring(0,2));
 					var tileConfig = tiles[tileName];
+					
 					if (tileConfig && tileConfig.sizex * tileConfig.sizey > 1) {
 						calcRooms.push([i - bordersize, j - bordersize]);
 					}
 
-					var tileTypeId = terrain.getMapTileId(mapData, tileName);
+					var tileTypeId = map.getMapTileId(mapData, tileName);
 					cell["tile"] = tileTypeId;
 					rowData.push(cell);
 				}
@@ -1134,8 +1102,8 @@ function Map(sizex, sizey) {
 					}
 				}
 			}
-			terrain.resetRedoHistory();
-			terrain.importData(JSON.stringify(mapData));
+			map.resetRedoHistory();
+			map.importData(JSON.stringify(mapData));
 		} else {
 			alert("Please select a valid map file");
 			return;
