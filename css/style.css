@@ -114,12 +114,12 @@ td:hover {
 #mirrorMap td {
 	width: 15px;
 	padding: 5px;
-	transition: all 0.3s;
+	transition: transform 0.3s;
 	border: 1px solid black;
 }
 
 #mirrorMap tr {
-	transition: all 0.3s;
+	transition: transform 0.3s;
 }
 
 #mirrorMap td.active {

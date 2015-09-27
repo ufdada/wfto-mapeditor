@@ -28,6 +28,7 @@
         "window",
         "module",
         "terrain",
+        "tileTable",
         "JSON",
         "tiles",
         "dataStorage",

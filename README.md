@@ -4,6 +4,13 @@ This map editor should make it fairly easy to create and share maps for "War for
 
 Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
 
+### Release 1.7
+#### New Features:
+- Export map to google csv and wfto csv (importable)
+
+#### Improvements:
+- UI doesn't get resized if the browser zoom is used.
+
 ### Release 1.6
 #### New Features:
 - Export map as image file
