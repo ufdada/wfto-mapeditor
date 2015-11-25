@@ -354,8 +354,9 @@ function Map(sizex, sizey) {
 
 	this.setRoomOnDrag = function(evt) {
 		var infoBox = document.getElementById("infoBox");
-		var left = (evt.pageX) * window.devicePixelRatio + 20;
-		var top = (evt.pageY) * window.devicePixelRatio + 20;
+		var scaleUI = window.navigator.product.toLowerCase() == "gecko" ? 1 : window.devicePixelRatio;
+		var left = (evt.pageX) * scaleUI + 20;
+		var top = (evt.pageY) * scaleUI + 20;
 
 		var height = infoBox.clientHeight;
 		var width = infoBox.clientWidth;
@@ -364,14 +365,14 @@ function Map(sizex, sizey) {
 		var pageOffsetX = window.pageXOffset;
 		var pageOffsetY = window.pageYOffset;
 
-		if (top + height > (windowHeight + pageOffsetY) * window.devicePixelRatio - 10) {
+		if (top + height > (windowHeight + pageOffsetY) * scaleUI - 10) {
 			// at the bottom edge
 			infoBox.style.top = top - height - 30 + "px";
 		} else {
 			infoBox.style.top = top + "px";
 		}
 
-		if (left + width > (windowWidth + pageOffsetX) * window.devicePixelRatio - 10) {
+		if (left + width > (windowWidth + pageOffsetX) * scaleUI - 10) {
 			// at the right edge
 			infoBox.style.left = left - width - 30 + "px";
 		} else {
@@ -1246,12 +1247,18 @@ function Map(sizex, sizey) {
 		style.innerHTML = styleHtml;
 		document.getElementsByTagName('head')[0].appendChild(style);
 		
+		var scale = "scale(" + (1 / window.devicePixelRatio) + ")";
 		if (document.getElementById("options")) {
-			document.getElementById("options").style.zoom = 1 / window.devicePixelRatio;
-			document.getElementById("toolBox").style.zoom = 1 / window.devicePixelRatio;
-			// document.getElementById("resizeTable").style.zoom = 1 / window.devicePixelRatio;
-			document.getElementById("infoBox").style.zoom = 1 / window.devicePixelRatio;
-			//document.getElementById("#options").style.zoom = 1 / window.devicePixelRatio;
+			document.getElementById("options").style.transform = scale;
+			document.getElementById("options").style.transformOrigin = "top left";
+			document.getElementById("toolBox").style.transform = scale;
+			document.getElementById("toolBox").style.transformOrigin = "top left";
+			// document.getElementById("resizeTable").style.transform = scale;
+			// document.getElementById("resizeTable").style.transformOrigin = "top left";
+			document.getElementById("infoBox").style.transform = scale;
+			document.getElementById("infoBox").style.transformOrigin = "top left";
+			//document.getElementById("#options").style.transform = scale;
+			//document.getElementById("#options").style.transformOrigin = "top left";
 			
 		}
 	};
