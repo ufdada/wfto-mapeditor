@@ -9,6 +9,11 @@ html, body {
 	font-size: 12px;
 }
 
+body {
+	padding-top: 30px;
+	padding-left: 180px;
+}
+
 a {
 	text-decoration: none;
 }
@@ -41,10 +46,6 @@ td:hover {
 #toolBox p {
 	color: #ccc;
 	text-shadow: 0px 0px 2px black;
-}
-
-#toolBox input, #toolBox button {
-	padding: 0;
 }
 
 #preload{
