@@ -1245,7 +1245,7 @@ function Map(sizex, sizey) {
 				mult *= 3;
 			}
 
-			zoomIndicator = -evt.detail || evt.wheelDeltaY;
+			var zoomIndicator = -evt.detail || evt.wheelDeltaY;
 
 			map.zoom += zoomIndicator > 0 ? mult : -mult;
 			map.zoom = Math.max(0.2, Math.min(map.zoom, 4.0));
