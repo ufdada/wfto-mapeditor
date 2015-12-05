@@ -212,3 +212,7 @@ button:disabled img {
 	right: 20px;
 	top: 20px;
 }
+
+#map {
+	transform-origin: top left;
+}

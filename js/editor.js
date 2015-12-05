@@ -1259,6 +1259,5 @@ function Map(sizex, sizey) {
 		window.devicePixelRatio = 1;
 		var mapTable = document.getElementById("map");
 		mapTable.style.transform = "scale(" + zoom + ")";
-		mapTable.style.transformOrigin = "top left";
 	};
 }
