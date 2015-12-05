@@ -54,6 +54,7 @@ function Map(sizex, sizey) {
 	this.version = "001";
 	this.copiedFilenameRegex = /\s\([0-9]{1,}\)\./g;
 	this.isPhantom = false;
+	this.mapFileVersion = "1.6";
 	this.mouseButton = {
 		left: 0,
 		middle: 1,
@@ -498,7 +499,7 @@ function Map(sizex, sizey) {
 	this.mapToJson = function(author){
 		var table = document.getElementById("map");
 		var mapData = {
-			version: "1.5",
+			version: map.mapFileVersion,
 			author: author || "",
 			border: map.borderSize,
 			tiles: [],
@@ -1041,7 +1042,7 @@ function Map(sizex, sizey) {
 		var calcRooms = [];
 		var usedCores = [];
 		var mapData = {
-			version: "1.5",
+			version: map.mapFileVersion,
 			author: "",
 			border: 1,
 			tiles: [],

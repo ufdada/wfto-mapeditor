@@ -77,7 +77,17 @@ tiles = {
 	'earth': {
 		sizex: 1,
 		sizey: 1,
-		color: "rgb(119, 66, 1)"
+		color: "#774201"
+	},
+	'rocky_earth': {
+		sizex: 1,
+		sizey: 1,
+		color: "#4f3719"
+	},
+	'augrum_wall': {
+		sizex: 1,
+		sizey: 1,
+		color: "#413328"
 	},
 	'impenetrable': {
 		sizex: 1,
@@ -124,6 +134,11 @@ tiles = {
 		sizey: 1,
 		color: "#ff260f"
 	},
+	'gold_water': {
+		sizex: 1,
+		sizey: 1,
+		color: "gold"
+	},
 	'wood_bridge': {
 		sizex: 1,
 		sizey: 1,
@@ -133,6 +148,16 @@ tiles = {
 		sizex: 1,
 		sizey: 1,
 		color: "#404648"
+	},
+	'vulcanic_bridge': {
+		sizex: 1,
+		sizey: 1,
+		color: "#670202"
+	},
+	'natural_bridge': {
+		sizex: 1,
+		sizey: 1,
+		color: "#4a3728"
 	},
 	'gateway': {
 		sizex: 3,

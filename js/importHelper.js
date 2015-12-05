@@ -65,7 +65,6 @@ tileTable = {
 			'nb',
 			'13'
 		],
-		// TODO Should be natural_bridge, needs tile!
 		'natural_bridge': [
 			'nb',
 			'13'
