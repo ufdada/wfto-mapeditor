@@ -10,10 +10,6 @@
 		terrain.images = images;
 		terrain.generateTileCss();
 
-		window.onresize = function () {
-			terrain.scaleGUI();
-		};
-
 		var draft = store.getItem("draft");
 		if (draft && !terrain.isPhantom) {
 			// var restoreDraft = confirm("There is a mapfile saved as draft, do you want to restore it?");
@@ -30,6 +26,7 @@
 
 function Map(sizex, sizey) {
 	var map = this;
+	this.zoom = 1.0;
 	this.images = [];
 	this.defaultTile = 'earth';
 	this.borderTile = 'impenetrable';
@@ -145,8 +142,6 @@ function Map(sizex, sizey) {
 		}
 		style.innerHTML = styleHtml;
 		document.getElementsByTagName('head')[0].appendChild(style);
-		
-		map.scaleGUI();
 	};
 
 	this.preloadTiles = function(callback) {
@@ -294,6 +289,12 @@ function Map(sizex, sizey) {
 
 		map.checkObsoleteRooms();
 		map.setHistoryButtons();
+		
+		map.zoomMap(map.zoom);
+		
+		window.addEventListener("keydown", map.keydownListener, false);
+		window.addEventListener("mousewheel", map.mouseWheelListener, false);
+		window.addEventListener("DOMMouseScroll", map.mouseWheelListener, false);
 	};
 
 	this.destroy = function() {
@@ -309,6 +310,8 @@ function Map(sizex, sizey) {
 		} else {
 			return false;
 		}
+		document.removeEventListener("mousewheel");
+		document.removeEventListener("DOMMouseScroll");
 	};
 
 	this.importData = function(mapString) {
@@ -354,9 +357,8 @@ function Map(sizex, sizey) {
 
 	this.setRoomOnDrag = function(evt) {
 		var infoBox = document.getElementById("infoBox");
-		var scaleUI = window.navigator.product.toLowerCase() == "gecko" ? 1 : window.devicePixelRatio;
-		var left = (evt.pageX) * scaleUI + 20;
-		var top = (evt.pageY) * scaleUI + 20;
+		var left = evt.pageX + 20;
+		var top = evt.pageY + 20;
 
 		var height = infoBox.clientHeight;
 		var width = infoBox.clientWidth;
@@ -365,14 +367,14 @@ function Map(sizex, sizey) {
 		var pageOffsetX = window.pageXOffset;
 		var pageOffsetY = window.pageYOffset;
 
-		if (top + height > (windowHeight + pageOffsetY) * scaleUI - 10) {
+		if (top + height > windowHeight + pageOffsetY - 10) {
 			// at the bottom edge
 			infoBox.style.top = top - height - 30 + "px";
 		} else {
 			infoBox.style.top = top + "px";
 		}
 
-		if (left + width > (windowWidth + pageOffsetX) * scaleUI - 10) {
+		if (left + width > windowWidth + pageOffsetX - 10) {
 			// at the right edge
 			infoBox.style.left = left - width - 30 + "px";
 		} else {
@@ -1236,60 +1238,40 @@ function Map(sizex, sizey) {
 			"</svg>";	
 		document.getElementById("preview").innerHTML = data;
 	};
+	
+	this.mouseWheelListener = function(evt) {
+		if (evt.ctrlKey) {
+			var zoomIndicator = -evt.detail || evt.wheelDeltaY;
+			map.calculateZoom(zoomIndicator > 0, evt.shiftKey);
 
-	this.scaleGUI = function() {
-		var scale = window.devicePixelRatio || 1;
-		var tileSize = map.tileSizeDefault / scale;
-		var style = document.getElementById('toolBoxCss') || document.createElement('style');
-		style.id = 'toolBoxCss';
-		style.type = 'text/css';
-		var styleHtml = '#map { padding-top: 10px; margin-left: ' + (tileSize * map.buttonColumns) + 'px; !important }\n';
-		style.innerHTML = styleHtml;
-		document.getElementsByTagName('head')[0].appendChild(style);
-		
-		var scale = "scale(" + (1 / window.devicePixelRatio) + ")";
-		if (document.getElementById("options")) {
-			document.getElementById("options").style.transform = scale;
-			document.getElementById("options").style.transformOrigin = "top left";
-			document.getElementById("toolBox").style.transform = scale;
-			document.getElementById("toolBox").style.transformOrigin = "top left";
-			// document.getElementById("resizeTable").style.transform = scale;
-			// document.getElementById("resizeTable").style.transformOrigin = "top left";
-			document.getElementById("infoBox").style.transform = scale;
-			document.getElementById("infoBox").style.transformOrigin = "top left";
-			//document.getElementById("#options").style.transform = scale;
-			//document.getElementById("#options").style.transformOrigin = "top left";
-			
+			evt.preventDefault();
 		}
 	};
 	
-	this.scaleGUIold = function() {
-		var style = document.getElementById('toolBoxCss') || document.createElement('style');
-		var toolBox = document.getElementById("toolBox");
-		var scale = window.devicePixelRatio || 1;
-		var tileSize = map.tileSizeDefault / scale;
-		
-		style.id = 'toolBoxCss';
-		style.type = 'text/css';
-		toolBox.setAttribute("class", "toolBox" + tileSize);
-		
-		var styleHtml = '';
-		styleHtml += '#resizeTable td { font-size: ' + ( tileSize / 3 ) + 'px; }\n';
-		styleHtml += '#toolBox,  #toolBox input, #toolBox button { font-size: ' + ( tileSize / 6 ) + 'px !important;  padding: ' + ( 1 / scale )  + 'px ' + ( 6 / scale )  + 'px; }\n';
-		styleHtml += '#toolBox button, #toolBox .optionButton { margin-bottom: ' + ( 10 / scale ) + 'px; }\n';
-		styleHtml += '#toolBox img { width: ' + ( tileSize / 4 ) + 'px !important; }\n';
-		styleHtml += '#toolBox { width: ' + ( 175 / scale ) + 'px !important; }\n';
-		styleHtml += '.tileButton { background-size: ' + ( tileSize * 3/4 ) + 'px !important; width: ' + ( tileSize * 3/4 ) + 'px !important; height: ' + ( tileSize * 3/4 ) + 'px !important; border: ' + ( 1 / scale ) + 'px solid white; }\n';
-		
-		styleHtml += '#buttons { width:' + ( tileSize * 3/4 * map.buttonColumns ) + 'px  !important }\n';
-		styleHtml += '#options { padding: ' + ( 10 / scale ) + 'px; width: ' + ( 500 / scale ) + 'px; left: calc(50% - ' + ( 250 / scale ) + 'px) !important; top: ' + ( 100 / scale ) + 'px; font-size: ' + ( 12 / scale ) + 'px }\n';
-		styleHtml += '#options input, #options button, #options select {font-size: ' + ( 12 / scale ) + 'px !important;  padding: ' + ( 1 / scale )  + 'px ' + ( 6 / scale )  + 'px; }\n';
-		styleHtml += '#options #mirrorMap { border-spacing: ' + ( 1 / scale ) + 'px !important; }\n';
-		styleHtml += '#options #mirrorMap td { padding: ' + ( 5 / scale ) + 'px !important; width: ' + ( 15 / scale ) + 'px; }\n';
-		styleHtml += '#options fieldset { margin: ' + ( 10 / scale ) + 'px; border-width: ' + ( 1 / scale ) + 'px; }\n';
-		styleHtml += '#infoBox { font-size: ' + ( 12 / scale ) + 'px !important; border-radius: ' + ( 4 / scale ) + 'px; padding: ' + ( 5 / scale ) + 'px; margin-bottom: ' + ( 10 / scale ) + 'px }\n';
+	this.keydownListener = function(evt) {
+		if (evt.ctrlKey && evt.keyCode == 187 || evt.keyCode == 189) {
+			map.calculateZoom(evt.keyCode == 187, evt.shiftKey);
 
-		style.innerHTML = styleHtml;
-		document.getElementsByTagName('head')[0].appendChild(style);
+			evt.preventDefault();
+		}
+	};
+	
+	this.calculateZoom = function(zoomIndicator, turbo) {
+		var level = 0.2;
+		if (turbo) {
+			level *= 2;
+		}
+
+		var zoom = map.zoom;
+		zoom += zoomIndicator ? level : -level;
+		zoom = Math.max(0.2, Math.min(zoom, 4.0));
+
+		map.zoomMap(zoom);
+	};
+	
+	this.zoomMap = function(zoom) {
+		map.zoom = zoom;
+		var mapTable = document.getElementById("map");
+		mapTable.style.transform = "scale(" + zoom + ")";
 	};
 }
