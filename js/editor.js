@@ -292,8 +292,9 @@ function Map(sizex, sizey) {
 		
 		map.zoomMap(map.zoom);
 		
-		document.addEventListener("mousewheel", map.mouseWheelListener, false);
-		document.addEventListener("DOMMouseScroll", map.mouseWheelListener, false);
+		window.addEventListener("keydown", map.keydownListener, false);
+		window.addEventListener("mousewheel", map.mouseWheelListener, false);
+		window.addEventListener("DOMMouseScroll", map.mouseWheelListener, false);
 	};
 
 	this.destroy = function() {
@@ -1240,23 +1241,36 @@ function Map(sizex, sizey) {
 	
 	this.mouseWheelListener = function(evt) {
 		if (evt.ctrlKey) {
-			var mult = 0.2;
-			if (evt.shiftKey) {
-				mult *= 3;
-			}
-
 			var zoomIndicator = -evt.detail || evt.wheelDeltaY;
-
-			map.zoom += zoomIndicator > 0 ? mult : -mult;
-			map.zoom = Math.max(0.2, Math.min(map.zoom, 4.0));
+			map.calculateZoom(zoomIndicator > 0, evt.shiftKey);
 
 			evt.preventDefault();
-			map.zoomMap(map.zoom);
 		}
 	};
 	
+	this.keydownListener = function(evt) {
+		if (evt.ctrlKey && evt.keyCode == 187 || evt.keyCode == 189) {
+			map.calculateZoom(evt.keyCode == 187, evt.shiftKey);
+
+			evt.preventDefault();
+		}
+	};
+	
+	this.calculateZoom = function(zoomIndicator, turbo) {
+		var level = 0.2;
+		if (turbo) {
+			level *= 2;
+		}
+
+		var zoom = map.zoom;
+		zoom += zoomIndicator ? level : -level;
+		zoom = Math.max(0.2, Math.min(zoom, 4.0));
+
+		map.zoomMap(zoom);
+	};
+	
 	this.zoomMap = function(zoom) {
-		window.devicePixelRatio = 1;
+		map.zoom = zoom;
 		var mapTable = document.getElementById("map");
 		mapTable.style.transform = "scale(" + zoom + ")";
 	};
