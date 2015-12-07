@@ -1,5 +1,6 @@
 ﻿# wfto-mapeditor
 This map editor should make it fairly easy to create and share maps for "War for the Overworld". At this very moment it's not possible to import them into wfto, this feature might come as soon as the map file structure for wfto is final.
+
 [![Build Status](https://travis-ci.org/ufdada/wfto-mapeditor.svg)](https://travis-ci.org/ufdada/wfto-mapeditor)
 
 Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
@@ -7,9 +8,24 @@ Just go to http://ufdada.github.io/wfto-mapeditor/ to start mapping!
 ### Release 1.7
 #### New Features:
 - Export map to google csv and wfto csv (importable)
+- New tiles:
+ - rocky_earth
+ - augrum_wall
+ - gold_water
+ - vulcanic_bridge
+ - natural_bridge
 
 #### Improvements:
 - UI doesn't get resized if the browser zoom is used.
+- Updated tiles:
+ - siegeshrine
+ - manashrine
+ - archiveshrine
+ - defencepartshrine
+ - lava
+- Redesign of the zoom-ability
+ - it works like the normal Website-Zoom, but only zooms the Map
+ - see <kbd>CTRL</kbd>+Mousewheel Or <kbd>CTRL</kbd> + <kbd>+</kbd>/<kbd>-</kbd>
 
 ### Release 1.6
 #### New Features:
