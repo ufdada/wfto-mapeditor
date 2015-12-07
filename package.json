@@ -1,7 +1,7 @@
 {
   "name": "wfto-mapeditor",
   "description": "A html based map editor for 'War for the Overworld'",
-  "version": "1.4.0",
+  "version": "1.7.0",
   "keywords": [
     "wfto",
     "editor",
@@ -25,8 +25,8 @@
   "devDependencies": {
     "dalekjs": "0.0.9",
     "grunt": "0.4.5",
-    "grunt-contrib-jshint": "0.10.0",
+    "grunt-contrib-jshint": "0.11.3",
     "grunt-dalek": "^0.2.0",
-    "grunt-lint5": "0.3.1"
+    "grunt-lint5": "0.3.2"
   }
 }
