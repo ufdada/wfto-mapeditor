@@ -397,11 +397,14 @@ function Map(sizex, sizey) {
 
 	this.displayRoom = function(evt) {
 		map.insertTile(this, true, false);
+		var row = this.parentNode;
+		var table = row.parentNode;
 
 		// Info box
 		map.setHtml("posx", this.cellIndex + 1 - map.borderSize);
-		var posy = this.parentNode.rowIndex != -1 ? this.parentNode.rowIndex : this.parentNode.sectionRowIndex;
-		map.setHtml("posy", posy + 1 - map.borderSize);
+		var posy = row.rowIndex != -1 ? row.rowIndex : row.sectionRowIndex;
+		posy = table.rows.length - posy;
+		map.setHtml("posy", posy - map.borderSize);
 
 		// Drag and Drop
 		var roomTile = tiles[map.currentTile];
